@@ -1,0 +1,1545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Boxed Game Studio — by Bluff Cabaret AI</title>
+<meta name="robots" content="noindex, nofollow">
+<style>
+:root{
+  --ink:#101826; --ink-2:#17233a; --ink-3:#1f2f4b; --copper:#C97B4A; --copper-2:#a8612f; --kraft:#E8D5B5; --kraft-2:#cdb78f;
+  --text:#EFE6D4; --muted:#b4ab99; --line:rgba(232,213,181,.22); --line-2:rgba(232,213,181,.4);
+  --ok:#74c69d; --warn:#f0b35b; --bad:#ef7b6b; --on-copper:#1b0f07;
+  --head:'Futura','Avenir Next Condensed','Franklin Gothic Medium','Arial Narrow',system-ui,sans-serif;
+  --body:'Avenir Next','Segoe UI',system-ui,-apple-system,Helvetica,Arial,sans-serif;
+  --stamp:'Rockwell','American Typewriter','Courier New',Georgia,serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--ink);color:var(--text);font-family:var(--body);font-size:16px;line-height:1.5;overflow-x:hidden;
+  background-image:radial-gradient(circle at 12% 8%,rgba(201,123,74,.16),transparent 28%),radial-gradient(circle at 92% 20%,rgba(232,213,181,.07),transparent 26%),repeating-linear-gradient(135deg,rgba(232,213,181,.025) 0 2px,transparent 2px 14px)}
+h1,h2,h3,h4{font-family:var(--head);margin:0;line-height:1.15;letter-spacing:.01em}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--kraft);outline-offset:2px}
+.shell{max-width:1320px;margin:0 auto;padding:0 18px 60px}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 0;border-bottom:2px dashed var(--line)}
+.brand{display:flex;flex-direction:column;line-height:1.1}
+.brand strong{font-family:var(--head);font-size:1.35rem;text-transform:uppercase;letter-spacing:.08em;color:var(--kraft)}
+.brand small{color:var(--copper);font-family:var(--stamp);font-size:.78rem;letter-spacing:.1em;text-transform:uppercase}
+.toplinks{display:flex;gap:10px;flex-wrap:wrap}
+.toplinks a{color:var(--kraft);text-decoration:none;border:1px solid var(--line-2);padding:6px 12px;border-radius:8px;font-weight:700;font-size:.86rem}
+.hero{position:relative;margin:20px 0 14px;padding:22px 24px;border:2px solid var(--line-2);border-radius:6px;background:linear-gradient(135deg,rgba(232,213,181,.09),rgba(201,123,74,.1))}
+.hero:before,.hero:after{content:"";position:absolute;width:64px;height:20px;background:rgba(232,213,181,.28);border:1px solid var(--line)}
+.hero:before{top:-10px;left:22px;transform:rotate(-4deg)}.hero:after{bottom:-10px;right:22px;transform:rotate(-3deg)}
+.hero h1{font-size:clamp(1.9rem,4.4vw,3rem);text-transform:uppercase;color:var(--kraft);letter-spacing:.05em}
+.hero h1 span{color:var(--copper)}
+.hero p{margin:8px 0 0;color:var(--text);max-width:780px;font-size:1.05rem}
+.stamp{display:inline-block;border:2px solid var(--copper);color:var(--copper);padding:2px 10px;font-family:var(--stamp);font-weight:700;text-transform:uppercase;letter-spacing:.12em;font-size:.74rem;border-radius:3px;transform:rotate(-2deg)}
+/* stepper */
+.stepper{position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:10px;margin:0 0 16px;padding:10px 12px;background:rgba(16,24,38,.96);backdrop-filter:blur(6px);border:1px solid var(--line-2);border-radius:8px}
+.pg-head{display:flex;flex-direction:column;min-width:96px;line-height:1.2}
+.pg-head strong{color:#fff;font-size:.95rem}.pg-head span{color:var(--muted);font-size:.78rem}
+.steps{display:flex;gap:8px;flex:1;min-width:0;overflow-x:auto}
+.sbtn{flex:0 0 auto;display:inline-flex;align-items:center;gap:8px;border:1px dashed var(--line-2);background:rgba(255,255,255,.04);color:var(--muted);padding:8px 12px;border-radius:999px;font-weight:700;font-size:.86rem;font-family:var(--body)}
+.sbtn .n{display:inline-flex;width:24px;height:24px;border-radius:50%;align-items:center;justify-content:center;background:rgba(255,255,255,.1);font-weight:900;font-size:.78rem}
+.sbtn.cur{background:linear-gradient(135deg,var(--copper),var(--copper-2));color:var(--on-copper);border:1px solid transparent}
+.sbtn.cur .n{background:rgba(27,15,7,.25)}
+.sbtn.done{color:var(--text)}.sbtn.done .n{background:var(--ok);color:#06281a}
+.sbtn .s{font-size:.7rem;font-weight:700;opacity:.85;text-transform:uppercase;letter-spacing:.04em}
+.sbtn.need .n{box-shadow:0 0 0 2px var(--warn)}
+.need{margin:10px 0}.need[hidden]{display:none}
+.lnk{background:none;border:0;padding:0 2px;margin-left:6px;color:var(--kraft);font:inherit;font-weight:800;text-decoration:underline;cursor:pointer;min-height:24px}
+.jump{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:14px;padding-top:12px;border-top:1px dashed var(--line-2)}
+.jump b{font-size:.9rem}
+/* layout */
+.layout>*{min-width:0;max-width:100%}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:18px;align-items:start}
+.pkg{position:sticky;top:84px;border:2px dashed var(--line-2);border-radius:8px;padding:14px;background:rgba(23,35,58,.8)}
+.pkg-toggle{display:none;width:100%;background:none;border:0;color:var(--kraft);font-family:var(--head);font-weight:800;font-size:1.05rem;text-align:left;padding:4px 0;justify-content:space-between}
+.pkg h3{font-size:1.05rem;color:var(--kraft);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px}
+.pkg dl{margin:0 0 10px;display:flex;flex-direction:column;gap:6px}
+.pkg dl div{border-bottom:1px dotted var(--line);padding-bottom:5px}
+.pkg dt{font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);font-weight:800}
+.pkg dd{margin:0;font-weight:700;overflow-wrap:anywhere}
+.pkg ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px;font-size:.86rem}
+.pkg li{display:flex;align-items:center;gap:8px;color:var(--muted);flex-wrap:wrap}
+.pkg li span.d{display:inline-flex;width:22px;height:22px;border-radius:50%;align-items:center;justify-content:center;background:rgba(255,255,255,.1);font-size:.74rem;font-weight:900;flex:0 0 auto}
+.pkg li.done{color:var(--text)}.pkg li.done span.d{background:var(--ok);color:#06281a}.pkg li.cur{color:#fff}.pkg li.cur span.d{background:var(--copper);color:var(--on-copper)}
+.pkg li em{margin-left:auto;font-style:normal;font-size:.74rem}
+/* stations */
+.station{display:none}.station.active{display:block}
+.st-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.st-head h2{font-size:1.7rem;color:#fff;text-transform:uppercase;letter-spacing:.04em}
+.badge{padding:3px 12px;border-radius:3px;border:2px solid;font-family:var(--stamp);font-weight:700;font-size:.74rem;text-transform:uppercase;letter-spacing:.1em;transform:rotate(-1.5deg)}
+.badge.req{color:var(--bad);border-color:var(--bad)}.badge.opt{color:var(--ok);border-color:var(--ok)}
+.boxline{margin:0 0 14px;padding:8px 12px;border-left:4px solid var(--kraft);color:var(--kraft);font-family:var(--stamp);font-size:.9rem;background:rgba(232,213,181,.06)}
+.strip{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:0 0 16px;padding:12px 14px;border-left:5px solid var(--copper);background:rgba(232,213,181,.07);border-radius:0 6px 6px 0}
+.strip p{margin:0;font-size:.94rem}.strip b{display:block;color:var(--copper);font-size:.72rem;text-transform:uppercase;letter-spacing:.12em;font-family:var(--stamp)}
+.card{position:relative;margin:0 0 16px;padding:16px;border:1px solid var(--line-2);border-radius:6px;background:linear-gradient(180deg,rgba(23,35,58,.92),rgba(16,24,38,.92))}
+.card>h3{font-size:1.15rem;color:var(--kraft);text-transform:uppercase;letter-spacing:.06em;margin:0 0 12px;display:flex;gap:10px;align-items:center}
+.card>h3:after{content:"";flex:1;border-top:2px dotted var(--line-2)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
+.fld label.lbl,label.lbl{display:block;font-family:var(--stamp);font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;color:var(--copper);font-weight:700;margin:0 0 4px}
+input[type=text],input[type=number],select,textarea{width:100%;border:1px solid var(--line-2);background:rgba(0,0,0,.28);color:#fff;border-radius:6px;padding:9px 11px;min-height:44px}
+textarea{min-height:90px;resize:vertical}
+input[type=checkbox]{width:20px;height:20px;accent-color:var(--copper);vertical-align:middle;margin-right:8px}
+.hint{font-size:.84rem;color:var(--muted);margin:5px 0 0}
+.btn{border:1px solid var(--line-2);background:rgba(255,255,255,.07);color:var(--text);border-radius:6px;padding:10px 16px;font-weight:800;min-height:44px;font-family:var(--body)}
+.btn:hover{border-color:var(--kraft)}
+.btn.primary{background:linear-gradient(135deg,var(--copper),var(--copper-2));color:var(--on-copper);border-color:transparent}
+.btn.kraft{background:var(--kraft);color:var(--ink);border-color:transparent}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.row{display:flex;flex-wrap:wrap;gap:10px;margin:10px 0;align-items:center}
+.drop{border:2px dashed var(--line-2);border-radius:8px;padding:22px 14px;text-align:center;cursor:pointer;background:rgba(232,213,181,.04)}
+.drop.drag{border-color:var(--copper);background:rgba(201,123,74,.12)}
+.drop strong{display:block;color:var(--kraft)}
+.counter{display:inline-block;font-family:var(--stamp);font-weight:700;padding:3px 12px;border:2px solid var(--line-2);border-radius:3px}
+.counter.ok{border-color:var(--ok);color:var(--ok)}.counter.warn{border-color:var(--warn);color:var(--warn)}.counter.bad{border-color:var(--bad);color:var(--bad)}
+.thumbs{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:10px;margin-top:12px}
+.thumb{position:relative;border:1px solid var(--line-2);border-radius:5px;overflow:hidden;background:#000;aspect-ratio:63/88;cursor:grab}
+.thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.thumb .no{position:absolute;left:4px;top:4px;background:var(--copper);color:var(--on-copper);font-weight:900;font-size:.72rem;border-radius:3px;padding:0 6px}
+.thumb .tb{position:absolute;right:2px;top:2px;display:flex;gap:2px}
+.thumb .tb button{border:0;background:rgba(0,0,0,.65);color:#fff;border-radius:3px;width:22px;height:22px;font-size:.7rem;line-height:1;padding:0}
+.thumb .nm{position:absolute;left:0;right:0;bottom:0;background:rgba(0,0,0,.65);font-size:.6rem;padding:1px 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.thumb.over{outline:3px solid var(--copper)}
+.msgs{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+.msg{padding:8px 12px;border-radius:5px;border:1px solid var(--line-2);background:rgba(255,255,255,.05);font-size:.9rem}
+.msg.warn{border-color:var(--warn);background:rgba(240,179,91,.1)}.msg.bad{border-color:var(--bad);background:rgba(239,123,107,.12)}.msg.ok{border-color:var(--ok);background:rgba(116,198,157,.1)}
+.slots{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.slot{border:1px dashed var(--line-2);border-radius:6px;padding:10px;font-size:.84rem}
+.slot b{display:block;font-family:var(--stamp);text-transform:uppercase;letter-spacing:.08em;font-size:.72rem;color:var(--copper)}
+.slot .fn{color:var(--muted);overflow-wrap:anywhere}
+.prog{display:none;height:12px;border-radius:6px;background:rgba(255,255,255,.1);overflow:hidden;margin:10px 0}
+.prog.on{display:block}.prog i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--copper),var(--kraft))}
+.pv{display:flex;flex-wrap:wrap;gap:18px}
+.pv figure{margin:0;flex:1 1 240px;max-width:340px}
+.pv figcaption{font-family:var(--stamp);font-size:.78rem;color:var(--muted);margin-top:4px}
+.sheetpv{position:relative;background:#fff;border:1px solid #888;width:100%;aspect-ratio:210/297;box-shadow:0 8px 20px rgba(0,0,0,.4)}
+.sheetpv .c{position:absolute;overflow:hidden;background:#e6e6e6;outline:1px dotted rgba(0,0,0,.35)}
+.sheetpv .c img{width:100%;height:100%;object-fit:cover;display:block}
+.sheetpv .c i{position:absolute;left:2px;top:2px;font-style:normal;font-size:9px;color:#000;background:rgba(255,255,255,.7);padding:0 3px;border-radius:2px}
+.tabs{display:flex;gap:8px;overflow-x:auto;margin-bottom:0}
+.tab{flex:0 0 auto;border:1px solid var(--line-2);border-bottom:0;border-radius:6px 6px 0 0;background:rgba(255,255,255,.05);color:var(--muted);padding:10px 16px;font-weight:800;min-height:44px;white-space:nowrap}
+.tab[aria-selected=true]{background:var(--kraft);color:var(--ink)}
+.tabpanel{border:1px solid var(--line-2);border-radius:0 6px 6px 6px;padding:16px;background:rgba(23,35,58,.7)}
+.tabpanel[hidden]{display:none}
+.pf{display:flex;gap:10px;align-items:flex-start;padding:8px 10px;border-bottom:1px dotted var(--line)}
+.dot{flex:0 0 auto;width:14px;height:14px;border-radius:50%;margin-top:5px;border:2px solid #fff3}
+.dot.green{background:var(--ok)}.dot.amber{background:var(--warn)}.dot.red{background:var(--bad)}
+.pf b{display:block}.pf span{font-size:.86rem;color:var(--muted)}
+.mockwrap{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start}
+.mockwrap .ctl{flex:1 1 260px;max-width:380px}
+.mockwrap .view{flex:2 1 300px;min-width:0}
+.mockcv{width:100%;height:auto;display:block;border:1px solid var(--line-2);border-radius:6px;background:#fff}
+.vstrip{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px;margin-top:12px}
+.vstrip canvas{width:100%;height:auto;border:2px solid var(--line-2);border-radius:5px;cursor:pointer;background:#fff}
+.vstrip canvas.sel{border-color:var(--copper)}
+.limgs{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px;margin-top:12px}
+.limgs figure{margin:0}.limgs canvas{width:100%;height:auto;border:1px solid var(--line-2);border-radius:5px;background:#fff}.limgs figcaption{font-size:.78rem;color:var(--muted);margin-top:3px}
+.prompt{width:100%;min-height:200px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.8rem;line-height:1.4;background:rgba(0,0,0,.4)}
+.pbox{margin:0 0 14px}.pbox h4{color:var(--kraft);margin:0 0 6px}
+.dieprev{background:#fff;border-radius:6px;padding:8px;overflow:auto}
+.dieprev svg{width:100%;height:auto;display:block;max-height:520px}
+.calc{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}
+.result{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin-top:14px}
+.result div{border:2px dashed var(--line-2);border-radius:6px;padding:10px}
+.result b{display:block;font-family:var(--head);font-size:1.5rem;color:var(--kraft)}
+.result span{font-size:.76rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+.check{display:flex;gap:10px;align-items:flex-start;padding:9px 10px;border-bottom:1px dotted var(--line)}
+.check label{flex:1;cursor:pointer}
+.ftbl{width:100%;border-collapse:collapse;font-size:.86rem;display:block;overflow-x:auto}
+.ftbl td,.ftbl th{border:1px solid var(--line-2);padding:5px 8px;text-align:left}
+.navbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin:18px 0 0;padding-top:14px;border-top:2px dashed var(--line)}
+.navhint{flex:1 1 200px;color:#f4d39b;font-size:.88rem;font-weight:700}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(20px);background:var(--kraft);color:var(--ink);border-radius:8px;padding:10px 18px;font-weight:800;opacity:0;pointer-events:none;transition:.2s;z-index:120;max-width:92vw;text-align:center}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}.toast.err{background:var(--bad);color:#2a0b07}
+.note{border:1px dashed var(--copper);background:rgba(201,123,74,.1);padding:10px 14px;border-radius:6px;font-size:.9rem;margin:10px 0}
+.libwarn{display:none;margin:0 0 12px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.foot{margin:40px 0 0;text-align:center;color:var(--muted);font-family:var(--stamp);font-size:.82rem;border-top:2px dashed var(--line);padding-top:14px}
+@media (max-width:1000px){
+  .layout{display:flex;flex-direction:column}
+  .pkg{order:-1;position:static;padding:8px 12px}
+  .pkg-toggle{display:flex}.pkg .pb{display:none;margin-top:8px}.pkg.open .pb{display:block}
+}
+@media (max-width:640px){
+  .strip{grid-template-columns:1fr}
+  .stepper{flex-wrap:nowrap;padding:8px}
+  .sbtn .l,.sbtn .s{display:none}.sbtn.cur .l{display:none}
+  .hero{padding:18px 16px}
+  .navbar .btn{flex:1}
+  .st-head h2{font-size:1.4rem}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<div class="shell">
+  <header class="topbar"><div class="brand"><strong>Boxed Game Studio</strong><small>by Bluff Cabaret AI</small></div><nav class="toplinks" id="topLinks" aria-label="Links"></nav></header>
+  <section class="hero" aria-label="Boxed Game Studio"><span class="stamp">Packing table</span><h1>Boxed Game <span>Studio</span></h1><p>Turn a finished deck into a boxed-game package: print sheets, a box template with artwork, store listing prompts, product photo prompts, a cost calculator and a launch pack. Everything runs in your browser.</p></section>
+  <div class="note libwarn" id="libWarn" role="alert"></div>
+  <nav class="stepper" id="stepper" aria-label="Stations"></nav>
+  <div class="layout">
+    <main id="stations">
+      <section class="station active" id="st1" aria-label="Station 1 Load">
+        <div class="st-head"><h2>1 · Load</h2><span class="badge opt" data-badge="1">Optional</span></div>
+        <div class="strip"><p><b>What you do here</b>Describe your game and load your card faces and one card back. You can also import a project saved by the other Bluff Cabaret AI apps.</p><p><b>What you get</b>A numbered deck ready for print sheets and a box, with warnings for anything that may print badly.</p></div>
+        <div class="card"><h3>Game setup</h3>
+          <div class="grid">
+            <div class="fld"><label class="lbl" for="gType">Game type</label><select id="gType"><option>Bluff Poker</option><option>Odd One Out</option><option>Trivia Duel</option><option>Other card game</option></select></div>
+            <div class="fld"><label class="lbl" for="gTitle">Deck title</label><input type="text" id="gTitle" maxlength="80" placeholder="e.g. The Midnight Menagerie"></div>
+            <div class="fld"><label class="lbl" for="gBrand">Brand or shop name (optional)</label><input type="text" id="gBrand" maxlength="40" placeholder="e.g. Moonlight Games"></div>
+            <div class="fld"><label class="lbl" for="gCards">Number of cards</label><input type="number" id="gCards" min="1" max="500" value="20"></div>
+            <div class="fld"><label class="lbl" for="gPlayers">Players</label><input type="text" id="gPlayers" maxlength="20" value="3-6"></div>
+            <div class="fld"><label class="lbl" for="gTime">Play time</label><input type="text" id="gTime" maxlength="20" value="15-20 min"></div>
+            <div class="fld"><label class="lbl" for="gAges">Ages</label><input type="text" id="gAges" maxlength="12" value="8+"></div>
+            <div class="fld"><label class="lbl" for="gPaper">Paper</label><select id="gPaper"><option value="a4">A4 (210 x 297 mm)</option><option value="letter">US Letter (215.9 x 279.4 mm)</option></select></div>
+          </div>
+          <div class="fld" style="margin-top:12px"><label class="lbl" for="gStyle">Look and style (optional, used in the prompts)</label><input type="text" id="gStyle" maxlength="160" placeholder="e.g. 1940s detective bureau, ink black and signal red"></div>
+          <div class="jump" id="jumpRow" role="group" aria-label="Jump to a tool"><b>I only need:</b><button type="button" class="btn" data-go="3">Box template</button><button type="button" class="btn" data-go="2">Print sheets</button><button type="button" class="btn" data-go="4">Photos</button><button type="button" class="btn" data-go="5" data-sell="listing">Listing text</button><button type="button" class="btn" data-go="5" data-sell="cost">Cost calculator</button></div>
+          <div class="row"><button type="button" class="btn kraft" id="btnImport">Import project (.json)</button><input type="file" id="fileImport" accept="application/json,.json" class="sr" aria-label="Import project file"><span class="hint" style="margin:0">Reads projects saved by the Pro Edition and Game Mode Engines. Manual entry always works.</span></div>
+          <div class="msgs" id="importMsg" aria-live="polite"></div>
+        </div>
+        <div class="card"><h3>Card faces</h3>
+          <div class="drop" id="dropFaces" tabindex="0" role="button" aria-label="Add card face images"><strong>Drop your card face images here, or click to choose</strong><span class="hint">PNG, JPG or WEBP. Sorted by the first number in each file name. Drag to reorder.</span></div>
+          <input type="file" id="fileFaces" accept="image/png,image/jpeg,image/webp" multiple class="sr" aria-label="Choose card faces">
+          <div class="row"><span class="counter" id="faceCounter">0 of 20 faces</span><button type="button" class="btn" id="btnSortFaces">Sort by file number</button><button type="button" class="btn" id="btnClearFaces">Remove all faces</button></div>
+          <div class="thumbs" id="faceThumbs"></div>
+          <div class="msgs" id="faceMsgs" aria-live="polite"></div>
+        </div>
+        <div class="card"><h3>Card back</h3>
+          <div class="drop" id="dropBack" tabindex="0" role="button" aria-label="Add the card back image"><strong>Drop ONE card back image here, or click to choose</strong><span class="hint">Required. Used behind every face.</span></div>
+          <input type="file" id="fileBack" accept="image/png,image/jpeg,image/webp" class="sr" aria-label="Choose the card back">
+          <div class="row"><span class="counter" id="backCounter">No back yet</span></div>
+          <div class="thumbs" id="backThumbs" style="max-width:200px"></div>
+          <div class="row"><label><input type="checkbox" id="uniqueBacks">Unique backs mode (one back image per face)</label></div>
+          <div id="uniqueWrap" hidden>
+            <div class="drop" id="dropUBacks" tabindex="0" role="button" aria-label="Add unique back images"><strong>Drop one back per face here</strong><span class="hint">Sorted by file number, same order as the faces.</span></div>
+            <input type="file" id="fileUBacks" accept="image/png,image/jpeg,image/webp" multiple class="sr" aria-label="Choose unique backs">
+            <div class="row"><span class="counter" id="ubCounter">0 backs</span><button type="button" class="btn" id="btnClearUB">Remove all backs</button></div>
+            <div class="thumbs" id="ubThumbs"></div>
+          </div>
+          <div class="msgs" id="backMsgs" aria-live="polite"></div>
+        </div>
+        <div class="card"><h3>Optional uploads: box artwork and rulebook cover</h3>
+          <div class="slots" id="artSlots"></div>
+        </div>
+      </section>
+      <section class="station" id="st2" aria-label="Station 2 Print sheets">
+        <div class="st-head"><h2>2 · Print sheets</h2><span class="badge opt" data-badge="2">Optional</span></div>
+        <div class="strip"><p><b>What you do here</b>Choose how your cards are laid out on the page and export print files. Backs are mirrored for double-sided printing.</p><p><b>What you get</b>Three PDFs (full, faces only, backs only) plus an alignment test and print instructions.</p></div>
+        <div class="card"><h3>Layout</h3>
+          <div class="grid">
+            <div class="fld"><label class="lbl" for="pBleed">Image type</label><select id="pBleed"><option value="trim">Images are trim size (63 x 88 mm)</option><option value="bleed">Images include 3 mm bleed (69 x 94 mm)</option></select></div>
+            <div class="fld"><label class="lbl" for="pGutter">Gutter</label><select id="pGutter"><option value="0">0 mm</option><option value="2">2 mm</option></select></div>
+            <div class="fld"><label class="lbl">Marks</label><label><input type="checkbox" id="pCrop" checked>Crop marks</label><br><label><input type="checkbox" id="pGuides">Cut-line guides in the gutters</label></div>
+          </div>
+          <p class="hint" id="layoutInfo"></p>
+          <div class="note">Poker size 63 x 88 mm, 3 x 3 = 9 cards per sheet on both A4 and US Letter, centered on the page. Always run the alignment test on scrap paper before printing the real sheets.</div>
+        </div>
+        <div class="card"><h3>Preview</h3><div class="pv" id="sheetPreview"></div></div>
+        <div class="card"><h3>Export</h3>
+          <p id="sheetCount" style="font-weight:800"></p>
+          <div class="need" id="need2" hidden></div>
+          <div class="row"><button type="button" class="btn primary" id="btnPdfFull">Full print file (PDF)</button><button type="button" class="btn" id="btnPdfFaces">Faces only (PDF)</button><button type="button" class="btn" id="btnPdfBacks">Backs only (PDF)</button><button type="button" class="btn kraft" id="btnPdfTest">Alignment test + instructions (PDF)</button></div>
+          <div class="prog" id="prog2"><i></i></div><p class="hint" id="progTxt2"></p>
+          <h4 style="margin-top:14px;color:var(--kraft)">How to print and cut</h4>
+          <ol id="printSteps"></ol>
+        </div>
+      </section>
+      <section class="station" id="st3" aria-label="Station 3 Box and Rules">
+        <div class="st-head"><h2>3 · Box &amp; Rules</h2><span class="badge opt" data-badge="3">Optional</span></div>
+        <p class="boxline">Print the template on plain paper first, cut, fold and check that your cards fit before you order or print on card stock.</p>
+        <div class="strip"><p><b>What you do here</b>Enter your card stock and extras, check the box size, place artwork on each panel and export the template. Then build a printable rules booklet. You can skip the box or the rules.</p><p><b>What you get</b>A straight-tuck-end dieline at 1:1 scale (with or without artwork), ready-to-copy box art prompts and a rules booklet PDF.</p></div>
+        <div class="card"><h3>Box size</h3>
+          <div class="row"><label><input type="checkbox" id="skipBox">Skip the box, I sell the printable only</label></div>
+          <div id="boxWrap">
+            <div class="grid">
+              <div class="fld"><label class="lbl" for="bCards">Number of cards</label><input type="number" id="bCards" min="1" max="500"></div>
+              <div class="fld"><label class="lbl" for="bStock">Card stock thickness</label><select id="bStock"><option value="0.28">0.28 mm</option><option value="0.30" selected>0.30 mm</option><option value="0.35">0.35 mm</option><option value="custom">Custom</option></select></div>
+              <div class="fld" id="bCustomWrap" hidden><label class="lbl" for="bCustom">Custom thickness (mm)</label><input type="number" id="bCustom" min="0.1" max="1" step="0.01" value="0.32"></div>
+              <div class="fld"><label class="lbl" for="bExtra">Extra depth for tokens, pad, rulebook</label><select id="bExtra"><option value="0">0 mm</option><option value="5">5 mm</option><option value="10">10 mm</option><option value="15">15 mm</option></select></div>
+              <div class="fld"><label class="lbl" for="bTol">Tolerance (mm)</label><input type="number" id="bTol" min="0" max="6" step="0.5" value="2"></div>
+              <div class="fld"><label class="lbl" for="bTile">Page size</label><select id="bTile"><option value="auto">Fit automatically</option><option value="tile">Tile on my paper size (join pages)</option></select></div>
+            </div>
+            <div class="result" id="boxNums"></div>
+            <div class="note">Template generated from your measurements. Always check size and fold lines with a test print, and ask your printer for their own template if you order professional printing.</div>
+          </div>
+        </div>
+        <div id="boxMore">
+        <div class="card"><h3>Dieline preview</h3><div class="dieprev" id="diePreview"></div><p class="hint" id="dieInfo"></p></div>
+        <div class="card"><h3>Artwork on the panels</h3><div class="grid" id="panelArt"></div>
+          <div class="need" id="need3" hidden></div>
+          <div class="row"><button type="button" class="btn primary" id="btnDieArt">Dieline with artwork (PDF)</button><button type="button" class="btn" id="btnDieOnly">Dieline only (PDF)</button></div><div class="prog" id="prog3"><i></i></div></div>
+        <div class="card"><h3>Box art prompts for ChatGPT</h3><p class="hint">Sized to your real panels. Generate each image in ChatGPT, then upload it in Station 1.</p><div id="boxPrompts"></div></div>
+        </div>
+      <div class="card" id="rulesCard"><h3>Rules booklet</h3>
+        <div class="row"><label><input type="checkbox" id="rulesSkip">Skip the rules booklet</label></div>
+        <div id="rulesWrap">
+          <div class="grid">
+            <div class="fld"><label class="lbl" for="rulesMode">Format</label><select id="rulesMode"><option value="sheet">Single sheet (your paper size)</option><option value="booklet">Folded booklet (A5 or half-letter, pages 2-up)</option></select></div>
+            <div class="fld"><label class="lbl">Answer key</label><label><input type="checkbox" id="rulesKey" checked>Add the answer key as the last page (host only)</label><p class="hint" id="rulesKeyHint"></p></div>
+          </div>
+          <label class="lbl" for="rulesText" style="margin-top:12px">Rules text (one paragraph per line)</label>
+          <textarea id="rulesText" style="min-height:190px" placeholder="Write or paste your rules here. If you imported a project, its rules are filled in for you."></textarea>
+          <div class="need" id="needRules" hidden></div>
+          <div class="row"><button type="button" class="btn primary" id="btnRulesPdf">Rules booklet (PDF)</button></div>
+          <p class="hint" id="rulesInfo"></p>
+        </div>
+      </div>
+      </section>
+      <section class="station" id="st4" aria-label="Station 4 Photos">
+        <div class="st-head"><h2>4 · Photos</h2><span class="badge opt" data-badge="4">Optional</span></div>
+        <div class="strip"><p><b>What you do here</b>Build product photos and listing images from your own card faces and box art, right in your browser. No ChatGPT needed.</p><p><b>What you get</b>Downloadable PNG mockups, a numbered set of 5 listing images, and ready-to-copy photo prompts if you prefer AI photos.</p></div>
+        <div class="tabs" role="tablist" aria-label="Photo tools" id="photoTabs"></div>
+        <div id="photoPanels"></div>
+      </section>
+      <section class="station" id="st5" aria-label="Station 5 Sell">
+        <div class="st-head"><h2>5 · Sell</h2><span class="badge opt" data-badge="5">Optional</span></div>
+        <div class="strip"><p><b>What you do here</b>Build your store listing prompt, a printable ZIP pack for buyers and a cost calculator.</p><p><b>What you get</b>A copy-ready listing prompt that uses only your own data, a pack of print files and your own cost numbers.</p></div>
+        <div class="tabs" role="tablist" aria-label="Sell tools" id="sellTabs"></div>
+        <div id="sellPanels"></div>
+      </section>
+      <section class="station" id="st6" aria-label="Station 6 Launch">
+        <div class="st-head"><h2>6 · Launch</h2><span class="badge opt" data-badge="6">Optional</span></div>
+        <div class="strip"><p><b>What you do here</b>Read the preflight check, work through the launch checklist, then download everything in one Launch Pack and save your project.</p><p><b>What you get</b>A ZIP with print files, box templates, rules booklet, photos, prompts, notes and a README that records your preflight, plus a project file you can load later.</p></div>
+        <div class="card"><h3>Preflight check</h3><p class="hint" style="margin:0 0 8px">Green is fine, amber is worth a look, red needs attention. Nothing here blocks your Launch Pack; the results are written into its README.</p><div id="preflight"></div></div>
+        <div class="card"><h3>Launch checklist</h3><div id="checklist"></div></div>
+        <div class="card"><h3>Launch Pack</h3><div class="need" id="needLaunch" hidden></div>
+        <div class="row"><button type="button" class="btn primary" id="btnLaunch">Download Launch Pack (.zip)</button><button type="button" class="btn" id="btnSave">Save project (.json)</button><button type="button" class="btn" id="btnLoad">Load project</button><input type="file" id="fileLoad" accept="application/json,.json" class="sr" aria-label="Load project"></div><div class="prog" id="prog5"><i></i></div><p class="hint" id="progTxt5"></p><p class="hint">Images are not stored in the project file. After loading a project, upload your images again.</p><div id="launchMsg" class="msgs"></div></div>
+      </section>
+      <div class="navbar" id="navbar"><button type="button" class="btn" id="btnBack">&larr; Back</button><span class="navhint" id="navHint" role="status" aria-live="polite"></span><button type="button" class="btn primary" id="btnNext">Next</button></div>
+    </main>
+    <aside class="pkg" id="pkg" aria-label="Your Package"></aside>
+  </div>
+  <div class="foot">Boxed Game Studio &mdash; template and prompt maker. Check every file with a test print before you sell.</div>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" onerror="window.__libFail=(window.__libFail||[]).concat(['jsPDF'])"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" onerror="window.__libFail=(window.__libFail||[]).concat(['JSZip'])"></script>
+<script>
+/* ================= CONFIG ================= */
+var CONFIG={
+  brandName:'',
+  upgradeLinks:{},
+  bonusLinks:[],
+  howToUrl:''
+};
+function linkReady(u){ u=String(u==null?'':u).trim(); return !!u&&u!=='#'&&u.indexOf('example.com')<0; }
+var PAPERS={a4:{id:'a4',label:'A4',w:210,h:297},letter:{id:'letter',label:'US Letter',w:215.9,h:279.4}};
+var BIG_PAPERS={a4:{id:'a3',label:'A3',w:297,h:420},letter:{id:'tabloid',label:'Tabloid',w:279.4,h:431.8}};
+var CARD={w:63,h:88,bw:69,bh:94,bleed:3};
+var WORLD_NAMES={abyssal:'Menagerie Cabaret',noir:'Noir Hoax Bureau',grimoire:'Gilded Grimoire',atomic:'Atomic Pulp Expedition',atlas:'Lost Atlas Explorers',pirate:'Pirate Ledger Co.',lab:'Mad Science Lab',dino:'Dino Dig Camp',orbit:'Orbit Station Zero',saloon:'Dusty Saloon Gazette',bazaar:'Ancient Wonders Bazaar',hotel:'Midnight Grand Hotel',arcade:'Retro Arcade Underground',kitchen:'Food Fraud Kitchen',zoo:'Wonder Zoo After Dark'};
+/* ================= helpers ================= */
+function $(id){ return document.getElementById(id); }
+function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function clamp(v,a,b){ return Math.max(a,Math.min(b,v)); }
+function num(v,d){ var n=parseFloat(v); return isFinite(n)?n:(d||0); }
+function slug(s){ return String(s||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'')||'boxed-game'; }
+function r1(n){ return Math.round(n*10)/10; }
+function r2(n){ return Math.round(n*100)/100; }
+var _tt=null;
+function toast(msg,kind){ var t=$('toast'); t.textContent=msg; t.className='toast show'+(kind==='err'?' err':''); clearTimeout(_tt); _tt=setTimeout(function(){ t.className='toast'; },3600); }
+function copyString(txt,btn){
+  var done=function(){ toast('Copied to clipboard.'); if(btn){ var o=btn.getAttribute('data-l')||btn.textContent; btn.setAttribute('data-l',o); btn.textContent='Copied'; setTimeout(function(){ btn.textContent=o; },1400); } };
+  try{ if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(txt).then(done,function(){ fbCopy(txt); done(); }); return; } }catch(e){}
+  fbCopy(txt); done();
+}
+function fbCopy(txt){ var ta=document.createElement('textarea'); ta.value=txt; ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select(); try{ document.execCommand('copy'); }catch(e){} document.body.removeChild(ta); }
+function downloadBlob(blob,name){ var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; document.body.appendChild(a); a.click(); setTimeout(function(){ try{ URL.revokeObjectURL(a.href); a.remove(); }catch(e){} },4000); }
+function downloadText(txt,name,type){ downloadBlob(new Blob([txt],{type:type||'text/plain'}),name); }
+function yieldToUI(){ return new Promise(function(r){ setTimeout(r,0); }); }
+function loadImageAsync(src){ return new Promise(function(res,rej){ var im=new Image(); im.onload=function(){ res(im); }; im.onerror=rej; im.src=src; }); }
+function canvasToBlob(c,type,q){ return new Promise(function(res){ if(c.toBlob) c.toBlob(function(b){ res(b); },type||'image/jpeg',q||0.9); else { try{ var d=c.toDataURL(type||'image/jpeg',q||0.9).split(','); var bs=atob(d[1]),n=bs.length,u=new Uint8Array(n); while(n--) u[n]=bs.charCodeAt(n); res(new Blob([u],{type:type||'image/jpeg'})); }catch(e){ res(null); } } }); }
+function hasPdf(){ return !!(window.jspdf&&window.jspdf.jsPDF); }
+function hasZip(){ return typeof window.JSZip!=='undefined'; }
+function checkLibs(){
+  var miss=[]; if(!hasPdf()) miss.push('jsPDF (PDF export)'); if(!hasZip()) miss.push('JSZip (ZIP packs)');
+  var w=$('libWarn'); if(miss.length){ w.style.display='block'; w.innerHTML='<b>Some export tools could not load:</b> '+esc(miss.join(' and '))+'. Check your connection and reload the page. Everything else keeps working; only the buttons that need these tools are switched off.'; } else w.style.display='none';
+  if(typeof updateGates==='function'&&$('btnPdfFull')) updateGates();
+}
+/* ================= state ================= */
+var STATE={
+  step:1,
+  setup:{type:'Bluff Poker',title:'',brand:CONFIG.brandName,cards:20,players:'3-6',time:'15-20 min',ages:'8+',paper:'a4',style:''},
+  faces:[], back:null, unique:false, ubacks:[],
+  art:{'art-front':null,'art-back':null,'art-left':null,'art-right':null,'art-top':null,'art-bottom':null,'art-cover':null}, artHint:{},
+  print:{bleed:'trim',gutter:0,crop:true,guides:false},
+  box:{skip:false,stock:'0.30',custom:0.32,extra:0,tol:2,tile:'auto',panels:{front:{src:'auto',fit:'fill'},back:{src:'none',fit:'fill'},left:{src:'none',fit:'fill'},right:{src:'none',fit:'fill'},top:{src:'none',fit:'fill'},bottom:{src:'none',fit:'fill'}}},
+  sell:{product:'printable',tone:'Family',tab:'listing'},
+  cost:{printSheet:0.15,boxCost:1.2,shipping:3,feePct:6.5,packaging:0.4,price:19.9,sheets:0},
+  checklist:{}, vis:{},
+  rules:{text:'',mode:'sheet',skip:false,key:true,exported:false,textTouched:false},
+  mock:{layout:'fan',format:'square',bg:'gradient',bgColor:'#E8D5B5',shadow:true,caption:true,captionText:'',seed:1},
+  lim:{format:'square',preset:0,bg:'#E8D5B5',ink:'#1b2535',accent:'#C97B4A'},
+  made:{mockups:[],listing:[],rules:null},
+  flags:{boxExported:false,copiedListing:false},
+  imported:{source:'',title:'',world:'',topics:[],rules:[],answerKey:null,notes:[]},
+  scenes:sceneDefaults(),
+  launchDone:false, _seq:1
+};
+var CHECKLIST_ITEMS=[['name','Name availability and trademark check done'],['facts','Facts checked against the fact sheet'],['brand','Brand or series line decided'],['testprint','Test print done'],['playtest','Playtest done with 2 to 3 people'],['files','Files exported'],['listing','Listing text reviewed'],['photos','Product photos created']];
+/* ================= image records ================= */
+function makeImg(file){
+  return new Promise(function(res){
+    var url=URL.createObjectURL(file); var im=new Image();
+    im.onload=function(){ res({id:'i'+(STATE._seq++),name:file.name||('image-'+STATE._seq+'.png'),url:url,w:im.naturalWidth||0,h:im.naturalHeight||0,size:file.size||0}); };
+    im.onerror=function(){ try{ URL.revokeObjectURL(url); }catch(e){} res(null); };
+    im.src=url;
+  });
+}
+function firstNumber(name){ var m=/\d+/.exec(String(name||'')); return m?parseInt(m[0],10):null; }
+function sortByNumber(list){
+  return list.map(function(x,i){ return {x:x,i:i,n:firstNumber(x.name)}; }).sort(function(a,b){
+    if(a.n!==null&&b.n!==null) return a.n-b.n||String(a.x.name).localeCompare(String(b.x.name),undefined,{numeric:true});
+    if(a.n!==null) return -1; if(b.n!==null) return 1; return String(a.x.name).localeCompare(String(b.x.name),undefined,{numeric:true})||a.i-b.i;
+  }).map(function(o){ return o.x; });
+}
+function isImageFile(f){ return f&&(/^image\/(png|jpe?g|webp)$/i.test(f.type)||/\.(png|jpe?g|webp)$/i.test(f.name||'')); }
+async function addImages(files,target){
+  var arr=Array.prototype.slice.call(files||[]).filter(isImageFile); var skipped=(files?files.length:0)-arr.length;
+  if(skipped>0) toast(skipped+' file(s) skipped: only PNG, JPG or WEBP images are accepted.','err');
+  var recs=[]; for(var i=0;i<arr.length;i++){ var r=await makeImg(arr[i]); if(r) recs.push(r); }
+  if(!recs.length) return;
+  if(target==='faces'){ STATE.faces=sortByNumber(STATE.faces.concat(recs)); }
+  else if(target==='ubacks'){ STATE.ubacks=sortByNumber(STATE.ubacks.concat(recs)); }
+  else if(target==='back'){ STATE.back=recs[0]; }
+  else if(STATE.art.hasOwnProperty(target)){ STATE.art[target]=recs[0]; if(STATE.artHint) STATE.artHint[target]=''; }
+  refreshAll();
+}
+function removeFrom(list,id){ for(var i=0;i<list.length;i++) if(list[i].id===id){ list.splice(i,1); return; } }
+function moveIn(list,id,dir){ for(var i=0;i<list.length;i++) if(list[i].id===id){ var j=i+dir; if(j<0||j>=list.length) return; var t=list[i]; list[i]=list[j]; list[j]=t; return; } }
+function moveBefore(list,srcId,dstId){ var si=-1,di=-1; list.forEach(function(x,i){ if(x.id===srcId) si=i; if(x.id===dstId) di=i; }); if(si<0||di<0||si===di) return; var it=list.splice(si,1)[0]; di=-1; list.forEach(function(x,i){ if(x.id===dstId) di=i; }); list.splice(di,0,it); }
+/* ================= import ================= */
+function lengthCards(mode,len){ var m={odd:{short:12,full:20,mega:40},trivia:{short:18,full:36,mega:72}}; return (m[mode]&&m[mode][len])||0; }
+var RULES_TEXT={
+  odd:['Players: 3 to 6. Play time: about 15 to 20 minutes.','Each player takes 4 number tokens (1, 2, 3, 4) and one Double Down token.','Take turns as the READER. The Reader holds the card FACING the other players, so everyone can read the four numbered statements, and also reads them aloud.','Everyone else secretly picks the number of the statement they think is false, placing that number token face down. When everyone is ready, reveal together.','Each player who picked the false statement scores 1 point. The Reader scores 1 point for each player who guessed wrong.','Double Down: once per player per game, play your Double Down token with your guess to double the points you score in that round.','Move the Reader clockwise and repeat. First player to 10 points wins, or play through the whole deck and the highest score wins.'],
+  trivia:['Players: 2 players or 2 teams. Play time: about 15 to 20 minutes.','Before the game, sort the deck into three face-down piles by the stars printed on each card: 1 star, 2 stars and 3 stars. Shuffle each pile.','On your turn, choose a pile (1, 2 or 3 stars), then draw its top card. Choose BEFORE the opponent reads the card.','Your opponent reads the question and the three answers A, B and C aloud. You answer with one letter.','Correct: you score as many points as the card has stars.','Wrong answer: you score 0 and your opponent scores 1 point.','Read the correct answer aloud after every question, then switch roles. First side to 15 points wins, or play through the deck and the highest score wins.']
+};
+function splitPipe(s){ return String(s).split('|').map(function(x){ return x.trim(); }); }
+function answerKeyFromPaste(txt,mode){
+  var rows=[]; String(txt||'').split(/\r?\n/).forEach(function(l){
+    var s=l.trim().replace(/^\*\*|\*\*$/g,''); var m;
+    if(mode==='odd'&&(m=/^CARD\s*(\d+)\s*\|(.*)$/i.exec(s))){ var p=splitPipe(m[2]); var f='',w=''; p.forEach(function(x){ var a; if((a=/^FALSE\s*[:=]\s*(\d)/i.exec(x))) f=a[1]; if((a=/^WHY\s*[:=]\s*(.*)$/i.exec(x))) w=a[1]; }); rows.push([m[1],p[0]||'',f,w]); }
+    else if(mode==='trivia'&&(m=/^Q\s*(\d+)\s*\|(.*)$/i.exec(s))){ var q=splitPipe(m[2]); var st='',cl='',ans='',vf='',opt={}; var sm=/(\d)/.exec(q[1]||''); if(sm) st=sm[1]; q.forEach(function(x,i){ var a; if(i>=3&&(a=/^([ABC])\s*[:.)]\s*(.*)$/.exec(x))) opt[a[1]]=a[2]; if((a=/^CORRECT\s*[:=]\s*([ABC])/i.exec(x))) cl=a[1]; if((a=/^VERIFY\s*[:=]\s*(.*)$/i.exec(x))) vf=a[1]; }); ans=opt[cl]||''; rows.push([m[1],q[0]||'',st,cl,ans,vf]); }
+  });
+  if(!rows.length) return null;
+  return {head:mode==='odd'?['Card','Topic','False statement','Why it is false']:['Card','Topic','Stars','Correct letter','Correct answer','Verify'],rows:rows};
+}
+function importProject(o){
+  var res={ok:false,lines:[],applied:{}}; var S=STATE.setup;
+  if(!o||typeof o!=='object'||Array.isArray(o)){ res.lines.push('This file is not a project file. You can keep filling in the game setup by hand.'); return res; }
+  var app=String(o.app||'');
+  var set=function(k,v,label){ if(v!==undefined&&v!==null&&String(v).trim()!==''){ S[k]=v; res.applied[k]=v; res.lines.push(label+': '+v); } };
+  if(app==='game-mode-engines'){
+    var mode=(o.mode==='trivia')?'trivia':'odd'; var wn=WORLD_NAMES[o.worldId]||''; var modeName=mode==='trivia'?'Trivia Duel':'Odd One Out';
+    set('type',modeName,'Game type'); set('title',(wn?wn+': ':'')+modeName,'Title');
+    var cards=lengthCards(mode,o.length); if(cards) set('cards',cards,'Cards');
+    set('players',mode==='trivia'?'2':'3-6','Players'); set('time','15-20 min','Play time');
+    if(o.brand) set('brand',String(o.brand).slice(0,40),'Brand'); if(o.paper==='letter'||o.paper==='a4') set('paper',o.paper,'Paper');
+    if(wn) set('style',wn+' theme','Style');
+    var topics=(Array.isArray(o.picked)?o.picked:[]).map(function(k){ var i=String(k).indexOf('|'); return i>=0?String(k).slice(i+1):String(k).replace(/^c:/,''); });
+    STATE.imported={source:'Game Mode Engines',title:S.title,world:wn,topics:topics,rules:RULES_TEXT[mode].slice(),answerKey:null,notes:[]}; if(typeof importedRulesToText==='function') importedRulesToText();
+    var pt=o.paste&&o.paste[mode]; if(pt){ var ak=answerKeyFromPaste(pt,mode); if(ak){ STATE.imported.answerKey=ak; res.lines.push('Answer key: '+ak.rows.length+' rows'); } }
+    res.lines.push('Rules text: '+modeName); if(topics.length) res.lines.push('Topics: '+topics.length);
+    res.ok=true;
+  } else if(app==='bluff-deck-ai'||app==='bluff-deck-ai-library-deck'||(o.deckInfo&&(o.worldId||o.topic))||(o.entry&&o.entry.deckInfo)){
+    if(o.entry&&typeof o.entry==='object') o=o.entry;
+    var di=o.deckInfo||{}; var st=o.settings||{}; var wn2=WORLD_NAMES[o.worldId]||'';
+    set('type','Bluff Poker','Game type'); set('title',String(st.deckTitle||di.title||o.topic||o.name||'').slice(0,80),'Title');
+    var n=parseInt(o.total,10)||(Array.isArray(o.cardsArr)?o.cardsArr.length:0); if(n) set('cards',n,'Cards');
+    if(o.paper==='letter'||o.paper==='a4') set('paper',o.paper,'Paper'); if(wn2) set('style',wn2+' theme','Style');
+    if(!String(st.deckTitle||di.title||o.topic||o.name||'').trim()) res.lines.push('Title not found in this file: type it in the Deck title field');
+    var tp=[]; if(o.topic) tp.push(String(o.topic)); (Array.isArray(o.exps)?o.exps:[]).forEach(function(e){ if(e&&e.topic) tp.push(String(e.topic)); });
+    if(o.collection&&o.collection.name&&!S.brand) res.lines.push('Collection name found: '+o.collection.name+' (not used as a brand)');
+    STATE.imported={source:'Bluff Poker project',title:S.title,world:wn2,topics:tp,rules:(Array.isArray(di.rules)?di.rules.map(String):[]),answerKey:null,notes:[]}; if(typeof importedRulesToText==='function') importedRulesToText();
+    if(STATE.imported.rules.length) res.lines.push('Rules text: '+STATE.imported.rules.length+' lines'); if(tp.length) res.lines.push('Topics: '+tp.length);
+    res.ok=Object.keys(res.applied).length>0||tp.length>0;
+    if(!res.ok) res.lines.push('The file looks like a Bluff project but contains almost no readable data.');
+  } else if(app==='boxed-game-studio'){
+    loadStudioProject(o); res.ok=true; res.lines.push('Boxed Game Studio project loaded. Upload your images again.');
+  } else {
+    res.lines.push('This file was not recognised as a Bluff Cabaret AI project. Nothing was changed; you can fill in the game setup by hand.');
+  }
+  return res;
+}
+/* ================= project save/load ================= */
+function studioProject(){
+  var names=function(l){ return l.map(function(x){ return x.name; }); };
+  return {app:'boxed-game-studio',version:1,setup:JSON.parse(JSON.stringify(STATE.setup)),print:JSON.parse(JSON.stringify(STATE.print)),box:JSON.parse(JSON.stringify(STATE.box)),sell:JSON.parse(JSON.stringify(STATE.sell)),cost:JSON.parse(JSON.stringify(STATE.cost)),checklist:JSON.parse(JSON.stringify(STATE.checklist)),unique:!!STATE.unique,imported:JSON.parse(JSON.stringify(STATE.imported)),launchDone:!!STATE.launchDone,rules:{text:STATE.rules.text,mode:STATE.rules.mode,skip:!!STATE.rules.skip,key:!!STATE.rules.key},mock:JSON.parse(JSON.stringify(STATE.mock)),lim:JSON.parse(JSON.stringify(STATE.lim)),scenes:JSON.parse(JSON.stringify(STATE.scenes)),madeNames:{mockups:STATE.made.mockups.map(function(m){ return m.name; }),listing:STATE.made.listing.map(function(m){ return m.name; })},files:{faces:names(STATE.faces),back:STATE.back?STATE.back.name:'',backs:names(STATE.ubacks),art:Object.keys(STATE.art).reduce(function(a,k){ a[k]=STATE.art[k]?STATE.art[k].name:((STATE.artHint&&STATE.artHint[k])||''); return a; },{})}};
+}
+/* art slots have their own keys (art-front ...) so they can never collide with the card back; old projects used front/back/... */
+function artKeyOf(k){ k=String(k); return k.indexOf('art-')===0?k:'art-'+k; }
+function migrateArtNames(src){ var out={}; if(src&&typeof src==='object') Object.keys(src).forEach(function(k){ var nk=artKeyOf(k); if(STATE.art.hasOwnProperty(nk)&&typeof src[k]==='string'&&src[k]) out[nk]=src[k].slice(0,120); }); return out; }
+function loadStudioProject(o){
+  var S=STATE; S.artHint=migrateArtNames((o.files&&o.files.art)||o.art);
+  if(o.setup&&typeof o.setup==='object'){ ['type','title','brand','players','time','ages','style'].forEach(function(k){ if(typeof o.setup[k]==='string') S.setup[k]=o.setup[k].slice(0,160); }); if(o.setup.paper==='letter'||o.setup.paper==='a4') S.setup.paper=o.setup.paper; var c=parseInt(o.setup.cards,10); if(c>0&&c<=500) S.setup.cards=c; }
+  if(o.print){ S.print.bleed=o.print.bleed==='bleed'?'bleed':'trim'; S.print.gutter=num(o.print.gutter)>=1?2:0; S.print.crop=o.print.crop!==false; S.print.guides=!!o.print.guides; }
+  if(o.box){ S.box.skip=!!o.box.skip; if(['0.28','0.30','0.35','custom'].indexOf(String(o.box.stock))>=0) S.box.stock=String(o.box.stock); S.box.custom=clamp(num(o.box.custom,0.32),0.1,1); S.box.extra=[0,5,10,15].indexOf(num(o.box.extra))>=0?num(o.box.extra):0; S.box.tol=clamp(num(o.box.tol,2),0,6); S.box.tile=o.box.tile==='tile'?'tile':'auto'; if(o.box.panels){ Object.keys(S.box.panels).forEach(function(k){ var p=o.box.panels[k]; if(p){ S.box.panels[k]={src:String(p.src||'none'),fit:p.fit==='fit'?'fit':'fill'}; } }); } }
+  if(o.sell){ S.sell.product=['printable','boxed','other'].indexOf(o.sell.product)>=0?o.sell.product:'printable'; S.sell.tone=['Family','Game night','Classroom'].indexOf(o.sell.tone)>=0?o.sell.tone:'Family'; }
+  if(o.cost){ Object.keys(S.cost).forEach(function(k){ if(o.cost[k]!==undefined) S.cost[k]=Math.max(0,num(o.cost[k],S.cost[k])); }); }
+  if(o.checklist&&typeof o.checklist==='object'){ S.checklist={}; CHECKLIST_ITEMS.forEach(function(it){ if(o.checklist[it[0]]) S.checklist[it[0]]=true; }); }
+  S.unique=!!o.unique; if(o.imported&&typeof o.imported==='object') S.imported={source:String(o.imported.source||''),title:String(o.imported.title||''),world:String(o.imported.world||''),topics:Array.isArray(o.imported.topics)?o.imported.topics.map(String):[],rules:Array.isArray(o.imported.rules)?o.imported.rules.map(String):[],answerKey:(o.imported.answerKey&&Array.isArray(o.imported.answerKey.rows))?o.imported.answerKey:null,notes:[]};
+  S.launchDone=!!o.launchDone;
+  S.scenes=sceneDefaults(); if(o.scenes&&typeof o.scenes==='object'){ var sc=o.scenes; S.scenes.seed=Math.max(1,parseInt(sc.seed,10)||1); if(Array.isArray(sc.photo)) S.scenes.photo.forEach(function(p,i){ var q=sc.photo[i]; if(q&&typeof q==='object'){ p.mode=SCENE_MODES.some(function(m){ return m[0]===q.mode; })?q.mode:'auto'; p.own=cleanIdea(q.own,300); } }); if(sc.box&&typeof sc.box==='object') BOX_KEYS.forEach(function(k){ var q=sc.box[k]; if(q&&typeof q==='object'){ S.scenes.box[k].layout=LAYOUT_MODES.some(function(m){ return m[0]===q.layout; })?q.layout:'auto'; S.scenes.box[k].idea=cleanIdea(q.idea,200); } }); }
+  if(o.rules&&typeof o.rules==='object'){ S.rules.text=String(o.rules.text||'').slice(0,20000); S.rules.mode=o.rules.mode==='booklet'?'booklet':'sheet'; S.rules.skip=!!o.rules.skip; S.rules.key=o.rules.key!==false; S.rules.textTouched=true; }
+  if(o.mock&&typeof o.mock==='object'){ var M=S.mock; if(['fan','flat','pile','hero','boxhero','boxcards'].indexOf(o.mock.layout)>=0) M.layout=o.mock.layout; if(['square','landscape','portrait','pin'].indexOf(o.mock.format)>=0) M.format=o.mock.format; if(['solid','gradient','paper'].indexOf(o.mock.bg)>=0) M.bg=o.mock.bg; if(/^#[0-9a-f]{6}$/i.test(o.mock.bgColor||'')) M.bgColor=o.mock.bgColor; M.shadow=o.mock.shadow!==false; M.caption=o.mock.caption!==false; M.captionText=String(o.mock.captionText||'').slice(0,80); M.seed=Math.max(1,parseInt(o.mock.seed,10)||1); }
+  if(o.lim&&typeof o.lim==='object'){ var L=S.lim; if(['square','landscape','portrait','pin'].indexOf(o.lim.format)>=0) L.format=o.lim.format; L.preset=clamp(parseInt(o.lim.preset,10)||0,0,3); ['bg','ink','accent'].forEach(function(k){ if(/^#[0-9a-f]{6}$/i.test(o.lim[k]||'')) L[k]=o.lim[k]; }); }
+}
+
+/* ================= print sheets ================= */
+var DPI=250;
+function deckN(){ return STATE.faces.length||Math.max(1,parseInt(STATE.setup.cards,10)||1); }
+function sheetCount(){ return Math.ceil(deckN()/9); }
+function sheetGeom(){
+  var P=PAPERS[STATE.setup.paper]||PAPERS.a4; var g=STATE.print.gutter; var gw=3*CARD.w+2*g, gh=3*CARD.h+2*g; var ox=(P.w-gw)/2, oy=(P.h-gh)/2; var slots=[];
+  for(var r=0;r<3;r++) for(var c=0;c<3;c++) slots.push({r:r,c:c,k:r*3+c,x:ox+c*(CARD.w+g),y:oy+r*(CARD.h+g)});
+  return {P:P,g:g,ox:ox,oy:oy,gw:gw,gh:gh,slots:slots,bleedVis:(STATE.print.bleed==='bleed')?Math.min(CARD.bleed,g/2):0};
+}
+/* index of the face whose back is printed in slot (r,c) of a mirrored (long-edge flip) back sheet */
+function mirroredFaceIndex(s,r,c){ return s*9+r*3+(2-c); }
+function backFor(f){
+  if(STATE.unique&&STATE.ubacks.length){ return STATE.ubacks[f]||STATE.ubacks[STATE.ubacks.length-1]; }
+  return STATE.back;
+}
+function markPositions(G){
+  var xs=[],ys=[]; var add=function(a,v){ v=Math.round(v*100)/100; if(a.indexOf(v)<0) a.push(v); };
+  for(var c=0;c<3;c++){ add(xs,G.ox+c*(CARD.w+G.g)); add(xs,G.ox+c*(CARD.w+G.g)+CARD.w); }
+  for(var r=0;r<3;r++){ add(ys,G.oy+r*(CARD.h+G.g)); add(ys,G.oy+r*(CARD.h+G.g)+CARD.h); }
+  return {xs:xs,ys:ys};
+}
+function renderSheetPreview(){
+  var box=$('sheetPreview'); if(!box) return; var G=sheetGeom(); var N=deckN(); var S=sheetCount();
+  var mk=function(kind){
+    var h='<div class="sheetpv" style="aspect-ratio:'+G.P.w+'/'+G.P.h+'">';
+    G.slots.forEach(function(sl){
+      var f=kind==='face'?sl.k:mirroredFaceIndex(0,sl.r,sl.c); var rec=null;
+      if(f<N) rec=(kind==='face')?STATE.faces[f]:backFor(f);
+      var st='left:'+(sl.x/G.P.w*100)+'%;top:'+(sl.y/G.P.h*100)+'%;width:'+(CARD.w/G.P.w*100)+'%;height:'+(CARD.h/G.P.h*100)+'%';
+      h+='<div class="c" style="'+st+'">'+(rec?'<img alt="" src="'+esc(rec.url)+'">':'')+'<i>'+(f<N?(f+1):'-')+'</i></div>';
+    });
+    return h+'</div>';
+  };
+  box.innerHTML='<figure>'+mk('face')+'<figcaption>Sheet 1 of '+S+' (faces): card numbers 1 to '+Math.min(9,N)+'</figcaption></figure><figure>'+mk('back')+'<figcaption>Back sheet 1 (mirrored for long-edge flip): each back sits behind its face. Number = the face it belongs to.</figcaption></figure>';
+  $('sheetCount').textContent=N+' cards = '+S+' sheet'+(S===1?'':'s')+' (faces) + '+S+' sheet'+(S===1?'':'s')+' (backs) = '+(2*S)+' pages in the full print file';
+  var e=G.bleedVis; $('layoutInfo').textContent='Grid '+r1(G.gw)+' x '+r1(G.gh)+' mm on '+G.P.label+' ('+G.P.w+' x '+G.P.h+' mm), margins '+r1(G.ox)+' mm left/right and '+r1(G.oy)+' mm top/bottom.'+(STATE.print.bleed==='bleed'?' With bleed images, '+r1(e)+' mm of bleed per side stays visible'+(G.g===0?' (0 mm: use a 2 mm gutter to keep some bleed)':'')+'.':'');
+}
+var PRINT_STEPS=[
+  'Print the alignment test page first, on scrap paper, single-sided at 100% (Actual size, not Fit to page).',
+  'Print it again double-sided with the flip on the LONG edge, hold it up to the light and check that the front and back frames line up.',
+  'Print the full print file double-sided, flip on the long edge. Pages alternate: a sheet of faces, then its sheet of backs.',
+  'If the backs sit slightly off, adjust your printer\'s duplex alignment setting or print the faces-only and backs-only files separately and test again on scrap paper.',
+  'Cut along the crop marks: trim the horizontal strips first, then cut each strip into cards. Always check the result against a test print before you print the whole deck.'
+];
+function renderPrintSteps(){ var ol=$('printSteps'); if(ol) ol.innerHTML=PRINT_STEPS.map(function(s){ return '<li>'+esc(s)+'</li>'; }).join(''); }
+function setProg(id,frac,txt){ var p=$(id); if(!p) return; p.classList.toggle('on',frac!==null); if(frac!==null) p.firstElementChild.style.width=Math.round(clamp(frac,0,1)*100)+'%'; var t=$('progTxt'+id.slice(4)); if(t&&txt!==undefined) t.textContent=txt; }
+async function prepImage(rec,tw,th,cache,q){
+  var key=rec.id+'|'+tw+'x'+th; if(cache[key]) return cache[key];
+  var im=await loadImageAsync(rec.url); var iw=im.naturalWidth||1,ih=im.naturalHeight||1; var ta=tw/th,sa=iw/ih; var sx=0,sy=0,sw=iw,sh=ih;
+  if(sa>ta){ sw=ih*ta; sx=(iw-sw)/2; } else { sh=iw/ta; sy=(ih-sh)/2; }
+  var pw=Math.max(1,Math.round(tw/25.4*DPI)), ph=Math.max(1,Math.round(th/25.4*DPI)); pw=Math.min(pw,iw); ph=Math.min(ph,Math.round(pw/ta)||1);
+  var c=document.createElement('canvas'); c.width=pw; c.height=ph; var ctx=c.getContext('2d'); ctx.fillStyle='#fff'; ctx.fillRect(0,0,pw,ph); ctx.imageSmoothingQuality='high'; ctx.drawImage(im,sx,sy,sw,sh,0,0,pw,ph);
+  var out={data:c.toDataURL('image/jpeg',q||0.9),alias:key}; c.width=0; c.height=0; cache[key]=out; return out;
+}
+function pdfClipRect(doc,x,y,w,h){ doc.moveTo(x,y); doc.lineTo(x+w,y); doc.lineTo(x+w,y+h); doc.lineTo(x,y+h); doc.close(); doc.clip(); doc.discardPath(); }
+function drawMarks(doc,G){
+  var m=markPositions(G); doc.setDrawColor(0,0,0); doc.setLineWidth(0.2); doc.setLineDashPattern([],0);
+  var off=1.5,lenY=clamp(G.oy-off-1.5,1.5,4),lenX=clamp(G.ox-off-1.5,1.5,4);
+  m.xs.forEach(function(x){ doc.line(x,G.oy-off-lenY,x,G.oy-off); doc.line(x,G.oy+G.gh+off,x,G.oy+G.gh+off+lenY); });
+  m.ys.forEach(function(y){ doc.line(G.ox-off-lenX,y,G.ox-off,y); doc.line(G.ox+G.gw+off,y,G.ox+G.gw+off+lenX,y); });
+}
+function drawGuides(doc,G){
+  if(G.g<=0) return; doc.setDrawColor(150,150,150); doc.setLineWidth(0.1); doc.setLineDashPattern([1.2,1.2],0);
+  for(var c=0;c<2;c++){ var x=G.ox+(c+1)*CARD.w+c*G.g+G.g/2; doc.line(x,G.oy,x,G.oy+G.gh); }
+  for(var r=0;r<2;r++){ var y=G.oy+(r+1)*CARD.h+r*G.g+G.g/2; doc.line(G.ox,y,G.ox+G.gw,y); }
+  doc.setLineDashPattern([],0);
+}
+async function buildPrintPdf(kind,progId){
+  if(!hasPdf()) throw new Error('jsPDF is not loaded.');
+  var N=STATE.faces.length; if(!N) throw new Error('Add card faces first.'); if(!backFor(0)) throw new Error('Add a card back first.');
+  var G=sheetGeom(); var S=Math.ceil(N/9); var bleed=STATE.print.bleed==='bleed'; var tw=bleed?CARD.bw:CARD.w, th=bleed?CARD.bh:CARD.h;
+  var doc=new window.jspdf.jsPDF({unit:'mm',format:[G.P.w,G.P.h],orientation:'portrait',compress:true});
+  try{ doc.setProperties({title:STATE.setup.title||'Card game print file'}); }catch(e){}
+  var cache={}; var pages=[]; for(var s=0;s<S;s++){ if(kind!=='backs') pages.push({t:'face',s:s}); if(kind!=='faces') pages.push({t:'back',s:s}); }
+  var total=pages.length; var first=true;
+  for(var pi=0;pi<pages.length;pi++){
+    var pg=pages[pi]; if(!first) doc.addPage([G.P.w,G.P.h],'portrait'); first=false;
+    if(STATE.print.guides) drawGuides(doc,G);
+    for(var k=0;k<G.slots.length;k++){
+      var sl=G.slots[k]; var f=pg.t==='face'?pg.s*9+sl.k:mirroredFaceIndex(pg.s,sl.r,sl.c); if(f>=N) continue;
+      var rec=pg.t==='face'?STATE.faces[f]:backFor(f); if(!rec) continue;
+      var pre=await prepImage(rec,tw,th,cache,0.9);
+      if(bleed){ doc.saveGraphicsState(); var e=G.bleedVis; pdfClipRect(doc,sl.x-e,sl.y-e,CARD.w+2*e,CARD.h+2*e); doc.addImage(pre.data,'JPEG',sl.x-CARD.bleed,sl.y-CARD.bleed,CARD.bw,CARD.bh,pre.alias); doc.restoreGraphicsState(); }
+      else doc.addImage(pre.data,'JPEG',sl.x,sl.y,CARD.w,CARD.h,pre.alias);
+    }
+    if(STATE.print.crop) drawMarks(doc,G);
+    if(G.oy>=10){ doc.setFontSize(6); doc.setTextColor(120,120,120); doc.text((pg.t==='face'?'Faces':'Backs')+' - sheet '+(pg.s+1)+' of '+S,G.P.w/2,G.P.h-2.5,{align:'center'}); }
+    if(progId) setProg(progId,(pi+1)/total,'Building page '+(pi+1)+' of '+total+'...');
+    await yieldToUI();
+  }
+  return {doc:doc,pages:total,page:{w:G.P.w,h:G.P.h}};
+}
+function wrapText(doc,txt,w){ return doc.splitTextToSize(txt,w); }
+function alignmentPage(doc,G){
+  doc.setDrawColor(0,0,0); doc.setLineWidth(0.3);
+  G.slots.forEach(function(sl){ doc.rect(sl.x,sl.y,CARD.w,CARD.h); doc.setFontSize(30); doc.setTextColor(190,190,190); doc.text(String(sl.k+1),sl.x+CARD.w/2,sl.y+CARD.h/2+4,{align:'center'}); doc.setFontSize(8); doc.setTextColor(90,90,90); doc.text('back sheet shows: '+(sl.r*3+(2-sl.c)+1),sl.x+CARD.w/2,sl.y+CARD.h-4,{align:'center'}); });
+  doc.setFillColor(0,0,0); [[G.ox-6,G.oy-6],[G.ox+G.gw+1,G.oy-6],[G.ox-6,G.oy+G.gh+1],[G.ox+G.gw+1,G.oy+G.gh+1]].forEach(function(p){ doc.rect(p[0],p[1],5,5,'F'); });
+  drawMarks(doc,G);
+  doc.setTextColor(0,0,0); doc.setFontSize(11); doc.text('ALIGNMENT TEST - '+G.P.label+' - flip on the LONG edge',G.P.w/2,G.oy-9,{align:'center'});
+  doc.setFontSize(8); doc.text('^ TOP EDGE: feed this edge into the printer first',G.P.w/2,G.oy-4.5,{align:'center'});
+  doc.text('LEFT',G.ox-8,G.P.h/2,{angle:90,align:'center'}); doc.text('RIGHT',G.ox+G.gw+8,G.P.h/2,{angle:270,align:'center'});
+  doc.setFontSize(8); doc.text('Print at 100% (Actual size). The squares in the corners should sit the same distance from every paper edge. Use scrap paper.',G.P.w/2,G.oy+G.gh+11,{align:'center'});
+}
+function instructionsPage(doc,G){
+  doc.setFontSize(16); doc.setTextColor(0,0,0); doc.text('How to print and cut',15,22);
+  doc.setFontSize(11); var y=34; PRINT_STEPS.forEach(function(s,i){ var lines=wrapText(doc,(i+1)+'. '+s,G.P.w-30); doc.text(lines,15,y); y+=lines.length*5.2+4; });
+  doc.setFontSize(9); doc.setTextColor(90,90,90); var note=wrapText(doc,'Always check size, alignment and cut lines with a test print before you print the real deck. Results depend on your printer and paper.',G.P.w-30); doc.text(note,15,y+6);
+}
+function newDoc(G){ return new window.jspdf.jsPDF({unit:'mm',format:[G.P.w,G.P.h],orientation:'portrait',compress:true}); }
+function buildAlignmentPdf(which){
+  var G=sheetGeom(); var doc=newDoc(G);
+  if(which==='test'){ alignmentPage(doc,G); return doc; }
+  if(which==='instructions'){ instructionsPage(doc,G); return doc; }
+  alignmentPage(doc,G); doc.addPage([G.P.w,G.P.h],'portrait'); instructionsPage(doc,G); return doc;
+}
+function pdfBlob(doc){ return doc.output('blob'); }
+async function exportPdf(kind){
+  try{
+    var name=slug(STATE.setup.title);
+    if(kind==='test'){ var d=buildAlignmentPdf(); downloadBlob(pdfBlob(d),name+'-alignment-test.pdf'); toast('Alignment test downloaded.'); return; }
+    var r=await buildPrintPdf(kind,'prog2'); downloadBlob(pdfBlob(r.doc),name+'-print-'+kind+'.pdf'); setProg('prog2',null,r.pages+' pages exported.'); toast('PDF downloaded: '+r.pages+' pages.'); STATE.exported=true; refreshPkg();
+  }catch(e){ setProg('prog2',null,''); toast(e.message||'Could not build the PDF.','err'); }
+}
+
+/* ================= box ================= */
+function stockMm(){ return STATE.box.stock==='custom'?clamp(num(STATE.box.custom,0.32),0.1,1):num(STATE.box.stock,0.3); }
+function boxCards(){ var n=parseInt(STATE.box.cards,10); return n>0?n:deckN(); }
+function boxDims(){
+  var N=boxCards(), stock=stockMm(), extra=num(STATE.box.extra,0), tol=clamp(num(STATE.box.tol,2),0,6);
+  var stack=N*stock; return {N:N,stock:stock,stack:stack,extra:extra,tol:tol,W:CARD.w+tol,H:CARD.h+tol,D:stack+extra+tol};
+}
+function dieline(d){
+  var W=d.W,H=d.H,D=d.D,T=15,tab=14; var y0=T+D, xa=W+D, xb=2*W+D, xe=2*W+2*D, xt=xe+tab; var df=Math.max(1.5,Math.min(D*0.9,14));
+  var prims=[]; var cut=function(p){ prims.push({t:'cut',pts:p}); }, fold=function(p){ prims.push({t:'fold',pts:p}); };
+  cut([[0,y0],[0,y0+H]]);
+  var r=Math.min(9,W/4), cx=W/2; var notch=[[0,y0],[cx-r,y0]]; for(var i=0;i<=16;i++){ var a=Math.PI*i/16; notch.push([cx-r*Math.cos(a),y0+r*Math.sin(a)]); } notch.push([cx+r,y0],[W,y0]); cut(notch);
+  cut([[0,y0+H],[W,y0+H]]);
+  [W,xa,xb,xe].forEach(function(x){ fold([[x,y0],[x,y0+H]]); });
+  fold([[W,y0],[xe,y0]]); fold([[W,y0+H],[xe,y0+H]]);
+  var dust=function(xl,xr,yb,dir){ cut([[xl,yb],[xl+1,yb+dir*Math.max(0.5,df-4)],[xl+4,yb+dir*df],[xr-4,yb+dir*df],[xr-1,yb+dir*Math.max(0.5,df-4)],[xr,yb]]); };
+  dust(W,xa,y0,-1); dust(xb,xe,y0,-1); dust(W,xa,y0+H,1); dust(xb,xe,y0+H,1);
+  cut([[xa,y0],[xa,y0-D]]); cut([[xb,y0],[xb,y0-D]]); cut([[xa,y0-D],[xa+1,y0-D]]); cut([[xb-1,y0-D],[xb,y0-D]]); fold([[xa+1,y0-D],[xb-1,y0-D]]);
+  cut([[xa+1,y0-D],[xa+1,y0-D-T+4],[xa+5,y0-D-T],[xb-5,y0-D-T],[xb-1,y0-D-T+4],[xb-1,y0-D]]);
+  cut([[xa,y0+H],[xa,y0+H+D]]); cut([[xb,y0+H],[xb,y0+H+D]]); cut([[xa,y0+H+D],[xa+1,y0+H+D]]); cut([[xb-1,y0+H+D],[xb,y0+H+D]]); fold([[xa+1,y0+H+D],[xb-1,y0+H+D]]);
+  cut([[xa+1,y0+H+D],[xa+1,y0+H+D+T-4],[xa+5,y0+H+D+T],[xb-5,y0+H+D+T],[xb-1,y0+H+D+T-4],[xb-1,y0+H+D]]);
+  cut([[xe,y0+2],[xt-5,y0+6],[xt,y0+10],[xt,y0+H-10],[xt-5,y0+H-6],[xe,y0+H-2]]);
+  var panels={front:{x:0,y:y0,w:W,h:H},right:{x:W,y:y0,w:D,h:H},back:{x:xa,y:y0,w:W,h:H},left:{x:xb,y:y0,w:D,h:H},top:{x:xa,y:y0-D,w:W,h:D},bottom:{x:xa,y:y0+H,w:W,h:D}};
+  return {w:xt,h:2*(T+D)+H,y0:y0,prims:prims,panels:panels,T:T,tab:tab,glue:{x:xe,y:y0,w:tab,h:H}};
+}
+var PANEL_LABELS={front:'FRONT',right:'RIGHT SIDE',back:'BACK',left:'LEFT SIDE',top:'TOP (lid)',bottom:'BOTTOM'};
+var _tmpDoc=null;
+function textWmm(text,fsMm){ var pt=fsMm/0.3528; try{ if(hasPdf()){ if(!_tmpDoc) _tmpDoc=new window.jspdf.jsPDF({unit:'mm',format:[100,100]}); _tmpDoc.setFontSize(pt); return _tmpDoc.getTextWidth(text); } }catch(e){} return text.length*fsMm*0.66; }
+/* Label layout shared by the SVG preview and the PDF. 7 pt text (2.47 mm), centered in its panel, rotated on narrow panels, never touching fold or cut lines. Panels too small get a boxed label outside the dieline with a leader line. */
+var LABEL_FS=2.47;
+function labelLayout(dl){
+  var items=[]; var M=1.2; var fs=LABEL_FS; var th=fs*0.75;
+  var defs=[['front',PANEL_LABELS.front],['right',PANEL_LABELS.right],['back',PANEL_LABELS.back],['left',PANEL_LABELS.left],['top',PANEL_LABELS.top],['bottom',PANEL_LABELS.bottom]];
+  var outY=2;
+  defs.forEach(function(d){
+    var p=dl.panels[d[0]]; var tw=textWmm(d[1],fs); var narrow=p.w<15&&p.h>p.w*2; var rot=narrow?90:0;
+    var needW=(rot?th:tw)+2*M, needH=(rot?tw:th)+2*M;
+    if(p.w>=needW&&p.h>=needH){ items.push({text:d[1],cx:p.x+p.w/2,cy:p.y+p.h/2,rot:rot,fs:fs,tw:tw,th:th,inside:true}); }
+    else { var bw=tw+3,bh=th+2.4; items.push({text:d[1],cx:2+bw/2,cy:outY+bh/2,rot:0,fs:fs,tw:tw,th:th,inside:false,box:{x:2,y:outY,w:bw,h:bh},leader:[2+bw,outY+bh/2,p.x+p.w/2,p.y+p.h/2]}); outY+=bh+1.6; }
+  });
+  var g=dl.glue; var gt='GLUE TAB'; var gtw=textWmm(gt,fs); if(g.w>=th+2*M&&g.h>=gtw+2*M) items.push({text:gt,cx:g.x+g.w/2-1,cy:g.y+g.h/2,rot:90,fs:fs,tw:gtw,th:th,inside:true});
+  return items;
+}
+function labelBox(it){ if(it.inside){ var w=it.rot?it.th:it.tw, h=it.rot?it.tw:it.th; return {x:it.cx-w/2,y:it.cy-h/2,w:w,h:h}; } return it.box; }
+function fitDie(dl){
+  var P=PAPERS[STATE.setup.paper]||PAPERS.a4, B=BIG_PAPERS[STATE.setup.paper]||BIG_PAPERS.a4, M=8, OV=10;
+  var fits=function(w,h){ return dl.w+2*M<=w&&dl.h+2*M<=h; };
+  var cands=[[P,false],[P,true],[B,false],[B,true]];
+  if(STATE.box.tile!=='tile'){ for(var i=0;i<cands.length;i++){ var c=cands[i], pw=c[1]?c[0].h:c[0].w, ph=c[1]?c[0].w:c[0].h; if(fits(pw,ph)) return {mode:'fit',paper:c[0],landscape:c[1],pw:pw,ph:ph,M:M,tiles:[{ox:0}],label:c[0].label+(c[1]?' landscape':' portrait')}; } }
+  var base=(STATE.box.tile==='tile')?P:B; var best=null;
+  [false,true].forEach(function(ls){ var pw=ls?base.h:base.w, ph=ls?base.w:base.h; if(dl.h+2*M>ph) return; var use=pw-2*M; var n=Math.max(2,Math.ceil((dl.w-OV)/(use-OV))); if(!best||n<best.n||(n===best.n&&pw>best.pw)) best={n:n,ls:ls,pw:pw,ph:ph,use:use}; });
+  if(!best){ var pw2=base.h,ph2=base.w; best={n:Math.max(2,Math.ceil((dl.w-OV)/(pw2-2*M-OV))),ls:true,pw:pw2,ph:ph2,use:pw2-2*M}; }
+  var tiles=[]; for(var t=0;t<best.n;t++) tiles.push({ox:t*(best.use-OV)});
+  return {mode:'tile',paper:base,landscape:best.ls,pw:best.pw,ph:best.ph,M:M,use:best.use,OV:OV,tiles:tiles,label:base.label+(best.ls?' landscape':' portrait')+', '+best.n+' tiled pages'};
+}
+function resolvePanelSrc(k){
+  var s=(STATE.box.panels[k]||{}).src||'none';
+  if(s==='auto'){ if(STATE.art['art-'+k]) return 'art'; if(k==='front'&&backFor(0)) return 'back'; return 'none'; }
+  return s;
+}
+function panelRec(k){
+  var s=resolvePanelSrc(k); if(s==='none') return null;
+  if(s==='art') return STATE.art['art-'+k]||null; if(s==='back') return backFor(0)||null;
+  var m=/^face:(\d+)$/.exec(s); if(m) return STATE.faces[parseInt(m[1],10)]||null; return null;
+}
+var _artCache={};
+async function panelArtData(k,p){
+  var rec=panelRec(k); if(!rec) return null; var fit=(STATE.box.panels[k].fit==='fit')?'fit':'fill';
+  var key=[k,rec.id,fit,r1(p.w),r1(p.h)].join('|'); if(_artCache[key]) return _artCache[key];
+  var im=await loadImageAsync(rec.url); var pw=Math.max(8,Math.round(p.w/25.4*DPI)), ph=Math.max(8,Math.round(p.h/25.4*DPI)); var sc0=Math.min(1,2200/Math.max(pw,ph)); pw=Math.max(8,Math.round(pw*sc0)); ph=Math.max(8,Math.round(ph*sc0));
+  var c=document.createElement('canvas'); c.width=pw; c.height=ph; var ctx=c.getContext('2d'); ctx.fillStyle='#E8D5B5'; ctx.fillRect(0,0,pw,ph);
+  var safe=3/p.w*pw, safeY=3/p.h*ph; var aw=fit==='fit'?Math.max(4,pw-2*safe):pw, ah=fit==='fit'?Math.max(4,ph-2*safeY):ph; var ox=fit==='fit'?safe:0, oy=fit==='fit'?safeY:0;
+  var iw=im.naturalWidth||1, ih=im.naturalHeight||1; var sc=fit==='fit'?Math.min(aw/iw,ah/ih):Math.max(aw/iw,ah/ih); var dw=iw*sc, dh=ih*sc;
+  ctx.save(); ctx.beginPath(); ctx.rect(0,0,pw,ph); ctx.clip();
+  if(k==='top'){ ctx.translate(pw,ph); ctx.rotate(Math.PI); }
+  ctx.drawImage(im,ox+(aw-dw)/2,oy+(ah-dh)/2,dw,dh); ctx.restore();
+  var out=c.toDataURL('image/jpeg',0.9); c.width=0; c.height=0; _artCache[key]=out; return out;
+}
+async function dielineSvg(dl,withArt){
+  var pad=6; var W=dl.w+2*pad, H=dl.h+2*pad; var s='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '+r1(W)+' '+r1(H)+'" role="img" aria-label="Box dieline preview">';
+  s+='<rect x="0" y="0" width="'+r1(W)+'" height="'+r1(H)+'" fill="#fff"/>';
+  var keys=Object.keys(dl.panels);
+  for(var i=0;i<keys.length;i++){ var k=keys[i], p=dl.panels[k]; s+='<rect x="'+r2(p.x+pad)+'" y="'+r2(p.y+pad)+'" width="'+r2(p.w)+'" height="'+r2(p.h)+'" fill="#f3e9d6"/>';
+    if(withArt){ var data=await panelArtData(k,p); if(data) s+='<image x="'+r2(p.x+pad)+'" y="'+r2(p.y+pad)+'" width="'+r2(p.w)+'" height="'+r2(p.h)+'" preserveAspectRatio="none" href="'+data+'"/>'; } }
+  s+='<rect x="'+r2(dl.glue.x+pad)+'" y="'+r2(dl.glue.y+pad)+'" width="'+r2(dl.glue.w)+'" height="'+r2(dl.glue.h)+'" fill="#ece3d0" opacity=".6"/>';
+  dl.prims.forEach(function(pr){ var d=pr.pts.map(function(q,j){ return (j?'L':'M')+r2(q[0]+pad)+' '+r2(q[1]+pad); }).join(''); s+='<path d="'+d+'" fill="none" stroke="'+(pr.t==='cut'?'#c0392b':'#2d6cdf')+'" stroke-width="'+(pr.t==='cut'?0.45:0.3)+'"'+(pr.t==='fold'?' stroke-dasharray="2 1.5"':'')+'/>'; });
+  labelLayout(dl).forEach(function(it){
+    if(!it.inside){ var bx=it.box; s+='<line x1="'+r2(it.leader[0]+pad)+'" y1="'+r2(it.leader[1]+pad)+'" x2="'+r2(it.leader[2]+pad)+'" y2="'+r2(it.leader[3]+pad)+'" stroke="#6b5a3c" stroke-width=".2"/><rect x="'+r2(bx.x+pad)+'" y="'+r2(bx.y+pad)+'" width="'+r2(bx.w)+'" height="'+r2(bx.h)+'" fill="#fff" stroke="#6b5a3c" stroke-width=".25"/>'; }
+    var tx=it.cx+pad, ty=it.cy+pad; s+='<text x="'+r2(tx)+'" y="'+r2(ty)+'" font-size="'+r2(it.fs)+'" font-family="Helvetica,Arial,sans-serif" fill="#4a3b22" text-anchor="middle" dominant-baseline="central"'+(it.rot?' transform="rotate(-90 '+r2(tx)+' '+r2(ty)+')"':'')+'>'+it.text+'</text>';
+  });
+  if(withArt){ keys.forEach(function(k){ var p=dl.panels[k]; if(p.w>8&&p.h>8) s+='<rect x="'+r2(p.x+pad+3)+'" y="'+r2(p.y+pad+3)+'" width="'+r2(p.w-6)+'" height="'+r2(p.h-6)+'" fill="none" stroke="#17a398" stroke-width=".2" stroke-dasharray="1 1"/>'; }); }
+  return s+'</svg>';
+}
+async function renderBoxPreview(){
+  var el=$('diePreview'); if(!el) return; var d=boxDims(); var dl=dieline(d); var fit=fitDie(dl);
+  el.innerHTML=await dielineSvg(dl,true);
+  $('dieInfo').textContent='Dieline '+r1(dl.w)+' x '+r1(dl.h)+' mm at 1:1 scale. Prints on '+fit.label+'. Solid red = cut, dashed blue = fold, dotted teal (preview only) = 3 mm safe area.';
+}
+function renderBoxNums(){
+  var d=boxDims(); var el=$('boxNums'); if(!el) return;
+  el.innerHTML=[['Inner width',r1(d.W)+' mm'],['Inner height',r1(d.H)+' mm'],['Inner depth',r1(d.D)+' mm'],['Card stack',r1(d.stack)+' mm ('+d.N+' x '+d.stock+')']].map(function(x){ return '<div><b>'+x[1]+'</b><span>'+x[0]+'</span></div>'; }).join('');
+}
+function renderPanelArt(){
+  var box=$('panelArt'); if(!box) return; var N=STATE.faces.length; var dls=dieline(boxDims()).panels;
+  var opts=function(k){ var cur=STATE.box.panels[k].src; var o=[['none','No artwork'],['auto','Automatic']]; if(STATE.art['art-'+k]) o.push(['art','Uploaded '+PANEL_LABELS[k].toLowerCase()+' art']); if(backFor(0)) o.push(['back','Card back']); for(var i=0;i<N;i++) o.push(['face:'+i,'Card face '+(i+1)]);
+    return o.map(function(x){ return '<option value="'+x[0]+'"'+(x[0]===cur?' selected':'')+'>'+esc(x[1])+'</option>'; }).join(''); };
+  box.innerHTML=Object.keys(PANEL_LABELS).map(function(k){ var p=STATE.box.panels[k]; var d=dls[k];
+    return '<div class="fld"><label class="lbl" for="pa-'+k+'">'+PANEL_LABELS[k]+' ('+r1(d.w)+' x '+r1(d.h)+' mm)</label><select id="pa-'+k+'" data-panel="'+k+'">'+opts(k)+'</select><select id="pf-'+k+'" data-panelfit="'+k+'" style="margin-top:6px" aria-label="'+esc(PANEL_LABELS[k])+' fit"><option value="fill"'+(p.fit==='fill'?' selected':'')+'>Fill the panel</option><option value="fit"'+(p.fit==='fit'?' selected':'')+'>Fit inside the safe area</option></select></div>'; }).join('');
+  box.querySelectorAll('select[data-panel]').forEach(function(s){ s.addEventListener('change',function(){ STATE.box.panels[s.getAttribute('data-panel')].src=s.value; renderBoxPreview(); refreshPkg(); }); });
+  box.querySelectorAll('select[data-panelfit]').forEach(function(s){ s.addEventListener('change',function(){ STATE.box.panels[s.getAttribute('data-panelfit')].fit=s.value; renderBoxPreview(); }); });
+}
+function drawDieOnPage(doc,dl,tx,ty,arts){
+  var keys=Object.keys(dl.panels);
+  if(arts) keys.forEach(function(k){ var a=arts[k]; if(a){ var p=dl.panels[k]; doc.addImage(a,'JPEG',tx+p.x,ty+p.y,p.w,p.h,'art-'+k); } });
+  doc.setLineDashPattern([],0);
+  dl.prims.forEach(function(pr){
+    if(pr.t==='cut'){ doc.setDrawColor(192,57,43); doc.setLineWidth(0.35); doc.setLineDashPattern([],0); } else { doc.setDrawColor(45,108,223); doc.setLineWidth(0.25); doc.setLineDashPattern([2,1.5],0); }
+    for(var i=1;i<pr.pts.length;i++) doc.line(tx+pr.pts[i-1][0],ty+pr.pts[i-1][1],tx+pr.pts[i][0],ty+pr.pts[i][1]);
+  });
+  doc.setLineDashPattern([],0); doc.setTextColor(74,59,34);
+  labelLayout(dl).forEach(function(it){
+    doc.setFontSize(it.fs/0.3528);
+    if(!it.inside){ var bx=it.box; doc.setDrawColor(107,90,60); doc.setLineWidth(0.15); doc.line(tx+it.leader[0],ty+it.leader[1],tx+it.leader[2],ty+it.leader[3]); doc.setFillColor(255,255,255); doc.rect(tx+bx.x,ty+bx.y,bx.w,bx.h,'FD'); }
+    var X=tx+it.cx, Y=ty+it.cy;
+    if(it.rot) doc.text(it.text,X+it.th*0.5,Y+it.tw/2,{angle:90}); else doc.text(it.text,X,Y+it.th*0.5,{align:'center'});
+  });
+}
+async function buildBoxPdf(withArt,progId){
+  if(!hasPdf()) throw new Error('jsPDF is not loaded.');
+  var d=boxDims(); var dl=dieline(d); var fit=fitDie(dl); var arts=null;
+  if(withArt){ arts={}; var ks=Object.keys(dl.panels); for(var i=0;i<ks.length;i++){ arts[ks[i]]=await panelArtData(ks[i],dl.panels[ks[i]]); if(progId) setProg(progId,(i+1)/(ks.length+1),'Preparing artwork...'); await yieldToUI(); } }
+  var doc=new window.jspdf.jsPDF({unit:'mm',format:[fit.pw,fit.ph],orientation:fit.landscape?'landscape':'portrait',compress:true});
+  try{ doc.setProperties({title:(STATE.setup.title||'Box')+' - box template'}); }catch(e){}
+  var info='Box template, 1:1 scale. Inner size '+r1(d.W)+' x '+r1(d.H)+' x '+r1(d.D)+' mm. Check size and fold lines with a test print.';
+  fit.tiles.forEach(function(t,ti){
+    if(ti>0) doc.addPage([fit.pw,fit.ph],fit.landscape?'landscape':'portrait');
+    var ty=(fit.ph-dl.h)/2; var tx=fit.mode==='fit'?(fit.pw-dl.w)/2:fit.M-t.ox;
+    drawDieOnPage(doc,dl,tx,ty,arts);
+    if(fit.mode==='tile'){
+      doc.setDrawColor(0,0,0); doc.setLineWidth(0.2); doc.setLineDashPattern([],0); [[fit.M,fit.M],[fit.pw-fit.M,fit.M],[fit.M,fit.ph-fit.M],[fit.pw-fit.M,fit.ph-fit.M]].forEach(function(p){ doc.line(p[0]-3,p[1],p[0]+3,p[1]); doc.line(p[0],p[1]-3,p[0],p[1]+3); });
+      doc.setFontSize(7); doc.setTextColor(60,60,60); doc.text('Page '+(ti+1)+' of '+fit.tiles.length+' - join pages by overlapping the '+fit.OV+' mm strip and matching the registration crosses',fit.pw/2,fit.ph-3,{align:'center'});
+    } else { doc.setFontSize(7); doc.setTextColor(60,60,60); doc.text(info,fit.pw/2,fit.ph-3,{align:'center'}); }
+  });
+  return {doc:doc,pages:fit.tiles.length,fit:fit,dl:dl,d:d};
+}
+async function exportBox(withArt){
+  try{ var r=await buildBoxPdf(withArt,'prog3'); downloadBlob(pdfBlob(r.doc),slug(STATE.setup.title)+'-box-dieline'+(withArt?'-with-artwork':'')+'.pdf'); setProg('prog3',null); toast('Box template downloaded ('+r.pages+' page'+(r.pages>1?'s':'')+').'); STATE.exported=true; STATE.flags.boxExported=true; refreshChrome(); }
+  catch(e){ setProg('prog3',null); toast(e.message||'Could not build the box PDF.','err'); }
+}
+function gameFacts(){ var S=STATE.setup; return {title:(S.title||'My card game').trim(),cards:deckN(),players:S.players||'',time:S.time||'',ages:S.ages||'',brand:(S.brand||'').trim(),style:(S.style||'').trim(),type:S.type}; }
+function boxPromptFor(k){
+  var g=gameFacts(); var d=boxDims(); var p=dieline(d).panels[k]; var ratio=p.w/p.h; var big=1536; var size;
+  if(ratio>=0.3&&ratio<=3.3){ var pw,ph; if(ratio>=1){ pw=big; ph=Math.round(big/ratio/2)*2; } else { ph=big; pw=Math.round(big*ratio/2)*2; }
+    size='OUTPUT SIZE (mandatory): generate ONE image with the aspect ratio '+r2(ratio)+' (width : height = '+r1(p.w)+' : '+r1(p.h)+' mm), for example '+pw+' x '+ph+' px. Do not add borders or margins around the artwork.'; }
+  else if(ratio<0.3){ var pct=Math.max(2,Math.round(ratio*1536/1024*100)); size='OUTPUT SIZE (mandatory): this is a narrow strip ('+r1(p.w)+' x '+r1(p.h)+' mm). Generate ONE portrait image of 1024 x 1536 px and put ALL important content inside the central vertical band that is about '+pct+'% of the image width (that band is the real panel); extend plain background artwork outside the band.'; }
+  else { var pct2=Math.max(2,Math.round(1/ratio*1536/1024*100)); size='OUTPUT SIZE (mandatory): this is a narrow strip ('+r1(p.w)+' x '+r1(p.h)+' mm). Generate ONE landscape image of 1536 x 1024 px and put ALL important content inside the central horizontal band that is about '+pct2+'% of the image height (that band is the real panel); extend plain background artwork outside the band.'; }
+  var tx=[]; var info=[g.cards+' cards']; if(g.players) info.push(g.players+' players'); if(g.time) info.push(g.time); if(g.ages) info.push('Ages '+g.ages);
+  var role={front:'the FRONT of the box (the main selling face)',back:'the BACK of the box',left:'the LEFT SIDE of the box',right:'the RIGHT SIDE of the box',top:'the TOP of the box lid',bottom:'the BOTTOM of the box'}[k];
+  tx.push('- Game title: "'+g.title.replace(/"/g,"'")+'"');
+  if(k==='front'||k==='back'){ tx.push('- Card count: "'+g.cards+' cards"'); if(g.players) tx.push('- Players: "'+g.players+' players"'); if(g.time) tx.push('- Play time: "'+g.time+'"'); if(g.ages) tx.push('- Ages: "Ages '+g.ages+'"'); }
+  else if(k==='left'||k==='right'){ if(g.players||g.time) tx.push('- Info line (small): "'+info.slice(0,3).join(' - ')+'"'); }
+  else { tx.push('- Info line (small): "'+info.slice(0,3).join(' - ')+'"'); }
+  if(g.brand) tx.push('- Brand line (small): "by '+g.brand.replace(/"/g,"'")+'"');
+  var style=g.style?('STYLE: '+g.style+'. Keep the same look as the card artwork: same colors, same line style, same lettering.'):'STYLE: match the card artwork of this game exactly: same colors, same line style, same lettering.';
+  var layout=boxLayoutText(k); var focal=boxFocalLine(k);
+  return size+'\n\nCreate the artwork for '+role+' of a boxed card game. The panel is '+r1(p.w)+' x '+r1(p.h)+' mm.\n\n'+style+'\n\nLAYOUT: '+layout+(focal?'\n\n'+focal:'')+'\n\nEXACT TEXT TO RENDER (render these strings exactly, word for word, and nothing else):\n'+tx.join('\n')+'\nDo not print any other word, number or heading.\n\nNEGATIVE: no extra text, no spelling mistakes, no logos, no watermarks, no barcodes, no prices, no real people, no brand names, no copyrighted characters, no photographs of real products.';
+}
+function renderBoxPrompts(){
+  var box=$('boxPrompts'); if(!box) return;
+  box.innerHTML=BOX_KEYS.map(function(k){ var bs=STATE.scenes.box[k]; return '<div class="pbox"><h4>'+esc(PANEL_LABELS[k])+'</h4><div class="grid"><div class="fld"><label class="lbl" for="bl-'+k+'">Layout</label><select id="bl-'+k+'" data-bl="'+k+'">'+LAYOUT_MODES.map(function(m){ return '<option value="'+m[0]+'"'+(bs.layout===m[0]?' selected':'')+'>'+esc(m[1])+'</option>'; }).join('')+'</select></div><div class="fld"><label class="lbl" for="bi-'+k+'">Illustration idea (optional, max 200 characters)</label><input type="text" id="bi-'+k+'" data-bi="'+k+'" maxlength="200" value="'+esc(bs.idea)+'" placeholder="e.g. a fox detective under a street lamp"></div></div><textarea class="prompt" id="bp-'+k+'" readonly aria-label="Box art prompt '+esc(PANEL_LABELS[k])+'">'+esc(boxPromptFor(k))+'</textarea><div class="row"><button type="button" class="btn" data-cp="bp-'+k+'">Copy prompt</button></div></div>'; }).join('');
+  box.querySelectorAll('select[data-bl]').forEach(function(sel){ sel.addEventListener('change',function(){ var k=sel.getAttribute('data-bl'); STATE.scenes.box[k].layout=sel.value; $('bp-'+k).value=boxPromptFor(k); }); });
+  box.querySelectorAll('input[data-bi]').forEach(function(inp){ inp.addEventListener('input',function(){ var k=inp.getAttribute('data-bi'); STATE.scenes.box[k].idea=inp.value.slice(0,200); $('bp-'+k).value=boxPromptFor(k); }); });
+  box.querySelectorAll('button[data-cp]').forEach(function(b){ b.addEventListener('click',function(){ copyString($(b.getAttribute('data-cp')).value,b); }); });
+}
+
+/* ================= scene library (edit here to add worlds or variants) ================= */
+/* No scene line may ask the image to show words: no sign, label, poster, banner, text, headline, caption, no quoted strings. */
+var TYPE_CARDS={
+  'Odd One Out':'cards that show a topic title and four numbered statement panels',
+  'Trivia Duel':'question cards with a star row and three answer options A, B and C',
+  'Bluff Poker':'poker-style bluff cards with a bold illustrated face',
+  'Other card game':'card faces'
+};
+var NEUTRAL_FLAVOR={setting:'a clean wooden table beside a window',props:['a small green plant','a pencil','a ceramic mug','a folded cloth napkin'],mood:'Soft natural daylight with gentle shadows',motifs:['a bold central emblem built from simple shapes','a playful scene that fits the theme of the game']};
+var WORLD_FLAVOR={
+  abyssal:{setting:'a small velvet-draped cabaret table backstage with a dark curtain behind',props:['a brass opera glass','a feathered mask','a glass dome over a tiny curio','a candle in a tarnished holder'],mood:'Low theatrical spotlight with deep red shadows',motifs:['a masked ringmaster silhouette beside a lantern-lit curtain','a parade of whimsical creatures under a striped tent']},
+  noir:{setting:'a detective desk at night with window blinds throwing striped shadows',props:['a brass desk lamp','a magnifying glass','a coffee cup','a trench coat draped over a chair'],mood:'Hard single-lamp light, deep black shadows and a thin drifting haze',motifs:['a lone detective silhouette under a street lamp in the rain','a magnifying glass over a scatter of blank torn paper scraps']},
+  grimoire:{setting:'an alchemist study table covered with a heavy velvet cloth',props:['a gilded candlestick','a brass astrolabe','a lump of sealing wax','a small crystal sphere'],mood:'Warm candlelight with tiny golden sparkles in the air',motifs:['an ornate gilded key resting on a glowing spellbook','a crescent moon framed by golden vines and stars']},
+  atomic:{setting:'a retro-futurist expedition table inside a 1950s rocket-age hangar',props:['a chrome toy ray gun','a tin robot','a brass field compass','a rolled blueprint'],mood:'Bright saturated light with a teal and orange glow',motifs:['a chrome rocket racing past a ringed planet','a friendly giant robot against an orange desert sunset']},
+  atlas:{setting:'an explorer map table inside a canvas tent',props:['a brass sextant','a leather satchel','a pocket compass','a rolled map tied with string'],mood:'Warm lantern glow with soft floating dust motes',motifs:['a weathered compass rose over a mountain horizon','a tiny expedition caravan crossing a vast desert under the stars']},
+  pirate:{setting:'a captain cabin table lit through a round porthole',props:['a brass spyglass','a coil of rope','a few gold doubloons','a dented tin tankard'],mood:'Swaying warm lantern light mixed with a cool blue glow from the porthole',motifs:['a tall ship sailing into a stormy sunset','a treasure chest spilling gold coins on a moonlit beach']},
+  lab:{setting:'a cluttered laboratory bench',props:['bubbling glass flasks','a brass microscope','a coil of copper tubing','a glowing green beaker'],mood:'Warm desk lamps mixed with a faint green glow',motifs:['a bubbling flask with curling colorful vapor','sparks arcing around a small curious robot']},
+  dino:{setting:'a field-camp table at a desert dig site',props:['a paintbrush','a few fossil bones','a trowel','a hanging lantern'],mood:'Golden late-afternoon sun with soft dust in the air',motifs:['a friendly long-necked dinosaur skeleton half-uncovered in sandstone','a baby dinosaur hatching from a cracked speckled egg']},
+  orbit:{setting:'a metal workbench inside a space station module with a round window onto Earth',props:['a helmet with a reflective visor','a coil of cable','a small model satellite','a floating pencil'],mood:'Cool blue light with warm pinpoint glows from the consoles',motifs:['a space station ring orbiting a glowing planet','an astronaut floating beside a drifting comet']},
+  saloon:{setting:'a worn wooden saloon table with swinging doors blurred behind',props:['a tin lantern','a pair of spurs','a stack of poker chips','a leather hat'],mood:'Dusty amber light spilling through the doors',motifs:['a lone cowboy silhouette against a mesa sunset','a coiled desert snake beside a cactus under a full moon']},
+  bazaar:{setting:'a market stall draped in rich fabric under a striped awning',props:['a brass lamp','a stack of carved wooden boxes','a string of colored beads','a small ceramic vase'],mood:'Warm spice-colored light filtered through the fabric',motifs:['a magic carpet drifting above lantern-lit rooftops','a golden scarab on a field of geometric tilework']},
+  hotel:{setting:'a polished marble reception counter in an art-deco lobby after hours',props:['a brass desk bell','a ring of old keys','a velvet rope stand','a vase of white lilies'],mood:'Soft golden chandelier light with long reflections on the marble',motifs:['an art-deco elevator door with a golden sunburst pattern','a single lit window on a tall hotel facade against a night sky']},
+  arcade:{setting:'a neon-lit arcade floor beside a glowing game cabinet',props:['a handful of metal tokens','a joystick','a stack of game cartridges','a soda cup with a striped straw'],mood:'Pink and cyan neon glow with soft reflections',motifs:['a pixel-style spaceship facing a row of alien invaders','a glowing joystick surrounded by rainbow arcade lights']},
+  kitchen:{setting:'a busy restaurant kitchen counter made of stainless steel',props:['a copper pan','a wooden spoon','a pile of fresh vegetables','a wooden cutting board'],mood:'Bright warm kitchen light with a touch of rising steam',motifs:['a giant steaming pot with colorful ingredients flying out','a cheeky chef hat and mustache above crossed whisks']},
+  zoo:{setting:'a lantern-lit zoo path at night beside a wrought-iron gate',props:['a hanging lantern','a pair of binoculars','a bundle of fresh leaves','a small wooden crate'],mood:'Deep blue night with warm pools of lantern light and fireflies',motifs:['a friendly elephant and an owl under a starry sky','a moonlit gate opening onto glowing animal silhouettes']}
+};
+/* photo scene templates: 6 photo prompts x 3 variants; tokens {cards} {setting} {props} {mood} */
+var PHOTO_SCENES=[
+  ['A closed boxed card game standing slightly angled in the foreground, with a few {cards} fanned in front of it. Setting: {setting}. Props around it: {props}. {mood}. Shallow depth of field.',
+   'The closed box shot from a low three-quarter angle, with the deck of {cards} leaning against its side. Setting: {setting}. Props softly blurred behind: {props}. {mood}.',
+   'A top-down three-quarter view of the closed box centered in the frame, with {cards} spread in a loose arc beside it. Setting: {setting}. Props near the edges of the frame: {props}. {mood}.'],
+  ['A neat fan of 7 {cards} face up, the backs of the rest of the deck stacked beside the fan, shot from above. Setting: {setting}. Props in the corners: {props}. {mood}.',
+   'A wide arc of 5 {cards} standing face up against the closed box, shot at eye level. Setting: {setting}. Props behind the cards: {props}. {mood}.',
+   'Two overlapping rows of {cards} cascading diagonally across the frame, one card lifted slightly above the others. Setting: {setting}. Props scattered nearby: {props}. {mood}.'],
+  ['A flat lay from above: the open box, the {cards} in a tidy row, balanced composition with empty space on one side. Setting: {setting}. Props placed around the edges: {props}. {mood}.',
+   'A flat lay from above: the {cards} arranged in a neat grid of three rows, the open box tucked into one corner. Setting: {setting}. Props between the cards: {props}. {mood}.',
+   'A flat lay from above: the {cards} scattered in a relaxed circle around the open box in the middle. Setting: {setting}. Props at the outer edge: {props}. {mood}.'],
+  ['Two hands holding a fan of four {cards} toward the camera, natural skin, five fingers on each hand, no faces. Setting blurred behind the hands: {setting}. Props on the table: {props}. {mood}.',
+   'One hand dealing a card from the {cards} onto the table while the other hand rests beside the closed box, natural skin, five fingers on each hand, no faces. Setting: {setting}. Props nearby: {props}. {mood}.',
+   'Both hands sliding the deck of {cards} out of the open box toward the camera, natural skin, five fingers on each hand, no faces. Setting: {setting}. Props around the box: {props}. {mood}.'],
+  ['One card and the closed box next to a coin and an open adult hand to show the real size, clean uncluttered composition. Setting kept simple: {setting}. A single prop at the edge: {props1}. {mood}.',
+   'The deck of {cards} stacked beside the closed box with a pencil laid across both for scale, clean composition. Setting kept simple: {setting}. A single prop at the edge: {props1}. {mood}.',
+   'One card held between two fingers in front of the closed box, an open adult hand resting beside it for scale, no faces. Setting kept simple: {setting}. A single prop at the edge: {props1}. {mood}.'],
+  ['A tidy layout of everything inside the game: the box lid, the deck of {cards}, the rulebook, tokens and a score pad, each item separated and evenly spaced. Setting: {setting}. Props at the edges: {props}. {mood}.',
+   'A tidy diagonal layout of everything inside the game: the open box at one end, the deck of {cards}, the rulebook, tokens and a score pad lined up toward the other end. Setting: {setting}. Props around the layout: {props}. {mood}.',
+   'A tidy layout from above with the deck of {cards} in the center and the box lid, rulebook, tokens and score pad arranged around it like the points of a compass. Setting: {setting}. Props in the gaps: {props}. {mood}.']
+];
+/* box layout variants per panel (a, b, c) */
+var BOX_LAYOUTS={
+  front:['A bold, readable composition with the title as the dominant lettering, a clear focal illustration and plenty of calm space around the lettering.',
+    'A symmetrical composition: the focal illustration large in the center, the title stacked above it, small decorative details tucked into the corners.',
+    'An asymmetric composition: the title running across the upper third, the focal illustration breaking out of a frame in the lower two thirds, a thin decorative border around the panel.'],
+  back:['A tidy composition: a small title, a few small illustrations of the cards, and the information laid out as simple stamped panels.',
+    'A two-column composition: the focal illustration on one side, the information stacked neatly on the other side, thin divider lines between them.',
+    'A centered column: a small title at the top, a row of three tiny card illustrations in the middle, the information in a calm band at the bottom.'],
+  left:['A simple strip design: the title running along the length of the panel, readable when the box stands on a shelf.',
+    'A strip design with the title centered and a small repeating pattern from the game world running along both ends.',
+    'A strip design with a thin decorative border, the title in one single line and a small emblem at one end.'],
+  right:['A simple strip design that matches the left side, with the title running along the length of the panel.',
+    'A strip design that mirrors the left side: the title reading in the opposite direction with the same repeating pattern at both ends.',
+    'A strip design with the title in one single line and a small emblem at the opposite end from the left side.'],
+  top:['A centered emblem or title mark, simple enough to read from above.',
+    'A centered emblem surrounded by a ring of small repeating pattern elements.',
+    'The title in the center on a plain field with decorative ornaments in the four corners.'],
+  bottom:['A plain, calm panel with a small emblem and the info line, nothing busy.',
+    'A calm panel covered with a small repeated pattern, the info line centered.',
+    'A plain panel in the main color of the box, a small emblem in one corner and the info line along the bottom edge.']
+};
+var SCENE_BANNED=/\b(sign|signs|label|labels|poster|posters|banner|banners|text|headline|headlines|caption|captions)\b/i;
+var SCENE_MODES=[['auto','Auto'],['a','Variant a'],['b','Variant b'],['c','Variant c'],['own','My own idea']];
+var LAYOUT_MODES=[['auto','Auto'],['a','Layout a'],['b','Layout b'],['c','Layout c']];
+var BOX_KEYS=['front','back','right','left','top','bottom'];
+function sceneDefaults(){ var b={}; ['front','back','right','left','top','bottom'].forEach(function(k){ b[k]={layout:'auto',idea:''}; }); return {seed:1,photo:[0,1,2,3,4,5].map(function(){ return {mode:'auto',own:''}; }),box:b}; }
+function cleanIdea(s,max){ return String(s==null?'':s).replace(/[\r\n\u2028\u2029]+/g,' ').replace(/["\u201c\u201d\u201e\u00ab\u00bb]/g,'').replace(/\s+/g,' ').trim().slice(0,max).trim(); }
+function hashStr(s){ var h=5381; s=String(s); for(var i=0;i<s.length;i++) h=((h<<5)+h+s.charCodeAt(i))|0; return Math.abs(h); }
+function worldKey(){
+  var imp=STATE.imported||{}; var hay=[imp.world,STATE.setup.style,STATE.setup.title].join(' | ').toLowerCase();
+  var keys=Object.keys(WORLD_NAMES); for(var i=0;i<keys.length;i++){ if(imp.world&&WORLD_NAMES[keys[i]]===imp.world) return keys[i]; }
+  for(var j=0;j<keys.length;j++){ if(hay.indexOf(WORLD_NAMES[keys[j]].toLowerCase())>=0) return keys[j]; }
+  return '';
+}
+function worldFlavor(key){ return (key&&WORLD_FLAVOR[key])||NEUTRAL_FLAVOR; }
+function listAnd(a){ return a.length<2?a.join(''):a.slice(0,-1).join(', ')+' and '+a[a.length-1]; }
+function typeCards(){ return TYPE_CARDS[STATE.setup.type]||TYPE_CARDS['Other card game']; }
+function autoPick(salt,n){ return hashStr([STATE.setup.title,worldKey(),STATE.setup.type,salt].join('|'))%n; }
+function photoSceneText(i,variant){
+  var f=worldFlavor(worldKey()); var t=PHOTO_SCENES[i][variant];
+  return t.replace('{cards}',typeCards()).replace('{setting}',f.setting).replace('{props1}',f.props[0]).replace('{props}',listAnd(f.props)).replace('{mood}',f.mood);
+}
+/* returns the full SCENE line for photo prompt i, from the current selection */
+function photoSceneLine(i){
+  var sc=(STATE.scenes&&STATE.scenes.photo&&STATE.scenes.photo[i])||{mode:'auto',own:''};
+  if(sc.mode==='own'){ var own=cleanIdea(sc.own,300); if(own) return 'SCENE (the author\'s idea, follow it closely but do not render any words from it): '+own; }
+  var v=sc.mode==='a'?0:(sc.mode==='b'?1:(sc.mode==='c'?2:autoPick('photo'+i,3)));
+  return 'SCENE: '+photoSceneText(i,v);
+}
+function boxLayoutText(k){
+  var bs=(STATE.scenes&&STATE.scenes.box&&STATE.scenes.box[k])||{layout:'auto'}; var v=bs.layout==='a'?0:(bs.layout==='b'?1:(bs.layout==='c'?2:autoPick('box'+k,3)));
+  return BOX_LAYOUTS[k][v];
+}
+function boxFocalLine(k){
+  var bs=(STATE.scenes&&STATE.scenes.box&&STATE.scenes.box[k])||{idea:''}; var idea=cleanIdea(bs.idea,200);
+  if(idea) return 'FOCAL ILLUSTRATION (the author\'s idea, follow it closely but do not render any words from it): '+idea;
+  if(k!=='front'&&k!=='back') return '';
+  var f=worldFlavor(worldKey()); var base=autoPick('focal',2); var idx=k==='front'?base:(base+1)%2;
+  return 'FOCAL ILLUSTRATION: '+f.motifs[idx];
+}
+function shuffleScenes(){
+  var S=STATE.scenes; S.seed++; var r=mulberry(S.seed*977+hashStr(STATE.setup.title)); 
+  S.photo.forEach(function(p,i){ var cur=p.mode==='a'?0:(p.mode==='b'?1:(p.mode==='c'?2:(p.mode==='own'?-1:autoPick('photo'+i,3)))); var n=Math.floor(r()*3); if(n===cur) n=(n+1)%3; p.mode=['a','b','c'][n]; });
+}
+
+/* ================= sell tools ================= */
+var PRODUCTS={printable:'Etsy printable download',boxed:'Etsy boxed game made to order',other:'another marketplace'};
+var TONES={'Family':'warm, friendly, all-ages wording; clear and reassuring','Game night':'playful, a little cheeky, aimed at adult groups; short punchy sentences','Classroom':'clear, educational, calm; mention that teachers can use it for a discussion round, without making learning-outcome promises'};
+function dataBlock(){
+  var g=gameFacts(); var imp=STATE.imported; var L=['- Game title: '+g.title,'- Game type: '+g.type,'- Number of cards: '+g.cards];
+  if(g.players) L.push('- Players: '+g.players); if(g.time) L.push('- Play time: '+g.time); if(g.ages) L.push('- Ages: '+g.ages);
+  L.push('- Card size: Poker, 63 x 88 mm'); if(g.brand) L.push('- Brand or shop name: '+g.brand); if(g.style) L.push('- Look and style: '+g.style);
+  if(imp.world) L.push('- Theme: '+imp.world); if(imp.topics&&imp.topics.length) L.push('- Topics covered: '+imp.topics.slice(0,15).join('; '));
+  return L.join('\n');
+}
+function includedText(){
+  var P=PAPERS[STATE.setup.paper]; var S=sheetCount();
+  if(STATE.sell.product==='printable') return 'The buyer receives print-ready PDF files for '+P.label+' paper: '+deckN()+' card faces and the card backs laid out 9 cards per sheet ('+S+' sheet'+(S===1?'':'s')+' of faces and '+S+' of backs), an alignment test page and print instructions. Nothing is shipped.';
+  if(STATE.sell.product==='boxed') return 'The buyer receives a physical boxed card game: '+deckN()+' printed cards (Poker size, 63 x 88 mm) in a tuck-end box. It is made to order. Do NOT state a production time, shipping time, shipping price or materials unless the seller wrote them in the data above.';
+  return 'Describe the product exactly as in the data above. Do not state shipping times, prices, materials or file formats that are not listed.';
+}
+function listingPrompt(){
+  var g=gameFacts(); var tone=STATE.sell.tone;
+  return 'You are an expert marketplace copywriter. Write a store listing for '+PRODUCTS[STATE.sell.product]+'.\n\nUSE ONLY THIS DATA ABOUT THE PRODUCT:\n'+dataBlock()+'\n\nWHAT THE BUYER GETS:\n'+includedText()+'\n\nTONE: '+tone+' - '+TONES[tone]+'.\n\nWRITE ALL OF THIS:\n1. FIVE TITLE OPTIONS. Each title is at most 140 characters including spaces. Put the most important words first and keep every title readable.\n2. THIRTEEN TAGS. Each tag is at most 20 characters including spaces. One tag per line, lowercase, no repeated tags.\n3. A FULL DESCRIPTION with these headings: What is included; How to print and assemble (printable) or How it is made and shipped (boxed) - only use details from the data; Players, play time and ages; Frequently asked questions (5 questions with short answers).\n4. A FEATURES LIST of 6 to 8 short bullet points.\n5. A short "Is this right for you?" block with 3 bullets for who it suits and 2 bullets for who it may not suit.\n\nHARD RULES:\n- Use only the data above. Do not invent facts, features, materials, dimensions, shipping times, prices, awards or reviews.\n- No income, earnings, sales, ranking or "best seller" claims, and no promises about results.\n- Do not use copyrighted or trademarked names (games, brands, characters, shows).\n- Do not promise print quality; say buyers should test print first.\n- Keep the text honest, specific and free of filler.\n- Write in English.\n\nOUTPUT FORMAT: use exactly the five numbered sections above, plain text, no tables.';
+}
+var MOCKUP_DEFS=[
+  ['Hero box on a table','landscape 3:2 (for example 1536 x 1024 px)','A closed boxed card game standing slightly angled on a wooden table, soft daylight from one side, a few cards fanned in front of it, shallow depth of field.','the game title "TITLE" appears only on the box front exactly as written; no other text'],
+  ['Fan of cards','square 1:1 (for example 1536 x 1536 px)','A neat fan of 7 cards face up on a plain warm surface, the card backs of the rest of the deck stacked beside the fan, top-down view.','no added text; the card artwork is used exactly as supplied'],
+  ['Flat lay of box and cards','landscape 3:2 (for example 1536 x 1024 px)','A flat lay from above: the open box, the cards in a tidy row, a few simple tokens or a pencil as props, balanced composition with empty space for a headline.','no added text'],
+  ['Hands holding cards','portrait 2:3 (for example 1024 x 1536 px)','Two hands holding a fan of four cards toward the camera, blurred friendly table scene behind, natural skin, five fingers on each hand, no faces.','no added text'],
+  ['Size comparison','square 1:1 (for example 1536 x 1536 px)','One card and the closed box next to a common reference object (a coin and an open adult hand) to show the real size, clean neutral background.','no added text'],
+  ['What is inside','landscape 3:2 (for example 1536 x 1024 px)','A tidy "what is inside" layout: the box lid, the card deck, the rulebook, tokens and score pad, each separated and evenly spaced on a plain surface.','no added text unless a label is written below; if you need labels use only: "Cards", "Rules"']
+];
+function mockupPrompts(){
+  var g=gameFacts(); var boxed=STATE.sell.product==='boxed'||true;
+  return MOCKUP_DEFS.map(function(m,i){
+    var txt=m[3].replace('TITLE',g.title.replace(/"/g,"'"));
+    var scene=photoSceneLine(i); return {title:(i+1)+'. '+m[0],text:'OUTPUT SIZE (mandatory): generate ONE '+m[1]+'.\n\nCreate a product photo for a card game called "'+g.title.replace(/"/g,"'")+'" ('+g.cards+' cards, Poker size 63 x 88 mm'+(g.style?', look: '+g.style:'')+').\n\nUse the attached images (card faces, card back and box artwork) EXACTLY as supplied. Do not redesign, redraw or restyle the cards or the box.\n\n'+scene+'\n\nEXACT TEXT RULES: '+txt+'.\n\nNEGATIVE: no extra text, no watermarks, no logos, no brand names, no price tags, no real people or faces, no distorted hands, no fake awards or badges, no readable text other than the exact text rules above.'};
+  });
+}
+function costCalc(c){
+  var sheets=num(c.sheets)>0?num(c.sheets):2*sheetCount();
+  var unit=sheets*num(c.printSheet)+num(c.boxCost)+num(c.shipping)+num(c.packaging);
+  var price=num(c.price); var fee=price*num(c.feePct)/100; var profit=price-unit-fee; var margin=price>0?profit/price*100:null;
+  return {sheets:sheets,unit:unit,fee:fee,profit:profit,margin:margin,price:price};
+}
+function money(n){ return (n<0?'-':'')+'$'+Math.abs(n).toFixed(2); }
+function renderCost(){
+  var c=STATE.cost; var el=$('costOut'); if(!el) return; var r=costCalc(c);
+  el.innerHTML='<div><b>'+money(r.unit)+'</b><span>Cost per unit ('+r.sheets+' sheets)</span></div><div><b>'+money(r.fee)+'</b><span>Marketplace fee</span></div><div><b>'+money(r.profit)+'</b><span>Profit per sale</span></div><div><b>'+(r.margin===null?'n/a':r2(r.margin)+'%')+'</b><span>Margin'+(r.margin===null?' (price is 0)':'')+'</span></div>';
+}
+/* ---- cover mockup (canvas) ---- */
+async function coverMockup(){
+  var W=1500,H=1500; var c=document.createElement('canvas'); c.width=W; c.height=H; var x=c.getContext('2d');
+  var gr=x.createLinearGradient(0,0,W,H); gr.addColorStop(0,'#E8D5B5'); gr.addColorStop(1,'#cdb78f'); x.fillStyle=gr; x.fillRect(0,0,W,H);
+  x.strokeStyle='rgba(120,90,50,.25)'; x.lineWidth=3; x.setLineDash([14,12]); x.strokeRect(50,50,W-100,H-100); x.setLineDash([]);
+  var faces=STATE.faces.slice(0,5); var n=faces.length; var cw=330,ch=Math.round(cw*88/63);
+  for(var i=0;i<n;i++){
+    var im=await loadImageAsync(faces[i].url); var ang=(n===1?0:(-0.42+0.84*i/(n-1))); var cx=W/2+(n===1?0:(-380+760*i/(n-1))), cy=640+Math.abs(ang)*160;
+    x.save(); x.translate(cx,cy); x.rotate(ang); x.shadowColor='rgba(0,0,0,.35)'; x.shadowBlur=26; x.shadowOffsetY=12; x.fillStyle='#fff'; x.fillRect(-cw/2-6,-ch/2-6,cw+12,ch+12); x.shadowColor='transparent';
+    var iw=im.naturalWidth||1,ih=im.naturalHeight||1,ta=cw/ch,sa=iw/ih,sx=0,sy=0,sw=iw,sh=ih; if(sa>ta){ sw=ih*ta; sx=(iw-sw)/2; } else { sh=iw/ta; sy=(ih-sh)/2; }
+    x.drawImage(im,sx,sy,sw,sh,-cw/2,-ch/2,cw,ch); x.restore();
+  }
+  x.fillStyle='#101826'; x.textAlign='center'; x.textBaseline='middle';
+  var title=(STATE.setup.title||'Card game').trim(); var fs=96; x.font='800 '+fs+'px Futura,"Avenir Next Condensed","Arial Narrow",Arial,sans-serif';
+  var words=title.split(/\s+/),lines=[],cur=''; words.forEach(function(w){ var t=cur?cur+' '+w:w; if(x.measureText(t).width>W-220&&cur){ lines.push(cur); cur=w; } else cur=t; }); if(cur) lines.push(cur);
+  while(lines.length>3){ fs-=8; x.font='800 '+fs+'px Futura,"Avenir Next Condensed","Arial Narrow",Arial,sans-serif'; lines=[title]; if(fs<40) break; }
+  var y=1120; lines.forEach(function(l){ x.fillText(l,W/2,y); y+=fs*1.1; });
+  x.font='600 40px "Avenir Next",Arial,sans-serif'; x.fillStyle='#6b4a2c'; var sub=deckN()+' cards'+(STATE.setup.players?' · '+STATE.setup.players+' players':'')+(STATE.sell.product==='printable'?' · print at home':''); x.fillText(sub,W/2,y+40);
+  if(STATE.setup.brand){ x.font='600 34px "Avenir Next",Arial,sans-serif'; x.fillText('by '+STATE.setup.brand,W/2,H-110); }
+  var blob=await canvasToBlob(c,'image/jpeg',0.92); c.width=0; c.height=0; return blob;
+}
+/* ---- notes from import ---- */
+function notesHtml(kind){
+  var imp=STATE.imported; var title=esc(STATE.setup.title||'Card game');
+  var css='<style>body{font-family:Arial,Helvetica,sans-serif;max-width:820px;margin:24px auto;padding:0 18px;color:#1b2a41;line-height:1.5}h1{font-size:24pt}table{border-collapse:collapse;width:100%}td,th{border:1px solid #1b2a41;padding:6px 8px;text-align:left;vertical-align:top}th{background:#E8D5B5}</style>';
+  if(kind==='rules'){ if(!imp.rules||!imp.rules.length) return null; return '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>'+title+' - Rules</title>'+css+'</head><body><h1>'+title+'</h1><h2>How to play</h2><ol>'+imp.rules.map(function(r){ return '<li>'+esc(r)+'</li>'; }).join('')+'</ol>'+(imp.topics&&imp.topics.length?'<h2>Topics</h2><ul>'+imp.topics.map(function(t){ return '<li>'+esc(t)+'</li>'; }).join('')+'</ul>':'')+'</body></html>'; }
+  if(!imp.answerKey) return null;
+  return '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>'+title+' - Answer key</title>'+css+'</head><body><h1>'+title+' - Answer key</h1><p>For the host only.</p><table><thead><tr>'+imp.answerKey.head.map(function(h){ return '<th>'+esc(h)+'</th>'; }).join('')+'</tr></thead><tbody>'+imp.answerKey.rows.map(function(r){ return '<tr>'+r.map(function(c){ return '<td>'+esc(c)+'</td>'; }).join('')+'</tr>'; }).join('')+'</tbody></table></body></html>';
+}
+/* ---- markdown docs ---- */
+function mdListing(){ return '# Listing prompt\n\nCopy everything below into ChatGPT.\n\n---\n\n'+listingPrompt()+'\n'; }
+function mdMockups(){ return '# Product photo prompts\n\nAttach your card faces, card back and box artwork to the chat first, then paste one prompt at a time.\n\n'+mockupPrompts().map(function(m){ return '## '+m.title+'\n\n'+m.text+'\n'; }).join('\n'); }
+function mdBoxArt(){ var ks=['front','back','right','left','top','bottom']; return '# Box art prompts\n\nOne prompt per box panel, sized to your measurements.\n\n'+ks.map(function(k){ return '## '+PANEL_LABELS[k]+'\n\n'+boxPromptFor(k)+'\n'; }).join('\n'); }
+/* ---- zips ---- */
+async function buildPrintableZip(progId){
+  if(!hasZip()||!hasPdf()) throw new Error('The ZIP or PDF tool did not load.');
+  var zip=new window.JSZip(); var name=slug(STATE.setup.title); var steps=['full','faces','backs']; var total=steps.length+3;
+  for(var i=0;i<steps.length;i++){ var r=await buildPrintPdf(steps[i],null); zip.file(name+'-print-'+steps[i]+'.pdf',pdfBlob(r.doc)); if(progId) setProg(progId,(i+1)/total,'Building '+steps[i]+' PDF...'); await yieldToUI(); }
+  zip.file(name+'-alignment-test.pdf',pdfBlob(buildAlignmentPdf('test'))); zip.file(name+'-print-instructions.pdf',pdfBlob(buildAlignmentPdf('instructions')));
+  if(progId) setProg(progId,(steps.length+1)/total,'Making the cover image...'); await yieldToUI();
+  var jb=await coverMockup(); if(jb) zip.file(name+'-cover-mockup.jpg',jb);
+  if(progId) setProg(progId,(steps.length+2)/total,'Compressing the ZIP...'); await yieldToUI();
+  var blob=await zip.generateAsync({type:'blob'}); if(progId) setProg(progId,1,''); return {blob:blob,zip:zip,name:name+'-printable-pack.zip'};
+}
+async function exportPrintableZip(){
+  var b=$('btnZipPack'); try{ if(!STATE.faces.length||!backFor(0)) throw new Error('Add card faces and a card back in Station 1 first.'); b.disabled=true; var r=await buildPrintableZip('prog4'); downloadBlob(r.blob,r.name); toast('Printable pack downloaded.'); STATE.exported=true; refreshPkg(); setProg('prog4',null); }
+  catch(e){ setProg('prog4',null); toast(e.message||'Could not build the pack.','err'); } finally{ updateGates(); }
+}
+function readmeText(files){
+  var pf=preflightItems(); var ms=missingList();
+  return 'LAUNCH PACK - '+(STATE.setup.title||'Card game')+'\n\nStations covered: 1 Load, 2 Print sheets, 3 Box & Rules, 4 Photos, 5 Sell, 6 Launch.\n\nWHAT IS IN THIS ZIP\n\n'+files.map(function(f){ return f[0]+'\n    '+f[1]; }).join('\n')+'\n\nNOT IN THIS PACK YET\n\n'+(ms.length?ms.map(function(x){ return '- '+x[0]+' (fix it in Station '+x[1]+': '+STEPS[x[1]-1].name+')'; }).join('\n'):'Nothing is missing.')+'\n\nPREFLIGHT (green = fine, amber = worth a look, red = needs attention; none of these blocked the pack)\n\n'+pf.map(function(x){ return '['+x.state.toUpperCase()+'] '+x.label+' - '+x.detail; }).join('\n')+'\n\nBefore you sell: print a test copy, check the facts, check name availability, and playtest with 2 to 3 people. Results depend on your printer and paper.\n';
+}
+async function buildLaunchZip(progId){
+  if(!hasZip()||!hasPdf()) throw new Error('The ZIP or PDF tool did not load.');
+  var zip=new window.JSZip(); var name=slug(STATE.setup.title); var files=[]; var add=function(path,data,desc){ zip.file(path,data); files.push([path,desc]); };
+  var haveImgs=STATE.faces.length&&backFor(0); var steps=haveImgs?['full','faces','backs']:[]; var total=steps.length+10; var done=0; var tick=function(t){ done++; if(progId) setProg(progId,Math.min(1,done/total),t); return yieldToUI(); };
+  for(var i=0;i<steps.length;i++){ var r=await buildPrintPdf(steps[i],null); add('print/'+name+'-print-'+steps[i]+'.pdf',pdfBlob(r.doc),steps[i]==='full'?'Full print file: face sheets and mirrored back sheets, interleaved.':(steps[i]==='faces'?'Face sheets only.':'Back sheets only (mirrored for long-edge flip).')); await tick('Building '+steps[i]+' PDF...'); }
+  add('print/'+name+'-alignment-test.pdf',pdfBlob(buildAlignmentPdf('test')),'One-page alignment test. Print on scrap paper first.'); add('print/'+name+'-print-instructions.pdf',pdfBlob(buildAlignmentPdf('instructions')),'How to print double-sided and cut.'); await tick('Instructions...');
+  if(!STATE.box.skip){ var b1=await buildBoxPdf(false,null); add('box/'+name+'-box-dieline.pdf',pdfBlob(b1.doc),'Straight-tuck-end box template at 1:1 scale, no artwork.'); await tick('Box dieline...'); var b2=await buildBoxPdf(true,null); add('box/'+name+'-box-dieline-with-artwork.pdf',pdfBlob(b2.doc),'Box template with the artwork you placed on each panel.'); await tick('Box artwork...'); add('prompts/'+name+'-box-art-prompts.md',mdBoxArt(),'ChatGPT prompts for the box panels.'); } else { done+=2; }
+  if(rulesReady()){ try{ var rr=buildRulesPdf(); add('rules/'+name+'-rules-booklet.pdf',pdfBlob(rr.doc),'Rules booklet ('+(rr.book?'folded booklet, pages 2-up':'single sheet format')+', '+rr.pages+' PDF page'+(rr.pages===1?'':'s')+').'); }catch(e){} } await tick('Rules booklet...');
+  add('prompts/'+name+'-listing-prompt.md',mdListing(),'ChatGPT prompt that writes your store listing.'); add('prompts/'+name+'-photo-prompts.md',mdMockups(),'Six ChatGPT prompts for product photos.'); await tick('Prompts...');
+  STATE.made.mockups.forEach(function(m){ add('photos/mockups/'+m.name,m.blob,'Mockup image you created in Station 4.'); }); STATE.made.listing.forEach(function(m){ add('photos/listing-images/'+m.name,m.blob,'Listing image you created in Station 4.'); }); await tick('Photos...');
+  var rh=notesHtml('rules'); if(rh) add('notes/'+name+'-rules.html',rh,'Rules text from the imported project.'); var ah=notesHtml('key'); if(ah) add('notes/'+name+'-answer-key.html',ah,'Answer key from the imported project (host only).');
+  if(haveImgs){ var jb=await coverMockup(); if(jb) add('marketing/'+name+'-cover-mockup.jpg',jb,'Cover image for a listing.'); } await tick('Cover image...');
+  add('README.txt',readmeText(files),'This list and your preflight results.'); await tick('Compressing...');
+  var blob=await zip.generateAsync({type:'blob'}); if(progId) setProg(progId,1,''); return {blob:blob,name:name+'-launch-pack.zip',files:files.map(function(f){ return f[0]; }).concat(['README.txt'])};
+}
+async function exportLaunchZip(){
+  var b=$('btnLaunch'); try{ b.disabled=true; var r=await buildLaunchZip('prog5'); downloadBlob(r.blob,r.name); setProg('prog5',null,r.files.length+' files in the Launch Pack.'); toast('Launch Pack downloaded.'); STATE.exported=true; refreshPkg(); }
+  catch(e){ setProg('prog5',null,''); toast(e.message||'Could not build the Launch Pack.','err'); } finally{ updateGates(); }
+}
+
+/* ================= rules booklet ================= */
+function importedRulesToText(){
+  var imp=STATE.imported; if(!imp||!imp.rules||!imp.rules.length) return;
+  if(!STATE.rules.textTouched||!String(STATE.rules.text).trim()){ STATE.rules.text=imp.rules.map(function(r,i){ return (i+1)+'. '+String(r).replace(/^\d+[.)]\s*/,''); }).join('\n'); STATE.rules.textTouched=false; }
+}
+function rulesParas(){ return String(STATE.rules.text||'').split(/\r?\n/).map(function(l){ return l.trim(); }).filter(Boolean); }
+function rulesReady(){ return !STATE.rules.skip&&rulesParas().length>0; }
+function keyAvailable(){ return !!(STATE.imported&&STATE.imported.answerKey&&STATE.imported.answerKey.rows&&STATE.imported.answerKey.rows.length); }
+function keyLines(){
+  var k=STATE.imported.answerKey; if(!k) return []; var odd=k.head.length===4;
+  return k.rows.map(function(r){ return odd?('Card '+r[0]+' - '+r[1]+' - false statement: '+r[2]+(r[3]?' - why: '+r[3]:'')):('Card '+r[0]+' - '+r[1]+' - '+r[2]+' star'+(r[2]==='1'?'':'s')+' - correct: '+r[3]+(r[4]?' ('+r[4]+')':'')+(r[5]?' - verify: '+r[5]:'')); });
+}
+function rulesPages(doc,pw,ph){
+  var M=14, fs=pw>180?11:10, lh=fs*0.4*1.4; var pages=[]; var g=gameFacts();
+  pages.push({kind:'cover',title:g.title,brand:g.brand,info:[g.players?g.players+' players':'',g.time,g.ages?'Ages '+g.ages:''].filter(Boolean).join('  -  ')});
+  var addText=function(heading,paras,kind){
+    var width=pw-2*M; var cur=null; var y=0; var newPage=function(first){ cur={kind:kind,items:[]}; pages.push(cur); y=M+8; if(first&&heading){ cur.items.push({t:'h',text:heading,y:y+4}); y+=12; } };
+    newPage(true); doc.setFontSize(fs);
+    paras.forEach(function(p){ var lines=doc.splitTextToSize(p,width); var need=lines.length*lh+2.2; if(y+need>ph-M-6){ newPage(false); doc.setFontSize(fs); } cur.items.push({t:'p',lines:lines,y:y+lh*0.8}); y+=need; });
+  };
+  addText('How to play',rulesParas().length?rulesParas():['(No rules text yet.)'],'rules');
+  if(STATE.rules.key&&keyAvailable()){ addText('Answer key - host only',keyLines(),'key'); }
+  return {pages:pages,fs:fs,lh:lh,M:M};
+}
+function drawRulesPage(doc,lp,pw,ph,ox,pk){
+  if(!lp){ return; }
+  doc.setTextColor(20,28,40);
+  if(lp.kind==='cover'){
+    doc.setFontSize(pw>180?30:24); var tl=doc.splitTextToSize(lp.title,pw-40); doc.text(tl,ox+pw/2,ph*0.36,{align:'center'});
+    var y=ph*0.36+tl.length*(pw>180?13:10)+4; doc.setFontSize(14); doc.text('Rules',ox+pw/2,y,{align:'center'}); y+=9;
+    if(lp.info){ doc.setFontSize(10); doc.text(lp.info,ox+pw/2,y,{align:'center'}); y+=8; }
+    if(lp.brand){ doc.setFontSize(10); doc.text('by '+lp.brand,ox+pw/2,ph-18,{align:'center'}); }
+    doc.setDrawColor(150,120,80); doc.setLineWidth(0.4); doc.rect(ox+8,8,pw-16,ph-16); return;
+  }
+  lp.items.forEach(function(it){ if(it.t==='h'){ doc.setFontSize(pw>180?18:15); doc.setFont(undefined,'bold'); doc.text(it.text,ox+pk.M,it.y); doc.setFont(undefined,'normal'); if(lp.kind==='key'){ doc.setFontSize(8); doc.setTextColor(180,60,40); doc.text('HOST ONLY - do not show to the players',ox+pk.M,it.y+6); doc.setTextColor(20,28,40); } } else { doc.setFontSize(pk.fs); doc.text(it.lines,ox+pk.M,it.y); } });
+}
+function buildRulesPdf(){
+  if(!hasPdf()) throw new Error('jsPDF is not loaded.'); if(!rulesParas().length) throw new Error('Write or import the rules text first.');
+  var P=PAPERS[STATE.setup.paper]||PAPERS.a4; var book=STATE.rules.mode==='booklet'; var letter=P.id==='letter';
+  var pw=book?(letter?139.7:148):P.w, ph=book?(letter?215.9:210):P.h; var sw=book?(letter?279.4:297):P.w, sh=book?(letter?215.9:210):P.h;
+  var doc=new window.jspdf.jsPDF({unit:'mm',format:[sw,sh],orientation:book?'landscape':'portrait',compress:true});
+  try{ doc.setProperties({title:(STATE.setup.title||'Rules')+' - rules'}); }catch(e){}
+  var pk=rulesPages(doc,pw,ph); var LP=pk.pages.slice(); var logical=LP.length;
+  if(!book){ LP.forEach(function(lp,i){ if(i>0) doc.addPage([sw,sh],'portrait'); drawRulesPage(doc,lp,pw,ph,0,pk); }); return {doc:doc,pages:doc.getNumberOfPages(),logical:logical,size:[sw,sh],book:false}; }
+  while(LP.length%4) LP.push(null); var n=LP.length; var first=true;
+  for(var i=0;i<n/4;i++){
+    var sides=[[LP[n-1-2*i],LP[2*i]],[LP[2*i+1],LP[n-2-2*i]]];
+    sides.forEach(function(s){ if(!first) doc.addPage([sw,sh],'landscape'); first=false; drawRulesPage(doc,s[0],pw,ph,0,pk); drawRulesPage(doc,s[1],pw,ph,pw,pk); doc.setDrawColor(200,200,200); doc.setLineWidth(0.1); doc.setLineDashPattern([1,1.5],0); doc.line(pw,0,pw,6); doc.line(pw,sh-6,pw,sh); doc.setLineDashPattern([],0); });
+  }
+  return {doc:doc,pages:doc.getNumberOfPages(),logical:logical,padded:n,size:[sw,sh],book:true};
+}
+async function exportRules(){
+  try{ var r=buildRulesPdf(); var blob=pdfBlob(r.doc); STATE.made.rules={name:slug(STATE.setup.title)+'-rules-booklet.pdf',blob:blob}; STATE.rules.exported=true; downloadBlob(blob,STATE.made.rules.name); $('rulesInfo').textContent=(r.book?'Folded booklet: '+r.logical+' pages ('+r.padded+' with blanks) on '+r.pages+' sheet sides. Print double-sided, flip on the SHORT edge, fold in half.':'Single sheet format: '+r.pages+' page'+(r.pages===1?'':'s')+'.'); toast('Rules booklet downloaded.'); refreshChrome(); }
+  catch(e){ toast(e.message||'Could not build the rules booklet.','err'); }
+}
+function renderRulesCard(){
+  var R=STATE.rules; $('rulesSkip').checked=!!R.skip; $('rulesWrap').style.display=R.skip?'none':''; $('rulesMode').value=R.mode; $('rulesKey').checked=!!R.key;
+  if(document.activeElement!==$('rulesText')) $('rulesText').value=R.text;
+  $('rulesKey').disabled=!keyAvailable(); $('rulesKeyHint').textContent=keyAvailable()?('Answer key found in the imported project ('+STATE.imported.answerKey.rows.length+' rows).'):'No answer key imported, so this option is off.';
+}
+function bindRules(){
+  $('rulesSkip').addEventListener('change',function(){ STATE.rules.skip=$('rulesSkip').checked; renderRulesCard(); refreshChrome(); });
+  $('rulesMode').addEventListener('change',function(){ STATE.rules.mode=$('rulesMode').value; });
+  $('rulesKey').addEventListener('change',function(){ STATE.rules.key=$('rulesKey').checked; });
+  $('rulesText').addEventListener('input',function(){ STATE.rules.text=$('rulesText').value; STATE.rules.textTouched=true; refreshChrome(); });
+  $('btnRulesPdf').addEventListener('click',exportRules);
+}
+/* ================= photos: mockup builder ================= */
+var MFORMATS={square:{w:2000,h:2000,label:'Square 2000 x 2000'},landscape:{w:2400,h:1800,label:'Landscape 4:3 2400 x 1800'},portrait:{w:1600,h:2000,label:'Portrait 4:5 1600 x 2000'},pin:{w:1600,h:2400,label:'Pin 2:3 1600 x 2400'}};
+var MLAYOUTS=[['fan','Fanned cards'],['flat','Flat lay grid (3 x 3)'],['pile','Stacked pile'],['hero','Hero card'],['boxhero','Box hero'],['boxcards','Box and cards']];
+function mulberry(seed){ var a=seed>>>0; return function(){ a|=0; a=a+0x6D2B79F5|0; var t=Math.imul(a^a>>>15,1|a); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; }; }
+var _imgCache={};
+function getImg(rec){ if(!rec) return Promise.resolve(null); if(!_imgCache[rec.url]) _imgCache[rec.url]=loadImageAsync(rec.url).catch(function(){ return null; }); return _imgCache[rec.url]; }
+function seededPick(arr,n,seed){ var r=mulberry(seed*7919+13); var a=arr.slice(); for(var i=a.length-1;i>0;i--){ var j=Math.floor(r()*(i+1)); var t=a[i]; a[i]=a[j]; a[j]=t; } return a.slice(0,n); }
+var _paperPat=null;
+function paperPat(ctx){ if(_paperPat) return _paperPat; try{ var t=document.createElement('canvas'); t.width=256; t.height=256; var x=t.getContext('2d'); var r=mulberry(987654321); for(var i=0;i<2600;i++){ x.fillStyle=r()>0.5?'rgba(120,110,95,0.06)':'rgba(255,255,255,0.07)'; x.fillRect(Math.floor(r()*256),Math.floor(r()*256),1+Math.floor(r()*2),1+Math.floor(r()*2)); } _paperPat=ctx.createPattern(t,'repeat'); }catch(e){} return _paperPat; }
+function hexRgb(h){ var m=/^#?([0-9a-f]{6})$/i.exec(h||''); if(!m) return {r:232,g:213,b:181}; var n=parseInt(m[1],16); return {r:n>>16&255,g:n>>8&255,b:n&255}; }
+function lum(c){ return (0.299*c.r+0.587*c.g+0.114*c.b)/255; }
+function mixc(c,t,a){ return 'rgb('+Math.round(c.r+(t-c.r)*a)+','+Math.round(c.g+(t-c.g)*a)+','+Math.round(c.b+(t-c.b)*a)+')'; }
+function paintBg(ctx,W,H,o){
+  var c=hexRgb(o.bgColor); var m=Math.min(W,H);
+  if(o.bg==='solid'){ ctx.fillStyle=o.bgColor; ctx.fillRect(0,0,W,H); return; }
+  if(o.bg==='paper'){ ctx.fillStyle=o.bgColor; ctx.fillRect(0,0,W,H); var p=paperPat(ctx); if(p){ ctx.fillStyle=p; ctx.fillRect(0,0,W,H); } return; }
+  var g=ctx.createLinearGradient(0,0,W,H); g.addColorStop(0,mixc(c,255,0.35)); g.addColorStop(0.55,o.bgColor); g.addColorStop(1,mixc(c,0,0.18)); ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+  var gl=ctx.createRadialGradient(W*0.5,H*0.4,0.05*m,W*0.5,H*0.45,0.75*Math.max(W,H)); gl.addColorStop(0,'rgba(255,255,255,0.45)'); gl.addColorStop(1,'rgba(255,255,255,0)'); ctx.fillStyle=gl; ctx.fillRect(0,0,W,H);
+}
+function rrect(ctx,x,y,w,h,r){ ctx.beginPath(); ctx.moveTo(x+r,y); ctx.lineTo(x+w-r,y); ctx.quadraticCurveTo(x+w,y,x+w,y+r); ctx.lineTo(x+w,y+h-r); ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h); ctx.lineTo(x+r,y+h); ctx.quadraticCurveTo(x,y+h,x,y+h-r); ctx.lineTo(x,y+r); ctx.quadraticCurveTo(x,y,x+r,y); ctx.closePath(); }
+function coverDraw(ctx,im,x,y,w,h){ var iw=im.naturalWidth||im.width||1, ih=im.naturalHeight||im.height||1; var ta=w/h,sa=iw/ih,sx=0,sy=0,sw=iw,sh=ih; if(sa>ta){ sw=ih*ta; sx=(iw-sw)/2; } else { sh=iw/ta; sy=(ih-sh)/2; } ctx.drawImage(im,sx,sy,sw,sh,x,y,w,h); }
+function drawCardImg(ctx,im,cx,cy,w,angle,o){
+  var h=w*88/63, r=w*3/63; ctx.save(); ctx.translate(cx,cy); ctx.rotate(angle||0);
+  if(o.shadow){ ctx.save(); ctx.shadowColor='rgba(15,23,42,0.38)'; ctx.shadowBlur=w*0.09; ctx.shadowOffsetX=w*0.02; ctx.shadowOffsetY=w*0.045; ctx.fillStyle='#fff'; rrect(ctx,-w/2,-h/2,w,h,r); ctx.fill(); ctx.restore(); }
+  ctx.save(); rrect(ctx,-w/2,-h/2,w,h,r); ctx.clip(); if(im) coverDraw(ctx,im,-w/2,-h/2,w,h); else { ctx.fillStyle='#e6e1d5'; ctx.fillRect(-w/2,-h/2,w,h); ctx.strokeStyle='#bdb6a4'; ctx.lineWidth=Math.max(1,w*0.012); ctx.setLineDash([w*0.05,w*0.035]); ctx.strokeRect(-w/2+w*0.07,-h/2+w*0.07,w*0.86,h-w*0.14); ctx.setLineDash([]); ctx.fillStyle='#bdb6a4'; ctx.beginPath(); ctx.arc(0,0,w*0.1,0,6.283); ctx.fill(); } ctx.restore();
+  ctx.lineWidth=Math.max(1,w*0.005); ctx.strokeStyle='rgba(0,0,0,0.28)'; rrect(ctx,-w/2,-h/2,w,h,r); ctx.stroke(); ctx.restore();
+}
+function mockSources(){ var out=[]; var n=STATE.faces.length; if(!n){ for(var j=0;j<9;j++) out.push(-1); return out; } for(var i=0;i<n;i++) out.push(i); return out; }
+function faceAt(i){ return i>=0?(STATE.faces[i]||null):null; }
+function boxFrontRec(){ return panelRec('front')||STATE.art['art-front']||backFor(0)||null; }
+async function drawFan(ctx,o,W,H,box,count,seedOff){
+  var u=Math.min(W,H); var idx=seededPick(mockSources(),count,o.seed+seedOff); var n=idx.length; var span=n>1?Math.min(60,12*(n-1)):0;
+  var cw=(box.w||u)*0.34; var capH=o.caption?0.1:0; var R=cw*88/63*0.52; var pivotX=box.cx!==undefined?box.cx:W/2; var pivotY=(box.mid!==undefined?box.mid+R*1.9:(box.cy!==undefined?box.cy:H*(0.78-capH*0.5)));
+  var order=idx.map(function(v,i){ return i; }).sort(function(a,b){ return Math.abs(b-(n-1)/2)-Math.abs(a-(n-1)/2); });
+  for(var q=0;q<order.length;q++){ var i=order[q]; var ang=n>1?(-span/2+span*i/(n-1))*Math.PI/180:0; var im=await getImg(faceAt(idx[i])); var cx=pivotX+Math.sin(ang)*R*1.9, cy=pivotY-Math.cos(ang)*R*1.9; drawCardImg(ctx,im,cx,cy,cw,ang,o); }
+}
+function boxGeom(W,H,o,areaW,areaH){ var d=boxDims(); var s=Math.min(areaW/(d.W+d.D*1.1),areaH/(d.H+d.D*0.6)); return {w:d.W*s,h:d.H*s,d:Math.max(d.D*s,d.W*s*0.1)}; }
+async function avgColor(im){ try{ var c=document.createElement('canvas'); c.width=12; c.height=12; var x=c.getContext('2d'); x.drawImage(im,0,0,12,12); var d=x.getImageData(0,0,12,12).data; var r=0,g=0,b=0,n=0; for(var k=0;k<d.length;k+=4){ r+=d[k]; g+=d[k+1]; b+=d[k+2]; n++; } return {r:Math.round(r/n),g:Math.round(g/n),b:Math.round(b/n)}; }catch(e){ return {r:170,g:150,b:110}; } }
+async function drawBox(ctx,o,x,y,g){
+  var frec=boxFrontRec(); var front=await getImg(frec); var w=g.w,h=g.h,d=g.d,sk=0.5; var avg=front?await avgColor(front):{r:216,g:198,b:163};
+  var sideIm=await getImg(panelRec('right')||STATE.art['art-right']||panelRec('left')||STATE.art['art-left']||null); var topIm=await getImg(panelRec('top')||STATE.art['art-top']||null);
+  ctx.save(); if(o.shadow){ ctx.shadowColor='rgba(15,23,42,0.42)'; ctx.shadowBlur=w*0.16; ctx.shadowOffsetY=h*0.05; ctx.shadowOffsetX=w*0.04; ctx.fillStyle='#777'; ctx.beginPath(); ctx.moveTo(x,y); ctx.lineTo(x+w,y); ctx.lineTo(x+w+d,y-d*sk); ctx.lineTo(x+w+d,y+h-d*sk); ctx.lineTo(x+w,y+h); ctx.lineTo(x,y+h); ctx.closePath(); ctx.fill(); } ctx.restore();
+  ctx.save(); ctx.beginPath(); ctx.rect(x,y,w,h); ctx.clip();
+  if(front) coverDraw(ctx,front,x,y,w,h); else { var gf=ctx.createLinearGradient(x,y,x+w,y+h); gf.addColorStop(0,'#e6e1d5'); gf.addColorStop(1,'#cfc7b4'); ctx.fillStyle=gf; ctx.fillRect(x,y,w,h); ctx.strokeStyle='#b3ab98'; ctx.lineWidth=Math.max(2,w*0.012); ctx.setLineDash([w*0.05,w*0.035]); ctx.strokeRect(x+w*0.08,y+w*0.08,w*0.84,h-w*0.16); ctx.setLineDash([]); }
+  ctx.restore();
+  /* right side */
+  ctx.save(); ctx.beginPath(); ctx.moveTo(x+w,y); ctx.lineTo(x+w+d,y-d*sk); ctx.lineTo(x+w+d,y+h-d*sk); ctx.lineTo(x+w,y+h); ctx.closePath(); ctx.clip();
+  if(sideIm){ ctx.transform(1,-sk,0,1,x+w,y); coverDraw(ctx,sideIm,0,0,d,h); }
+  else { var gs=ctx.createLinearGradient(x+w,0,x+w+d,0); gs.addColorStop(0,mixc(avg,0,0.20)); gs.addColorStop(1,mixc(avg,0,0.34)); ctx.fillStyle=gs; ctx.fillRect(x+w,y-d*sk,d,h+d*sk); }
+  ctx.restore();
+  /* top */
+  ctx.save(); ctx.beginPath(); ctx.moveTo(x,y); ctx.lineTo(x+d,y-d*sk); ctx.lineTo(x+w+d,y-d*sk); ctx.lineTo(x+w,y); ctx.closePath(); ctx.clip();
+  if(topIm){ ctx.transform(1,0,-1,sk,x+d,y-d*sk); coverDraw(ctx,topIm,0,0,w,d); }
+  else { var gt=ctx.createLinearGradient(0,y,0,y-d*sk); gt.addColorStop(0,mixc(avg,255,0.16)); gt.addColorStop(1,mixc(avg,255,0.06)); ctx.fillStyle=gt; ctx.fillRect(x,y-d*sk,w+d,d*sk); }
+  ctx.restore();
+  ctx.lineWidth=Math.max(1.5,w*0.004); ctx.strokeStyle='rgba(0,0,0,0.4)'; ctx.strokeRect(x,y,w,h); ctx.beginPath(); ctx.moveTo(x+w,y); ctx.lineTo(x+w+d,y-d*sk); ctx.lineTo(x+w+d,y+h-d*sk); ctx.lineTo(x+w,y+h); ctx.moveTo(x,y); ctx.lineTo(x+d,y-d*sk); ctx.lineTo(x+w+d,y-d*sk); ctx.stroke();
+}
+function drawCaption(ctx,W,H,o){
+  if(!o.caption) return; var u=Math.min(W,H); var c=hexRgb(o.bgColor); var dark=lum(c)<0.5; var txt=(o.captionText||STATE.setup.title||'').trim(); var brand=(STATE.setup.brand||'').trim();
+  ctx.fillStyle=dark?'#f3ead8':'#1b2535'; ctx.textAlign='center'; ctx.textBaseline='middle'; var fs=Math.round(u*0.052); ctx.font='800 '+fs+'px Futura,"Avenir Next Condensed","Arial Narrow",Arial,sans-serif';
+  while(txt&&ctx.measureText(txt).width>W*0.88&&fs>16){ fs-=3; ctx.font='800 '+fs+'px Futura,"Avenir Next Condensed","Arial Narrow",Arial,sans-serif'; }
+  if(txt) ctx.fillText(txt,W/2,H*(brand?0.925:0.94)); if(brand){ ctx.font='600 '+Math.round(u*0.026)+'px "Avenir Next",Arial,sans-serif'; ctx.globalAlpha=0.8; ctx.fillText('by '+brand,W/2,H*0.968); ctx.globalAlpha=1; }
+}
+async function renderMockup(o,scale){
+  scale=scale||1; var F=MFORMATS[o.format]||MFORMATS.square; var W=F.w,H=F.h; var c=document.createElement('canvas'); c.width=Math.max(1,Math.round(W*scale)); c.height=Math.max(1,Math.round(H*scale)); var ctx=c.getContext('2d'); ctx.scale(scale,scale);
+  paintBg(ctx,W,H,o); var u=Math.min(W,H); var N=mockSources().length; var capH=o.caption?0.1:0;
+  if(o.layout==='fan'){ await drawFan(ctx,o,W,H,{w:u},Math.min(7,Math.max(5,Math.min(N,7))),0); }
+  else if(o.layout==='flat'){ var n=Math.min(9,N); var cols=Math.min(3,n), rows=Math.ceil(n/cols); var idx=seededPick(mockSources(),n,o.seed); var g=u*0.03; var availW=W*0.84, availH=H*(0.82-capH); var cw=Math.min((availW-g*(cols-1))/cols,((availH-g*(rows-1))/rows)*63/88); var ch=cw*88/63; var gw=cols*cw+(cols-1)*g, gh=rows*ch+(rows-1)*g; var rr=mulberry(o.seed*31+7);
+    for(var i=0;i<n;i++){ var col=i%cols,row=Math.floor(i/cols); var im=await getImg(faceAt(idx[i])); drawCardImg(ctx,im,(W-gw)/2+col*(cw+g)+cw/2,(H*(0.5-capH/2)-gh/2)+row*(ch+g)+ch/2,cw,(rr()-0.5)*0.05,o); } }
+  else if(o.layout==='pile'){ var r2=mulberry(o.seed*17+3); var cnt=7; var cw2=u*0.4; var idx2=seededPick(mockSources(),Math.min(cnt,N),o.seed); for(var j=0;j<cnt;j++){ var isBack=j<cnt-1&&j%2===0; var rec=isBack?(backFor(idx2[j%idx2.length])||STATE.back):faceAt(idx2[j%idx2.length]); var im2=await getImg(rec); drawCardImg(ctx,im2,W/2+(r2()-0.5)*u*0.1,H*(0.5-capH/2)+(r2()-0.5)*u*0.08,cw2,(r2()-0.5)*0.45,o); } }
+  else if(o.layout==='hero'){ var pick=seededPick(mockSources(),1,o.seed)[0]; var cwh=Math.min(W*0.62,H*(0.8-capH)*63/88); var im3=await getImg(faceAt(pick)); drawCardImg(ctx,im3,W/2,H*(0.5-capH/2),cwh,-0.05,o); }
+  else if(o.layout==='boxhero'){ var gb=boxGeom(W,H,o,W*0.6,H*(0.76-capH)); await drawBox(ctx,o,(W-gb.w-gb.d)/2,H*(0.5-capH/2)-gb.h/2+gb.d*0.25,gb); }
+  else if(o.layout==='boxcards'){ var gb2=boxGeom(W,H,o,W*0.36,H*(0.7-capH)); await drawBox(ctx,o,W*0.07,H*(0.5-capH/2)-gb2.h/2+gb2.d*0.25,gb2); await drawFan(ctx,o,W,H,{w:u*0.78,cx:W*0.68,cy:H*(0.76-capH*0.5)},Math.min(5,Math.max(1,N)),3); }
+  drawCaption(ctx,W,H,o); return c;
+}
+function mockOpts(extra){ return Object.assign({},STATE.mock,extra||{}); }
+async function renderMockPreview(){
+  var cv=$('mockMain'); if(!cv) return; var seq=++_mockSeq; var big=await renderMockup(mockOpts(),0.4); if(seq!==_mockSeq) return; cv.width=big.width; cv.height=big.height; cv.getContext('2d').drawImage(big,0,0);
+  var st=$('mockStrip'); if(!st) return; st.innerHTML=''; for(var i=0;i<4;i++){ var seed=STATE.mock.seed+i; var t=await renderMockup(mockOpts({seed:seed}),0.14); if(seq!==_mockSeq) return; t.setAttribute('data-seed',seed); t.setAttribute('role','button'); t.setAttribute('aria-label','Variant '+(i+1)); t.tabIndex=0; if(i===0) t.className='sel'; (function(tt,sd){ tt.addEventListener('click',function(){ STATE.mock.seed=sd; renderMockPreview(); }); tt.addEventListener('keydown',function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); STATE.mock.seed=sd; renderMockPreview(); } }); })(t,seed); st.appendChild(t); }
+}
+var _mockSeq=0;
+function mockName(seed){ return slug(STATE.setup.title)+'-mockup-'+STATE.mock.layout+'-'+STATE.mock.format+(seed!==undefined?'-v'+seed:'')+'.png'; }
+function rememberMade(list,name,blob){ for(var i=0;i<list.length;i++) if(list[i].name===name){ list[i].blob=blob; return; } list.push({name:name,blob:blob}); }
+async function downloadMock(){ try{ var c=await renderMockup(mockOpts(),1); var blob=await canvasToBlob(c,'image/png'); var nm=mockName(); rememberMade(STATE.made.mockups,nm,blob); downloadBlob(blob,nm); toast('Mockup downloaded ('+c.width+' x '+c.height+').'); c.width=0; c.height=0; refreshChrome(); }catch(e){ toast('Could not render the mockup.','err'); } }
+async function downloadMockVariants(){
+  if(!hasZip()){ toast('The ZIP tool did not load.','err'); return; } try{ var zip=new window.JSZip(); var made=[]; for(var i=0;i<4;i++){ var seed=STATE.mock.seed+i; var c=await renderMockup(mockOpts({seed:seed}),1); var blob=await canvasToBlob(c,'image/png'); var nm=slug(STATE.setup.title)+'-mockup-'+STATE.mock.layout+'-'+STATE.mock.format+'-variant-'+(i+1)+'.png'; zip.file(nm,blob); made.push([nm,blob]); c.width=0; c.height=0; await yieldToUI(); } made.forEach(function(m){ rememberMade(STATE.made.mockups,m[0],m[1]); }); var z=await zip.generateAsync({type:'blob'}); downloadBlob(z,slug(STATE.setup.title)+'-mockup-variants.zip'); toast('4 variants downloaded.'); refreshChrome(); }catch(e){ toast('Could not build the variants.','err'); }
+}
+/* ================= photos: listing images ================= */
+var LPRESETS=[{name:'Kraft and copper',bg:'#E8D5B5',ink:'#1b2535',accent:'#C97B4A'},{name:'Ink and kraft',bg:'#101826',ink:'#EFE6D4',accent:'#C97B4A'},{name:'Paper and teal',bg:'#F6EFE2',ink:'#1B2A41',accent:'#17A398'},{name:'Custom',bg:null,ink:null,accent:null}];
+function limPalette(){ var L=STATE.lim; var p=LPRESETS[L.preset]||LPRESETS[0]; return p.bg?{bg:p.bg,ink:p.ink,accent:p.accent}:{bg:L.bg,ink:L.ink,accent:L.accent}; }
+function productLabel(){ return STATE.sell.product==='printable'?'Printable PDF':(STATE.sell.product==='boxed'?'Boxed game':''); }
+function listingLines(){
+  var S=STATE.setup, g=gameFacts(), N=deckN(), sh=sheetCount(), P=PAPERS[S.paper]||PAPERS.a4; var prod=STATE.sell.product; var out={};
+  out.cover={title:g.title,count:N+' cards',label:productLabel(),brand:g.brand?'by '+g.brand:''};
+  var inc=[]; inc.push(N+' card faces'); inc.push(STATE.unique?'Unique card backs':'1 card back design');
+  if(prod==='printable') { inc.push(sh+' print sheets of faces + '+sh+' of backs ('+P.label+')'); inc.push('Alignment test and print instructions'); }
+  if(rulesReady()) inc.push('Rules booklet'); if(rulesReady()&&keyAvailable()&&STATE.rules.key) inc.push('Answer key (host only)'); if(!STATE.box.skip&&prod!=='boxed') inc.push('Box template (PDF)');
+  if(prod==='boxed') inc.push('Tuck-end box');
+  out.included=inc;
+  var play=[]; if(S.type) play.push(S.type); if(S.players) play.push('Players: '+S.players); if(S.time) play.push('Play time: '+S.time); if(S.ages) play.push('Ages: '+S.ages); play.push(N+' cards'); out.plays=play;
+  var info=['Card size: Poker, 63 x 88 mm']; if(prod==='printable'){ info.push('Paper: '+P.label); info.push('9 cards per sheet'); info.push(sh+' sheets of faces and '+sh+' of backs'); } else { info.push(N+' cards in the deck'); if(!STATE.box.skip){ var d=boxDims(); info.push('Box inner size: '+r1(d.W)+' x '+r1(d.H)+' x '+r1(d.D)+' mm'); } } out.info=info;
+  var steps; if(prod==='printable'){ steps=['Print the sheets double-sided, flip on the long edge','Cut along the crop marks']; steps.push((!STATE.box.skip)?'Sort the cards and fold the box template':'Sort the cards and you are ready to play'); } else { steps=['Open the box','Shuffle the deck']; steps.push(rulesReady()?'Read the rules booklet and play':'Deal and play'); } out.assemble={title:prod==='printable'?'How to print and assemble':'How to get started',steps:steps};
+  return out;
+}
+function wrapCtx(ctx,txt,maxW){ var words=String(txt).split(/\s+/),lines=[],cur=''; words.forEach(function(w){ var t=cur?cur+' '+w:w; if(ctx.measureText(t).width>maxW&&cur){ lines.push(cur); cur=w; } else cur=t; }); if(cur) lines.push(cur); return lines; }
+function fontHead(px){ return '800 '+px+'px Futura,"Avenir Next Condensed","Arial Narrow",Arial,sans-serif'; }
+function fontBody(px,w){ return (w||600)+' '+px+'px "Avenir Next","Segoe UI",Arial,sans-serif'; }
+function bulletLayout(x,items,fontPx,maxW,u,k){ var step=u*0.075*k, lh=u*0.055*k, y=0, rows=[]; x.font=fontBody(fontPx*k,700); items.forEach(function(t){ var ls=wrapCtx(x,t,maxW); rows.push({y:y,ls:ls}); y+=step+(ls.length-1)*lh; }); return {rows:rows,h:y,step:step,lh:lh,k:k}; }
+function fitBullets(x,items,fontPx,maxW,u,startY,limitY){ var ks=[1,0.92,0.84,0.76,0.68,0.6], L=null; for(var i=0;i<ks.length;i++){ L=bulletLayout(x,items,fontPx,maxW,u,ks[i]); if(startY+L.h-L.step+L.lh*0.6<=limitY) break; } return L; }
+function drawBullets(x,pal,L,left,startY,u,fontPx){ x.textAlign='left'; x.textBaseline='middle'; x.font=fontBody(fontPx*L.k,700); L.rows.forEach(function(r){ x.fillStyle=pal.accent; x.fillRect(left,startY+r.y-u*0.012*L.k,u*0.025*L.k,u*0.025*L.k); x.fillStyle=pal.ink; r.ls.forEach(function(l,m){ x.fillText(l,left+u*0.05,startY+r.y+m*L.lh); }); }); return startY+L.h-L.step+L.lh*0.6; }
+async function renderListing(i,fmt,pal,scale){
+  scale=scale||1; var F=MFORMATS[fmt]||MFORMATS.square; var W=F.w,H=F.h; var c=document.createElement('canvas'); c.width=Math.round(W*scale); c.height=Math.round(H*scale); var x=c.getContext('2d'); x.scale(scale,scale);
+  x.fillStyle=pal.bg; x.fillRect(0,0,W,H); var pp=paperPat(x); if(pp){ x.fillStyle=pp; x.fillRect(0,0,W,H); } var u=Math.min(W,H); var L=listingLines(); var N=mockSources().length; var o={shadow:true};
+  x.strokeStyle=pal.accent; x.lineWidth=u*0.006; x.setLineDash([u*0.02,u*0.015]); x.strokeRect(u*0.035,u*0.035,W-u*0.07,H-u*0.07); x.setLineDash([]);
+  var title=function(txt,y,size){ x.fillStyle=pal.ink; x.textAlign='center'; x.textBaseline='middle'; x.font=fontHead(size); var ls=wrapCtx(x,txt,W*0.82); var fs=size; while(ls.length>3&&fs>40){ fs-=6; x.font=fontHead(fs); ls=wrapCtx(x,txt,W*0.82); } ls.forEach(function(l,k){ x.fillText(l,W/2,y+k*fs*1.08); }); return y+(ls.length-1)*fs*1.08+fs*0.6; };
+  var accentBar=function(y){ x.fillStyle=pal.accent; x.fillRect(W/2-u*0.08,y,u*0.16,u*0.012); };
+  var imgs=function(n,seed){ return seededPick(mockSources(),Math.min(n,N),seed); };
+  if(i===0){
+    var y=title(L.cover.title,H*0.2,u*0.1); accentBar(y+u*0.02); x.fillStyle=pal.ink; x.font=fontBody(u*0.05,700); x.fillText(L.cover.count,W/2,y+u*0.09);
+    if(L.cover.label){ x.fillStyle=pal.accent; var tw=x.measureText(L.cover.label).width; x.font=fontBody(u*0.04,800); tw=x.measureText(L.cover.label).width; rrect(x,W/2-tw/2-u*0.03,y+u*0.14,tw+u*0.06,u*0.07,u*0.012); x.fill(); x.fillStyle=pal.bg; x.textBaseline='middle'; x.fillText(L.cover.label,W/2,y+u*0.175); }
+    if(STATE.sell.product==='boxed'&&!STATE.box.skip){ var g=boxGeom(W,H,o,W*0.42,H*0.34); await drawBox(x,o,(W-g.w-g.d)/2,H*0.72-g.h/2,g); } else { var top0=y+u*0.24; var avail=H*0.94-top0; var cwF=Math.min(u*0.3,avail*0.62*63/88/1.0); await drawFan(x,Object.assign({seed:3,caption:false},o),W,H,{w:cwF/0.34,mid:top0+avail*0.5},5,0); }
+    if(L.cover.brand){ x.fillStyle=pal.ink; x.font=fontBody(u*0.03,600); x.textBaseline='middle'; x.fillText(L.cover.brand,W/2,H*0.955); }
+  } else if(i===1){
+    var ty1=title("What's included",H*0.12,u*0.085); accentBar(ty1+u*0.015); var sy1=Math.max(H*0.27,ty1+u*0.09); var lim=H-u*0.075;
+    var BL=fitBullets(x,L.included,u*0.045,W*0.76-u*0.05,u,sy1,lim-u*0.12); var bt=drawBullets(x,pal,BL,W*0.12,sy1,u,u*0.045);
+    var top1=bt+u*0.035, av1=lim-top1; var cw1=Math.min(W*0.17,u*0.17,av1*0.84*63/88);
+    if(cw1>=u*0.07){ var im=imgs(4,5); for(var k=0;k<im.length;k++){ var ii=await getImg(faceAt(im[k])); drawCardImg(x,ii,W*(0.2+0.2*k),top1+av1/2,cw1,(k-1.5)*0.06,o); } }
+  } else if(i===2){
+    var ty2=title('How it plays',H*0.12,u*0.085); accentBar(ty2+u*0.015); x.textAlign='center'; x.textBaseline='middle'; x.fillStyle=pal.ink; x.font=fontBody(u*0.055,700); var y2=Math.max(H*0.27,ty2+u*0.09); L.plays.forEach(function(t){ x.fillText(t,W/2,y2); y2+=u*0.07; });
+    var lim2=H-u*0.075, top2=y2-u*0.035+u*0.03, av2=lim2-top2; var cw2=Math.min(W*0.3,u*0.26,av2*0.9*63/88);
+    if(cw2>=u*0.08){ var hi=await getImg(faceAt(imgs(1,9)[0])); drawCardImg(x,hi,W/2,top2+av2/2,cw2,-0.05,o); }
+  } else if(i===3){
+    var ty3=title('Card size and print info',H*0.12,u*0.075); accentBar(ty3+u*0.015); var sy3=Math.max(H*0.27,ty3+u*0.09); var lim3=H-u*0.075;
+    var BL3=fitBullets(x,L.info,u*0.044,W*0.76-u*0.05,u,sy3,lim3-u*0.3); var bt3=drawBullets(x,pal,BL3,W*0.12,sy3,u,u*0.044);
+    var top3=bt3+u*0.03, av3=lim3-top3-u*0.1; var cw3=Math.min(W*0.26,u*0.22,av3*0.92*63/88);
+    if(cw3>=u*0.08){ var ci=await getImg(faceAt(imgs(1,2)[0])); var ch3=cw3*88/63; var cy3=top3+ch3/2; drawCardImg(x,ci,W*0.5,cy3,cw3,0,o); x.strokeStyle=pal.accent; x.lineWidth=u*0.004; x.beginPath(); x.moveTo(W*0.5-cw3/2,cy3+ch3/2+u*0.025); x.lineTo(W*0.5+cw3/2,cy3+ch3/2+u*0.025); x.stroke(); x.fillStyle=pal.ink; x.textAlign='center'; x.textBaseline='middle'; x.font=fontBody(u*0.028,700); x.fillText('63 mm',W*0.5,cy3+ch3/2+u*0.058); }
+  } else {
+    var ty4=title(L.assemble.title,H*0.12,u*0.075); accentBar(ty4+u*0.015); var bw=W*0.76, bh=u*0.13, by=H*0.28; L.assemble.steps.forEach(function(t,k){ x.fillStyle='rgba(0,0,0,0.06)'; rrect(x,W*0.12,by,bw,bh,u*0.02); x.fill(); x.fillStyle=pal.accent; x.beginPath(); x.arc(W*0.12+bh/2,by+bh/2,bh*0.32,0,6.283); x.fill(); x.fillStyle=pal.bg; x.font=fontHead(bh*0.4); x.textAlign='center'; x.textBaseline='middle'; x.fillText(String(k+1),W*0.12+bh/2,by+bh/2); x.fillStyle=pal.ink; x.textAlign='left'; x.font=fontBody(u*0.034,700); var ls=wrapCtx(x,t,bw-bh*1.3); ls.slice(0,2).forEach(function(l,m){ x.fillText(l,W*0.12+bh*1.05,by+bh/2+(m-(Math.min(ls.length,2)-1)/2)*u*0.042); }); by+=bh+u*0.035; });
+  }
+  return c;
+}
+var LNAMES=['cover','included','how-it-plays','card-size','print-and-assemble'];
+async function renderListingGrid(){
+  var box=$('limgs'); if(!box) return; var seq=++_limSeq; var pal=limPalette(); box.innerHTML='';
+  for(var i=0;i<5;i++){ var c=await renderListing(i,STATE.lim.format,pal,0.12); if(seq!==_limSeq) return; var f=document.createElement('figure'); c.setAttribute('aria-label','Listing image '+(i+1)); f.appendChild(c); var cap=document.createElement('figcaption'); cap.textContent=(i+1)+'. '+['Cover','What is included','How it plays','Card size and print info','How to print and assemble'][i]; f.appendChild(cap); box.appendChild(f); }
+}
+var _limSeq=0;
+async function downloadListingZip(){
+  if(!hasZip()){ toast('The ZIP tool did not load.','err'); return; } try{ var zip=new window.JSZip(); var pal=limPalette(); var made=[]; for(var i=0;i<5;i++){ var c=await renderListing(i,STATE.lim.format,pal,1); var blob=await canvasToBlob(c,'image/png'); var nm=String(i+1).padStart(2,'0')+'-'+LNAMES[i]+'.png'; zip.file(nm,blob); made.push([slug(STATE.setup.title)+'-listing-'+nm,blob]); c.width=0; c.height=0; await yieldToUI(); } made.forEach(function(m){ rememberMade(STATE.made.listing,m[0],m[1]); }); var z=await zip.generateAsync({type:'blob'}); downloadBlob(z,slug(STATE.setup.title)+'-listing-images.zip'); toast('5 listing images downloaded.'); refreshChrome(); }catch(e){ toast('Could not build the listing images.','err'); }
+}
+/* ================= photos station UI ================= */
+var PHOTO_TABS=[['mockup','Mockup Builder'],['listing','Listing Images'],['prompts','Photo prompts']];
+function selPhotoTab(id,focus){ STATE.photoTab=id; document.querySelectorAll('#photoTabs .tab').forEach(function(b){ var on=b.id==='ptab-'+id; b.setAttribute('aria-selected',on?'true':'false'); b.tabIndex=on?0:-1; if(on&&focus) b.focus(); }); document.querySelectorAll('#photoPanels .tabpanel').forEach(function(p){ p.hidden=p.id!=='ppanel-'+id; }); if(id==='mockup') renderMockPreview(); if(id==='listing') renderListingGrid(); }
+function fmtOptions(sel){ return Object.keys(MFORMATS).map(function(k){ return '<option value="'+k+'"'+(k===sel?' selected':'')+'>'+esc(MFORMATS[k].label)+'</option>'; }).join(''); }
+function renderPhotos(){
+  var tab=STATE.photoTab||'mockup'; STATE.photoTab=tab; var M=STATE.mock, L=STATE.lim;
+  $('photoTabs').innerHTML=PHOTO_TABS.map(function(t){ var on=tab===t[0]; return '<button type="button" role="tab" class="tab" id="ptab-'+t[0]+'" aria-selected="'+on+'" aria-controls="ppanel-'+t[0]+'" tabindex="'+(on?0:-1)+'">'+esc(t[1])+'</button>'; }).join('');
+  var mk=mockupPrompts();
+  var mock='<p class="hint" style="margin:0 0 10px">Built from your own card faces and box art, in your browser. Rounded corners match a 3 mm radius at print size.</p><div class="mockwrap"><div class="ctl"><div class="fld"><label class="lbl" for="mLayout">Layout</label><select id="mLayout">'+MLAYOUTS.map(function(l){ return '<option value="'+l[0]+'"'+(l[0]===M.layout?' selected':'')+'>'+esc(l[1])+'</option>'; }).join('')+'</select></div><div class="fld" style="margin-top:10px"><label class="lbl" for="mFormat">Format</label><select id="mFormat">'+fmtOptions(M.format)+'</select></div><div class="fld" style="margin-top:10px"><label class="lbl" for="mBg">Background</label><select id="mBg"><option value="gradient"'+(M.bg==='gradient'?' selected':'')+'>Soft gradient</option><option value="solid"'+(M.bg==='solid'?' selected':'')+'>Solid color</option><option value="paper"'+(M.bg==='paper'?' selected':'')+'>Paper texture</option></select></div><div class="fld" style="margin-top:10px"><label class="lbl" for="mBgColor">Background color</label><input type="color" id="mBgColor" value="'+M.bgColor+'" style="width:100%;height:44px"></div><div class="row"><label><input type="checkbox" id="mShadow"'+(M.shadow?' checked':'')+'>Shadow</label><label><input type="checkbox" id="mCaption"'+(M.caption?' checked':'')+'>Caption</label></div><div class="fld"><label class="lbl" for="mCaptionText">Caption text</label><input type="text" id="mCaptionText" maxlength="80" value="'+esc(M.captionText||STATE.setup.title||'')+'" placeholder="Deck title"></div><div class="row"><button type="button" class="btn" id="mSeed">New card selection</button></div><div class="need" id="needMock" hidden></div><div class="row"><button type="button" class="btn primary" id="mDl">Download PNG</button><button type="button" class="btn" id="mDlAll">Download all variants (.zip)</button></div><p class="hint" id="mInfo"></p></div><div class="view"><canvas id="mockMain" class="mockcv" aria-label="Mockup preview"></canvas><div class="vstrip" id="mockStrip" aria-label="Variants"></div></div></div>';
+  var lst='<p class="hint" style="margin:0 0 10px">A numbered set of 5 listing images. The text comes only from your setup fields.</p><div class="grid"><div class="fld"><label class="lbl" for="lFormat">Format</label><select id="lFormat">'+fmtOptions(L.format)+'</select></div><div class="fld"><label class="lbl" for="lPreset">Palette</label><select id="lPreset">'+LPRESETS.map(function(p,i){ return '<option value="'+i+'"'+(i===L.preset?' selected':'')+'>'+esc(p.name)+'</option>'; }).join('')+'</select></div></div><div class="row" id="lCustom" '+(L.preset===3?'':'hidden')+'><label>Background <input type="color" id="lBg" value="'+L.bg+'"></label><label>Text <input type="color" id="lInk" value="'+L.ink+'"></label><label>Accent <input type="color" id="lAcc" value="'+L.accent+'"></label></div><div class="need" id="needLim" hidden></div><div class="row"><button type="button" class="btn primary" id="lDl">Download all 5 (.zip)</button></div><div class="limgs" id="limgs"></div>';
+  var prm='<p class="hint" style="margin:0 0 10px">Prefer AI photos? Six ChatGPT prompts. Attach your card faces, card back and box artwork to the chat first. Pick a scene for each one, or write your own.</p><div class="row"><button type="button" class="btn kraft" id="btnShuffleScenes">Shuffle all scenes</button></div>'+mk.map(function(m,i){ var sc=STATE.scenes.photo[i]; return '<div class="pbox"><h4>'+esc(m.title)+'</h4><div class="fld"><label class="lbl" for="sc-'+i+'">Scene</label><select id="sc-'+i+'" data-sc="'+i+'">'+SCENE_MODES.map(function(o){ return '<option value="'+o[0]+'"'+(sc.mode===o[0]?' selected':'')+'>'+esc(o[1])+'</option>'; }).join('')+'</select></div><div class="fld" id="sow-'+i+'"'+(sc.mode==='own'?'':' hidden')+'><label class="lbl" for="so-'+i+'">Describe the scene in one or two sentences</label><textarea id="so-'+i+'" data-so="'+i+'" maxlength="300" style="min-height:70px">'+esc(sc.own)+'</textarea></div><textarea class="prompt" id="mp-'+i+'" readonly aria-label="'+esc(m.title)+'" style="min-height:230px">'+esc(m.text)+'</textarea><div class="row"><button type="button" class="btn" data-cp="mp-'+i+'">Copy prompt</button></div></div>'; }).join('');
+  var P={mockup:mock,listing:lst,prompts:prm};
+  $('photoPanels').innerHTML=PHOTO_TABS.map(function(t){ return '<div class="tabpanel" role="tabpanel" id="ppanel-'+t[0]+'" aria-labelledby="ptab-'+t[0]+'"'+(tab===t[0]?'':' hidden')+'>'+P[t[0]]+'</div>'; }).join('');
+  $('photoTabs').querySelectorAll('.tab').forEach(function(b){ b.addEventListener('click',function(){ selPhotoTab(b.id.slice(5)); }); b.addEventListener('keydown',function(e){ var ids=PHOTO_TABS.map(function(t){ return t[0]; }); var i=ids.indexOf(b.id.slice(5)); if(e.key==='ArrowRight') i=(i+1)%ids.length; else if(e.key==='ArrowLeft') i=(i+ids.length-1)%ids.length; else return; e.preventDefault(); selPhotoTab(ids[i],true); }); });
+  var up=function(){ renderMockPreview(); updMockInfo(); updateGates(); };
+  $('mLayout').addEventListener('change',function(){ M.layout=$('mLayout').value; up(); }); $('mFormat').addEventListener('change',function(){ M.format=$('mFormat').value; up(); }); $('mBg').addEventListener('change',function(){ M.bg=$('mBg').value; up(); }); $('mBgColor').addEventListener('input',function(){ M.bgColor=$('mBgColor').value; up(); });
+  $('mShadow').addEventListener('change',function(){ M.shadow=$('mShadow').checked; up(); }); $('mCaption').addEventListener('change',function(){ M.caption=$('mCaption').checked; up(); }); $('mCaptionText').addEventListener('input',function(){ M.captionText=$('mCaptionText').value; up(); });
+  $('mSeed').addEventListener('click',function(){ M.seed+=4; up(); }); $('mDl').addEventListener('click',downloadMock); $('mDlAll').addEventListener('click',downloadMockVariants);
+  $('lFormat').addEventListener('change',function(){ L.format=$('lFormat').value; renderListingGrid(); }); $('lPreset').addEventListener('change',function(){ L.preset=parseInt($('lPreset').value,10); $('lCustom').hidden=L.preset!==3; renderListingGrid(); });
+  ['lBg','lInk','lAcc'].forEach(function(id){ $(id).addEventListener('input',function(){ L[{lBg:'bg',lInk:'ink',lAcc:'accent'}[id]]=$(id).value; renderListingGrid(); }); }); $('lDl').addEventListener('click',downloadListingZip);
+  var refreshPhotoPrompt=function(i){ $('mp-'+i).value=mockupPrompts()[i].text; };
+  $('photoPanels').querySelectorAll('select[data-sc]').forEach(function(sel){ sel.addEventListener('change',function(){ var i=parseInt(sel.getAttribute('data-sc'),10); STATE.scenes.photo[i].mode=sel.value; $('sow-'+i).hidden=sel.value!=='own'; refreshPhotoPrompt(i); }); });
+  $('photoPanels').querySelectorAll('textarea[data-so]').forEach(function(ta){ ta.addEventListener('input',function(){ var i=parseInt(ta.getAttribute('data-so'),10); STATE.scenes.photo[i].own=ta.value.slice(0,300); refreshPhotoPrompt(i); }); });
+  $('btnShuffleScenes').addEventListener('click',function(){ shuffleScenes(); STATE.scenes.photo.forEach(function(p,i){ $('sc-'+i).value=p.mode; $('sow-'+i).hidden=p.mode!=='own'; refreshPhotoPrompt(i); }); });
+  $('photoPanels').querySelectorAll('button[data-cp]').forEach(function(b){ b.addEventListener('click',function(){ copyString($(b.getAttribute('data-cp')).value,b); }); });
+  updMockInfo(); updateGates(); selPhotoTab(tab);
+}
+function updMockInfo(){ var e=$('mInfo'); if(!e) return; e.textContent=MFORMATS[STATE.mock.format].label+'.'; }
+/* ================= preflight ================= */
+function preflightItems(){
+  var N=STATE.faces.length, exp=Math.max(1,parseInt(STATE.setup.cards,10)||1); var it=[]; var add=function(id,label,state,detail){ it.push({id:id,label:label,state:state,detail:detail||''}); };
+  add('faces','Faces count matches the card count',N===0?'red':(N===exp?'green':'amber'),N+' faces loaded, '+exp+' expected');
+  add('back','Card back present',backFor(0)?'green':'red',backFor(0)?(STATE.unique?STATE.ubacks.length+' unique backs':'1 back image'):'No back image');
+  var soft=[],asp=[]; STATE.faces.forEach(function(f,i){ if(f.w<750||f.h<1050) soft.push(i+1); var ar=f.w/f.h,t=63/88; if(f.h&&Math.abs(ar-t)/t>0.03) asp.push(i+1); });
+  add('res','Image size 750 x 1050 px or larger',soft.length?'amber':'green',soft.length?'Below 750 x 1050 px: card'+(soft.length>1?'s ':' ')+'#'+soft.join(', #'):'All faces are large enough');
+  add('aspect','Aspect ratio close to 63:88',asp.length?'amber':'green',asp.length?'More than 3% off: card'+(asp.length>1?'s ':' ')+'#'+asp.join(', #'):'All faces match');
+  add('title','Deck title filled',String(STATE.setup.title||'').trim()?'green':'red',STATE.setup.title||'Title is empty');
+  add('brand','Brand name filled',String(STATE.setup.brand||'').trim()?'green':'amber',STATE.setup.brand||'No brand set: images and prompts print no brand line');
+  add('box','Box template exported or skipped',(STATE.box.skip||STATE.flags.boxExported)?'green':'amber',STATE.box.skip?'Skipped (printable only)':(STATE.flags.boxExported?'Exported':'Not exported yet'));
+  add('rules','Rules booklet exported or skipped',(STATE.rules.skip||STATE.rules.exported)?'green':'amber',STATE.rules.skip?'Skipped':(STATE.rules.exported?'Exported':'Not exported yet'));
+  add('listing','Listing prompt copied',STATE.flags.copiedListing?'green':'amber',STATE.flags.copiedListing?'Copied':'Not copied yet');
+  var ph=STATE.made.mockups.length+STATE.made.listing.length; add('photos','Photos created',ph?'green':'amber',ph?ph+' image'+(ph===1?'':'s')+' created':'No photos created yet');
+  return it;
+}
+function renderPreflight(){
+  var el=$('preflight'); if(!el) return; var L=preflightItems(); var c={green:0,amber:0,red:0}; L.forEach(function(x){ c[x.state]++; });
+  el.innerHTML='<div class="msg" style="margin-bottom:8px"><b>'+c.green+' green, '+c.amber+' amber, '+c.red+' red</b></div>'+L.map(function(x){ return '<div class="pf" data-state="'+x.state+'"><span class="dot '+x.state+'" aria-hidden="true"></span><div><b>'+esc(x.label)+' <small>('+x.state+')</small></b><span>'+esc(x.detail)+'</span></div></div>'; }).join('');
+}
+
+/* ================= UI ================= */
+var STEPS=[{n:1,name:'Load',req:true},{n:2,name:'Print sheets',req:true},{n:3,name:'Box & Rules',req:true},{n:4,name:'Photos',req:false},{n:5,name:'Sell',req:false},{n:6,name:'Launch',req:true}];
+var _boxSeq=0;
+function s1Info(){
+  var S=STATE.setup, N=STATE.faces.length, exp=Math.max(1,parseInt(S.cards,10)||1); var msgs=[]; var block=[];
+  if(!N) block.push('Add at least one card face.');
+  if(!backFor(0)) block.push(STATE.unique?'Add at least one back image in unique backs mode, or turn the mode off and add one card back.':'Add one card back image.');
+  if(!String(S.title||'').trim()) block.push('Enter a deck title.');
+  var off=0,soft=0; STATE.faces.forEach(function(f){ var ar=f.w/f.h, t=63/88; if(f.h&&Math.abs(ar-t)/t>0.03) off++; if(f.w<750||f.h<1050) soft++; });
+  if(N&&N!==exp) msgs.push(['warn',N+' faces loaded but the setup says '+exp+' cards. Check your files or change the card count.']);
+  if(off) msgs.push(['warn',off+' image'+(off===1?' has':'s have')+' an aspect ratio more than 3% away from 63:88. They will be cropped to fit the card.']);
+  if(soft) msgs.push(['warn',soft+' image'+(soft===1?' is':'s are')+' below 750 x 1050 px and may look soft when printed.']);
+  if(STATE.unique&&STATE.ubacks.length&&STATE.ubacks.length!==N&&N) msgs.push(['warn','Unique backs mode: '+STATE.ubacks.length+' backs for '+N+' faces. Missing backs reuse the last back image.']);
+  if(STATE.back){ var b=STATE.back; var ar2=b.w/b.h, t2=63/88; if(b.h&&Math.abs(ar2-t2)/t2>0.03) msgs.push(['warn','The card back has an aspect ratio more than 3% away from 63:88 and will be cropped.']); if(b.w<750||b.h<1050) msgs.push(['warn','The card back is below 750 x 1050 px and may look soft when printed.']); }
+  if(!block.length&&!msgs.length) msgs.push(['ok','All checks passed: '+N+' faces and a card back are loaded.']);
+  return {N:N,exp:exp,msgs:msgs,block:block,valid:!block.length};
+}
+function stepValid(n){
+  if(n===1) return s1Info().valid;
+  if(n===6) return CHECKLIST_ITEMS.every(function(it){ return STATE.checklist[it[0]]; });
+  return true;
+}
+function hv(){ return {faces:STATE.faces.length>0, back:!!backFor(0), title:!!String(STATE.setup.title||'').trim()}; }
+/* status shown on the stepper: nothing is locked */
+function stepStatus(n){
+  var H=hv();
+  if(n===1) return s1Info().valid?'done':'needs input';
+  if(n===2) return (H.faces&&H.back)?'done':'needs input';
+  if(n===3) return (STATE.box.skip||STATE.flags.boxExported||STATE.rules.exported||rulesReady())?'done':'optional';
+  if(n===4) return (STATE.made.mockups.length+STATE.made.listing.length)>0?'done':'optional';
+  if(n===5) return !H.title?'needs input':(STATE.flags.copiedListing?'done':'optional');
+  return stepValid(6)?'done':'needs input';
+}
+function stepDone(n){ return stepStatus(n)==='done'; }
+function goStep(n){
+  n=clamp(n,1,6);
+  if(STATE.step!==n) STATE.vis[STATE.step]=true;
+  STATE.step=n;
+  document.querySelectorAll('.station').forEach(function(s){ s.classList.toggle('active',s.id==='st'+n); });
+  enterStep(n); refreshChrome(); window.scrollTo({top:0,behavior:'auto'});
+}
+function enterStep(n){
+  if(n===1) renderS1();
+  if(n===2){ syncPrintInputs(); renderSheetPreview(); renderPrintSteps(); }
+  if(n===3){ renderS3(); renderRulesCard(); }
+  if(n===4) renderPhotos();
+  if(n===5) renderSell();
+  if(n===6) renderLaunch();
+  checkLibs();
+}
+/* stepper: built once, then updated in place so a click is never lost to a re-render */
+function buildStepper(){
+  var h='<div class="pg-head"><strong id="pgNum"></strong><span id="pgName"></span></div><div class="steps" role="list">';
+  STEPS.forEach(function(S){ h+='<button type="button" class="sbtn" data-st="'+S.n+'"><span class="n">'+S.n+'</span><span class="l">'+esc(S.name)+'</span><span class="s"></span></button>'; });
+  $('stepper').innerHTML=h+'</div>';
+  $('stepper').querySelectorAll('.sbtn').forEach(function(b){ b.addEventListener('click',function(){ goStep(parseInt(b.getAttribute('data-st'),10)); }); });
+}
+function updateStepper(){
+  $('pgNum').textContent='Station '+STATE.step+' of 6'; $('pgName').textContent=STEPS[STATE.step-1].name;
+  $('stepper').querySelectorAll('.sbtn').forEach(function(b){
+    var n=parseInt(b.getAttribute('data-st'),10); var st=stepStatus(n); var cur=n===STATE.step;
+    b.classList.toggle('cur',cur); b.classList.toggle('done',st==='done'&&!cur); b.classList.toggle('need',st==='needs input');
+    var nn=b.querySelector('.n'); var t=(st==='done'&&!cur)?'\u2713':String(n); if(nn.textContent!==t) nn.textContent=t;
+    var ss=b.querySelector('.s'); if(ss.textContent!==st) ss.textContent=st;
+    if(cur) b.setAttribute('aria-current','step'); else b.removeAttribute('aria-current');
+    b.setAttribute('aria-label','Station '+n+': '+STEPS[n-1].name+', '+st); b.title=st;
+  });
+  document.querySelectorAll('[data-badge]').forEach(function(e){ var st=stepStatus(parseInt(e.getAttribute('data-badge'),10)); var lab=st==='done'?'Done':(st==='optional'?'Optional':'Needs input'); if(e.textContent!==lab) e.textContent=lab; e.className='badge '+(st==='needs input'?'req':'opt'); });
+}
+function buildPkg(){
+  var pk=$('pkg'); pk.innerHTML='<button type="button" class="pkg-toggle" id="pkgToggle" aria-expanded="false" aria-controls="pkgBody"><span>Your Package</span><span id="pkgTitle"></span></button><div class="pb" id="pkgBody"></div>';
+  $('pkgToggle').addEventListener('click',function(){ var o=pk.classList.toggle('open'); this.setAttribute('aria-expanded',o?'true':'false'); });
+}
+function refreshPkg(){
+  var S=STATE.setup, i1=s1Info(); var d=boxDims(); var rows=[['Game',(S.title||'Untitled')+' ('+S.type+')'],['Cards',i1.N+' faces of '+i1.exp+(backFor(0)?' + back':' (no back yet)')],['Print',sheetCount()+' + '+sheetCount()+' sheets ('+(PAPERS[S.paper]||PAPERS.a4).label+')'],['Box',STATE.box.skip?'Skipped (printable only)':r1(d.W)+' x '+r1(d.H)+' x '+r1(d.D)+' mm inner']];
+  rows.push(['Rules booklet',STATE.rules.skip?'Skipped':(rulesReady()?'Ready':'Not set yet')]); rows.push(['Photos',(STATE.made.mockups.length+STATE.made.listing.length)+' images created']);
+  if(S.brand) rows.push(['Brand',S.brand]);
+  $('pkgTitle').textContent=S.title||'';
+  $('pkgBody').innerHTML='<h3>Your Package</h3><dl>'+rows.map(function(r){ return '<div><dt>'+r[0]+'</dt><dd>'+esc(r[1])+'</dd></div>'; }).join('')+'</dl><ol>'+STEPS.map(function(St){ var sts=stepStatus(St.n); var cls=sts==='done'?'done':(St.n===STATE.step?'cur':''); var lab=sts==='done'?'Done':(sts==='optional'?'Optional':'Needs input'); return '<li class="'+cls+'"><span class="d">'+(sts==='done'?'&#10003;':St.n)+'</span>'+esc(St.name)+'<em>'+lab+'</em></li>'; }).join('')+'</ol><p class="hint" style="margin:10px 0 0">Every station is open. Each tool tells you what it needs.</p>';
+}
+function updateNav(){
+  var n=STATE.step; var nx=STEPS[n]; $('btnBack').style.visibility=n>1?'visible':'hidden'; $('btnBack').textContent=n>1?'\u2190 Back: '+STEPS[n-2].name:'Back';
+  var b=$('btnNext'); if(nx){ b.style.visibility='visible'; b.textContent='Next: '+nx.name+' \u2192'; b.disabled=false; $('navHint').textContent=''; } else { b.style.visibility='hidden'; $('navHint').textContent=stepValid(6)?'Everything on the checklist is ticked. Download your Launch Pack.':'Tick every item on the checklist to finish.'; }
+}
+/* ---- per-tool needs: a tool disables only its own buttons and says what is missing ---- */
+function joinAnd(a){ return a.length<2?a.join(''):a.slice(0,-1).join(', ')+' and '+a[a.length-1]; }
+function setNeed(id,items,soft,lead){
+  var e=$(id); if(!e) return; if(!items||!items.length){ if(!e.hidden){ e.hidden=true; e.innerHTML=''; } return; }
+  var h='<div class="msg '+(soft?'':'warn')+'" role="status">'+(lead?'<b>'+esc(lead)+'</b> ':'')+items.map(function(it){ return esc(it[0])+(it[1]?'<button type="button" class="lnk" data-go="'+it[1]+'">Go to Station '+it[1]+': '+esc(STEPS[it[1]-1].name)+'</button>':''); }).join(' ')+'</div>';
+  if(e.innerHTML!==h) e.innerHTML=h; e.hidden=false;
+}
+function dis(id,off){ var b=$(id); if(b&&b.disabled!==!!off) b.disabled=!!off; }
+function missingList(){
+  var H=hv(), m=[];
+  if(!H.faces) m.push(['No card faces loaded: the print PDFs and the cover image are left out.',1]);
+  if(!H.back) m.push(['No card back loaded: the print PDFs are left out.',1]);
+  if(!H.title) m.push(['No deck title: file names and prompts use a generic title.',1]);
+  if(!STATE.rules.skip&&!rulesReady()) m.push(['No rules text: the rules booklet is left out.',3]);
+  if(!(STATE.made.mockups.length+STATE.made.listing.length)) m.push(['No photos created yet: the photos folder is empty.',4]);
+  return m;
+}
+function isBoxLayout(){ return STATE.mock.layout==='boxhero'||STATE.mock.layout==='boxcards'; }
+function boxHasArt(){ return ['front','back','left','right','top','bottom'].some(function(k){ return !!panelRec(k); }); }
+function updateGates(){
+  var H=hv(), pdf=hasPdf(), zip=hasZip()&&hasPdf();
+  /* Station 2: print sheets */
+  var m2=[]; if(!H.faces) m2.push('card faces'); if(!H.back) m2.push(STATE.unique?'at least one card back':'a card back');
+  setNeed('need2',m2.length?[['Missing: '+joinAnd(m2)+'. The three print PDFs stay off until they are loaded. The alignment test and the sheet math work without images. ',1]]:null,false);
+  ['btnPdfFull','btnPdfFaces','btnPdfBacks'].forEach(function(id){ dis(id,m2.length>0||!pdf); }); dis('btnPdfTest',!pdf);
+  /* Station 3: box template needs only the card count and stock settings; artwork is optional */
+  setNeed('need3',(!STATE.box.skip&&!boxHasArt())?[['Artwork is optional. Without it the panels stay empty in the template. Add box art in Station 1 or use the prompts below. ',1]]:null,true,'Note:');
+  dis('btnDieArt',!pdf); dis('btnDieOnly',!pdf);
+  /* Station 3: rules booklet needs only the rules text */
+  setNeed('needRules',(!STATE.rules.skip&&!rulesReady())?[['Missing: the rules text. Write or paste it in the box above. The booklet button stays off until then.',0]]:null,false);
+  dis('btnRulesPdf',!rulesReady()||!pdf);
+  /* Station 4: mockup builder */
+  var mm=[],hard=false;
+  if(isBoxLayout()){ if(!boxFrontRec()){ mm.push(['Box layouts need a card back or box art. A placeholder box is shown until you add one. ',1]); } if(STATE.mock.layout==='boxcards'&&!H.faces) mm.push(['No card faces yet, so the fan shows placeholders. ',1]); }
+  else if(!H.faces){ hard=true; mm.push(['Missing: at least one card face. The preview shows placeholders and the download buttons stay off. ',1]); }
+  setNeed('needMock',mm.length?mm:null,!hard);
+  dis('mDl',hard||(!isBoxLayout()&&!H.faces)); dis('mDlAll',hard||(!isBoxLayout()&&!H.faces));
+  /* Station 4: listing images need only the title */
+  var ml=[],hl=false; if(!H.title){ hl=true; ml.push(['Missing: a deck title. The download stays off until you enter one. ',1]); } if(!H.faces) ml.push(['No card faces yet, so the images show neutral placeholder cards. ',1]);
+  setNeed('needLim',ml.length?ml:null,!hl); dis('lDl',hl);
+  /* Station 5: listing prompt needs title + product type; pack needs faces + back */
+  setNeed('needListing',!H.title?[['Missing: a deck title. The copy button stays off until you enter one. ',1]]:null,false); dis('btnCopyListing',!H.title);
+  setNeed('needPack',m2.length?[['Missing: '+joinAnd(m2)+'. The pack button stays off until they are loaded. ',1]]:null,false); dis('btnZipPack',m2.length>0||!zip);
+  /* Station 6: always enabled; the README lists what is missing */
+  var ms=missingList(); setNeed('needLaunch',ms.length?ms:null,true,'The pack includes whatever exists. Not in it yet:'); dis('btnLaunch',!zip);
+}
+function refreshChrome(){ updateStepper(); refreshPkg(); updateNav(); updateGates(); if(STATE.step===6&&$('preflight')) renderPreflight(); }
+function refreshAll(){ renderS1(); if(STATE.step===2){ renderSheetPreview(); } if(STATE.step===3){ renderS3(); renderRulesCard(); } if(STATE.step===6) renderPreflight(); refreshChrome(); }
+/* ---- station 1 ---- */
+function thumbHtml(list,bad){
+  return list.map(function(f,i){ return '<div class="thumb" draggable="true" data-id="'+f.id+'"><img alt="Card '+(i+1)+'" src="'+esc(f.url)+'"><span class="no">'+(i+1)+'</span><span class="tb"><button type="button" data-mv="-1" aria-label="Move earlier">&#9664;</button><button type="button" data-mv="1" aria-label="Move later">&#9654;</button><button type="button" data-rm="1" aria-label="Remove">&times;</button></span><span class="nm">'+esc(f.name)+'</span></div>'; }).join('');
+}
+function bindThumbs(box,list){
+  box.querySelectorAll('.thumb').forEach(function(t){
+    var id=t.getAttribute('data-id');
+    t.querySelectorAll('button').forEach(function(b){ b.addEventListener('click',function(e){ e.stopPropagation(); if(b.getAttribute('data-rm')) removeFrom(list,id); else moveIn(list,id,parseInt(b.getAttribute('data-mv'),10)); syncCards(); refreshAll(); }); });
+    t.addEventListener('dragstart',function(e){ e.dataTransfer.setData('text/plain',id); e.dataTransfer.effectAllowed='move'; window.__dragId=id; });
+    t.addEventListener('dragover',function(e){ e.preventDefault(); t.classList.add('over'); });
+    t.addEventListener('dragleave',function(){ t.classList.remove('over'); });
+    t.addEventListener('drop',function(e){ e.preventDefault(); t.classList.remove('over'); var src=window.__dragId||e.dataTransfer.getData('text/plain'); moveBefore(list,src,id); refreshAll(); });
+  });
+}
+function syncCards(){ if(!STATE.cardsEdited&&STATE.faces.length){ STATE.setup.cards=STATE.faces.length; var c=$('gCards'); if(c) c.value=STATE.faces.length; } }
+function renderS1(){
+  var S=STATE.setup; var set=function(id,v){ var e=$(id); if(e&&document.activeElement!==e) e.value=v; };
+  set('gType',S.type); set('gTitle',S.title); set('gBrand',S.brand); set('gCards',S.cards); set('gPlayers',S.players); set('gTime',S.time); set('gAges',S.ages); set('gPaper',S.paper); set('gStyle',S.style);
+  var i=s1Info(); var fc=$('faceCounter'); fc.textContent=i.N+' of '+i.exp+' faces'; fc.className='counter '+(i.N===0?'bad':(i.N===i.exp?'ok':'warn'));
+  $('faceThumbs').innerHTML=thumbHtml(STATE.faces); bindThumbs($('faceThumbs'),STATE.faces);
+  var bc=$('backCounter'); bc.textContent=STATE.back?'Back: '+STATE.back.name:'No back yet'; bc.className='counter '+(STATE.back||(STATE.unique&&STATE.ubacks.length)?'ok':'bad');
+  $('backThumbs').innerHTML=STATE.back?'<div class="thumb"><img alt="Card back" src="'+esc(STATE.back.url)+'"><span class="no">back</span></div>':'';
+  $('uniqueBacks').checked=!!STATE.unique; $('uniqueWrap').hidden=!STATE.unique;
+  $('ubCounter').textContent=STATE.ubacks.length+' backs'; $('ubThumbs').innerHTML=thumbHtml(STATE.ubacks); bindThumbs($('ubThumbs'),STATE.ubacks);
+  $('faceMsgs').innerHTML=i.msgs.map(function(m){ return '<div class="msg '+(m[0]==='warn'?'warn':'ok')+'">'+esc(m[1])+'</div>'; }).join('')+i.block.map(function(b){ return '<div class="msg bad">'+esc(b)+'</div>'; }).join('');
+  var slots=[['art-front','Box front / lid art'],['art-back','Box back art'],['art-left','Left side art'],['art-right','Right side art'],['art-top','Top art'],['art-bottom','Bottom art'],['art-cover','Rulebook cover']];
+  $('artSlots').innerHTML=slots.map(function(s){ var a=STATE.art[s[0]]; return '<div class="slot"><b>'+esc(s[1])+'</b><div class="fn">'+(a?esc(a.name):(STATE.artHint&&STATE.artHint[s[0]]?'Saved project used '+esc(STATE.artHint[s[0]])+': upload it again':'No file'))+'</div><div class="row" style="margin:6px 0 0"><button type="button" class="btn" data-art="'+s[0]+'">'+(a?'Replace':'Choose image')+'</button>'+(a?'<button type="button" class="btn" data-artrm="'+s[0]+'" aria-label="Remove '+esc(s[1])+'">Remove</button>':'')+'</div></div>'; }).join('');
+  $('artSlots').querySelectorAll('button[data-art]').forEach(function(b){ b.addEventListener('click',function(){ var inp=document.createElement('input'); inp.type='file'; inp.accept='image/png,image/jpeg,image/webp'; inp.setAttribute('data-artinput',b.getAttribute('data-art')); inp.addEventListener('change',function(){ addImages(inp.files,b.getAttribute('data-art')); }); inp.click(); }); });
+  $('artSlots').querySelectorAll('button[data-artrm]').forEach(function(b){ b.addEventListener('click',function(){ STATE.art[b.getAttribute('data-artrm')]=null; refreshAll(); }); });
+}
+function bindS1(){
+  var map={gType:'type',gTitle:'title',gBrand:'brand',gPlayers:'players',gTime:'time',gAges:'ages',gStyle:'style'};
+  Object.keys(map).forEach(function(id){ $(id).addEventListener('input',function(){ STATE.setup[map[id]]=$(id).value; refreshChrome(); if(STATE.step===3){ renderBoxPrompts(); } }); $(id).addEventListener('change',function(){ STATE.setup[map[id]]=$(id).value; refreshChrome(); }); });
+  $('gCards').addEventListener('input',function(){ var n=parseInt($('gCards').value,10); if(n>0&&n<=500){ STATE.setup.cards=n; STATE.cardsEdited=true; renderS1(); refreshChrome(); } });
+  $('gPaper').addEventListener('change',function(){ STATE.setup.paper=$('gPaper').value; refreshChrome(); });
+  var dz=function(zoneId,inputId,target){
+    var z=$(zoneId), f=$(inputId); z.addEventListener('click',function(){ f.click(); }); z.addEventListener('keydown',function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); f.click(); } });
+    f.addEventListener('change',function(){ addImages(f.files,target); f.value=''; });
+    ['dragenter','dragover'].forEach(function(ev){ z.addEventListener(ev,function(e){ e.preventDefault(); z.classList.add('drag'); }); });
+    ['dragleave','drop'].forEach(function(ev){ z.addEventListener(ev,function(e){ e.preventDefault(); z.classList.remove('drag'); }); });
+    z.addEventListener('drop',function(e){ if(e.dataTransfer&&e.dataTransfer.files&&e.dataTransfer.files.length) addImages(e.dataTransfer.files,target); });
+  };
+  dz('dropFaces','fileFaces','faces'); dz('dropBack','fileBack','back'); dz('dropUBacks','fileUBacks','ubacks');
+  $('btnSortFaces').addEventListener('click',function(){ STATE.faces=sortByNumber(STATE.faces); refreshAll(); });
+  $('btnClearFaces').addEventListener('click',function(){ STATE.faces=[]; STATE.cardsEdited=false; refreshAll(); });
+  $('btnClearUB').addEventListener('click',function(){ STATE.ubacks=[]; refreshAll(); });
+  $('uniqueBacks').addEventListener('change',function(){ STATE.unique=$('uniqueBacks').checked; refreshAll(); });
+  $('btnImport').addEventListener('click',function(){ $('fileImport').click(); });
+  $('fileImport').addEventListener('change',function(){ var f=$('fileImport').files[0]; $('fileImport').value=''; if(!f) return; var r=new FileReader(); r.onload=function(){ var res; try{ res=importProject(JSON.parse(r.result)); }catch(e){ res={ok:false,lines:['This file could not be read as JSON. Nothing was changed; you can fill in the game setup by hand.']}; } showImport(res); }; r.readAsText(f); });
+}
+function showImport(res){
+  if(res.ok&&res.applied&&res.applied.cards) STATE.cardsEdited=true;
+  $('importMsg').innerHTML='<div class="msg '+(res.ok?'ok':'warn')+'"><b>'+(res.ok?'Imported:':'Not imported.')+'</b> '+res.lines.map(esc).join(' &middot; ')+'</div>';
+  refreshAll();
+}
+/* ---- station 2 ---- */
+function syncPrintInputs(){ $('pBleed').value=STATE.print.bleed; $('pGutter').value=String(STATE.print.gutter); $('pCrop').checked=!!STATE.print.crop; $('pGuides').checked=!!STATE.print.guides; }
+function bindS2(){
+  $('pBleed').addEventListener('change',function(){ STATE.print.bleed=$('pBleed').value; renderSheetPreview(); });
+  $('pGutter').addEventListener('change',function(){ STATE.print.gutter=num($('pGutter').value)>=1?2:0; renderSheetPreview(); });
+  $('pCrop').addEventListener('change',function(){ STATE.print.crop=$('pCrop').checked; });
+  $('pGuides').addEventListener('change',function(){ STATE.print.guides=$('pGuides').checked; });
+  $('btnPdfFull').addEventListener('click',function(){ exportPdf('full'); }); $('btnPdfFaces').addEventListener('click',function(){ exportPdf('faces'); }); $('btnPdfBacks').addEventListener('click',function(){ exportPdf('backs'); }); $('btnPdfTest').addEventListener('click',function(){ exportPdf('test'); });
+}
+/* ---- station 3 ---- */
+function renderS3(){
+  var b=STATE.box; $('skipBox').checked=!!b.skip; $('boxWrap').style.display=b.skip?'none':''; $('boxMore').style.display=b.skip?'none':'';
+  $('bCards').value=boxCards(); $('bStock').value=b.stock; $('bCustomWrap').hidden=b.stock!=='custom'; $('bCustom').value=b.custom; $('bExtra').value=String(b.extra); $('bTol').value=b.tol; $('bTile').value=b.tile;
+  if(!b.skip){ renderBoxNums(); renderPanelArt(); renderBoxPrompts(); var seq=++_boxSeq; renderBoxPreview().then(function(){ void seq; }); }
+}
+function bindS3(){
+  $('skipBox').addEventListener('change',function(){ STATE.box.skip=$('skipBox').checked; renderS3(); refreshChrome(); });
+  $('bCards').addEventListener('input',function(){ var n=parseInt($('bCards').value,10); STATE.box.cards=n>0?n:null; renderS3Light(); });
+  ['bStock','bExtra','bTile'].forEach(function(id){ $(id).addEventListener('change',function(){ var k={bStock:'stock',bExtra:'extra',bTile:'tile'}[id]; STATE.box[k]=(k==='extra')?num($(id).value):$(id).value; renderS3(); refreshChrome(); }); });
+  $('bCustom').addEventListener('input',function(){ STATE.box.custom=clamp(num($('bCustom').value,0.32),0.1,1); renderS3Light(); });
+  $('bTol').addEventListener('input',function(){ STATE.box.tol=clamp(num($('bTol').value,2),0,6); renderS3Light(); });
+  $('btnDieArt').addEventListener('click',function(){ exportBox(true); }); $('btnDieOnly').addEventListener('click',function(){ exportBox(false); });
+}
+var _s3t=null; function renderS3Light(){ clearTimeout(_s3t); _s3t=setTimeout(function(){ renderBoxNums(); renderBoxPrompts(); renderBoxPreview(); refreshChrome(); },120); }
+/* ---- station 4 ---- */
+var SELL_TABS=[['listing','Listing Studio'],['pack','Printable Pack'],['cost','Cost & margin']];
+function renderSell(){
+  $('sellTabs').innerHTML=SELL_TABS.map(function(t){ var on=STATE.sell.tab===t[0]; return '<button type="button" role="tab" class="tab" id="stab-'+t[0]+'" aria-selected="'+on+'" aria-controls="spanel-'+t[0]+'" tabindex="'+(on?0:-1)+'">'+esc(t[1])+'</button>'; }).join('');
+  var panels={
+    listing:'<p class="hint" style="margin:0 0 10px">One prompt for ChatGPT that writes your titles, tags, description and features from the data you entered.</p><div class="grid"><div class="fld"><label class="lbl" for="sProduct">Product type</label><select id="sProduct"><option value="printable">Etsy printable download</option><option value="boxed">Etsy boxed game made to order</option><option value="other">Other marketplace</option></select></div><div class="fld"><label class="lbl" for="sTone">Tone</label><select id="sTone"><option>Family</option><option>Game night</option><option>Classroom</option></select></div></div><div class="need" id="needListing" hidden></div><textarea class="prompt" id="listingPrompt" readonly aria-label="Listing prompt" style="margin-top:12px;min-height:320px"></textarea><div class="row"><button type="button" class="btn primary" id="btnCopyListing">Copy listing prompt</button></div>',
+    pack:'<p>Builds one ZIP for your buyers: the three print PDFs, the alignment test, the print instructions and a cover image.</p><div class="need" id="needPack" hidden></div><div class="row"><button type="button" class="btn primary" id="btnZipPack">Download Printable Pack (.zip)</button></div><div class="prog" id="prog4"><i></i></div><p class="hint" id="progTxt4"></p><div class="note">Test print first. File sizes and results depend on your images and printer.</div>',
+    cost:'<p class="hint" style="margin:0 0 10px">Enter your own numbers. Your numbers, not predictions.</p><div class="calc"><div class="fld"><label class="lbl" for="cPrint">Print cost per sheet</label><input type="number" id="cPrint" min="0" step="0.01"></div><div class="fld"><label class="lbl" for="cSheets">Sheets per game (0 = automatic)</label><input type="number" id="cSheets" min="0" step="1"></div><div class="fld"><label class="lbl" for="cBox">Box cost</label><input type="number" id="cBox" min="0" step="0.01"></div><div class="fld"><label class="lbl" for="cShip">Shipping</label><input type="number" id="cShip" min="0" step="0.01"></div><div class="fld"><label class="lbl" for="cPack">Packaging</label><input type="number" id="cPack" min="0" step="0.01"></div><div class="fld"><label class="lbl" for="cFee">Marketplace fee (%)</label><input type="number" id="cFee" min="0" max="100" step="0.1"></div><div class="fld"><label class="lbl" for="cPrice">Your price</label><input type="number" id="cPrice" min="0" step="0.01"></div></div><div class="result" id="costOut"></div><p class="hint">Your numbers, not predictions. Add or remove costs to match how you really sell.</p>'
+  };
+  $('sellPanels').innerHTML=SELL_TABS.map(function(t){ return '<div class="tabpanel" role="tabpanel" id="spanel-'+t[0]+'" aria-labelledby="stab-'+t[0]+'"'+(STATE.sell.tab===t[0]?'':' hidden')+'>'+panels[t[0]]+'</div>'; }).join('');
+  $('sellTabs').querySelectorAll('.tab').forEach(function(b){ b.addEventListener('click',function(){ selSellTab(b.id.slice(5)); }); b.addEventListener('keydown',function(e){ var ids=SELL_TABS.map(function(t){ return t[0]; }); var i=ids.indexOf(b.id.slice(5)); if(e.key==='ArrowRight') i=(i+1)%ids.length; else if(e.key==='ArrowLeft') i=(i+ids.length-1)%ids.length; else return; e.preventDefault(); selSellTab(ids[i],true); }); });
+  $('sProduct').value=STATE.sell.product; $('sTone').value=STATE.sell.tone; var lp=function(){ $('listingPrompt').value=listingPrompt(); }; lp();
+  $('sProduct').addEventListener('change',function(){ STATE.sell.product=$('sProduct').value; lp(); }); $('sTone').addEventListener('change',function(){ STATE.sell.tone=$('sTone').value; lp(); });
+  $('btnCopyListing').addEventListener('click',function(){ STATE.flags.copiedListing=true; copyString($('listingPrompt').value,$('btnCopyListing')); refreshChrome(); });
+  $('btnZipPack').addEventListener('click',exportPrintableZip); updateGates();
+  var ci={cPrint:'printSheet',cSheets:'sheets',cBox:'boxCost',cShip:'shipping',cPack:'packaging',cFee:'feePct',cPrice:'price'}; Object.keys(ci).forEach(function(id){ $(id).value=STATE.cost[ci[id]]; $(id).addEventListener('input',function(){ STATE.cost[ci[id]]=Math.max(0,num($(id).value)); renderCost(); }); }); renderCost();
+}
+function selSellTab(id,focus){ STATE.sell.tab=id; document.querySelectorAll('#sellTabs .tab').forEach(function(b){ var on=b.id==='stab-'+id; b.setAttribute('aria-selected',on?'true':'false'); b.tabIndex=on?0:-1; if(on&&focus) b.focus(); }); document.querySelectorAll('#sellPanels .tabpanel').forEach(function(p){ p.hidden=p.id!=='spanel-'+id; }); }
+/* ---- station 5 ---- */
+function renderLaunch(){ renderPreflight(); renderLaunchList(); }
+function renderLaunchList(){
+  $('checklist').innerHTML=CHECKLIST_ITEMS.map(function(it){ return '<div class="check"><input type="checkbox" id="ck-'+it[0]+'"'+(STATE.checklist[it[0]]?' checked':'')+'><label for="ck-'+it[0]+'">'+esc(it[1])+'</label></div>'; }).join('');
+  CHECKLIST_ITEMS.forEach(function(it){ $('ck-'+it[0]).addEventListener('change',function(){ STATE.checklist[it[0]]=$('ck-'+it[0]).checked; refreshChrome(); }); });
+  var n=CHECKLIST_ITEMS.filter(function(it){ return STATE.checklist[it[0]]; }).length; $('launchMsg').innerHTML='<div class="msg '+(n===CHECKLIST_ITEMS.length?'ok':'')+'">'+n+' of '+CHECKLIST_ITEMS.length+' checklist items done.</div>';
+  $('checklist').addEventListener('change',function(){ var k=CHECKLIST_ITEMS.filter(function(it){ return STATE.checklist[it[0]]; }).length; $('launchMsg').innerHTML='<div class="msg '+(k===CHECKLIST_ITEMS.length?'ok':'')+'">'+k+' of '+CHECKLIST_ITEMS.length+' checklist items done.</div>'; });
+}
+function bindLaunch(){
+  $('btnLaunch').addEventListener('click',exportLaunchZip);
+  $('btnSave').addEventListener('click',function(){ downloadText(JSON.stringify(studioProject(),null,1),slug(STATE.setup.title)+'-studio-project.json','application/json'); toast('Project saved.'); });
+  $('btnLoad').addEventListener('click',function(){ $('fileLoad').click(); });
+  $('fileLoad').addEventListener('change',function(){ var f=$('fileLoad').files[0]; $('fileLoad').value=''; if(!f) return; var r=new FileReader(); r.onload=function(){ try{ var o=JSON.parse(r.result); var res=importProject(o); showImport(res); if(res.ok){ toast('Project loaded. Upload your images again.'); } else toast('That file was not recognised.','err'); STATE.cardsEdited=true; if(STATE.step===6) renderLaunch(); if(STATE.step===3) renderRulesCard(); refreshAll(); }catch(e){ toast('Could not read that file.','err'); } }; r.readAsText(f); });
+}
+/* ---- init ---- */
+function initTopLinks(){ var L=(CONFIG.bonusLinks||[]).filter(function(l){ return l&&linkReady(l.url); }); $('topLinks').innerHTML=L.map(function(l){ return '<a href="'+esc(l.url)+'" target="_blank" rel="noopener noreferrer">'+esc(l.label||'Link')+'</a>'; }).join(''); }
+function bindGo(){
+  document.addEventListener('click',function(e){ var b=e.target&&e.target.closest?e.target.closest('[data-go]'):null; if(!b) return; var sv=b.getAttribute('data-sell'); if(sv){ STATE.sell.tab=sv; } goStep(parseInt(b.getAttribute('data-go'),10)); });
+}
+function initApp(){
+  initTopLinks(); bindS1(); bindS2(); bindS3(); bindRules(); bindLaunch();
+  $('btnBack').addEventListener('click',function(){ goStep(STATE.step-1); }); $('btnNext').addEventListener('click',function(){ goStep(STATE.step+1); });
+  buildStepper(); buildPkg(); bindGo(); renderS1(); renderPrintSteps(); refreshChrome(); checkLibs();
+  window.addEventListener('load',function(){ checkLibs(); });
+}
+initApp();
+
+</script>
+</body>
+</html>
