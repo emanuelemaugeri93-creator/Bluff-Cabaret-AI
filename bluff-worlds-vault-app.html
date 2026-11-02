@@ -59,6 +59,12 @@ body::after{content:"\2660  \2665  \2666  \2663  \2660  \2665  \2666  \2663  \26
   padding:11px 22px;border-radius:999px;border:0;background:linear-gradient(135deg,#fde68a,var(--gold));
   box-shadow:0 8px 22px rgba(233,185,73,.35);font-family:var(--font-main);white-space:nowrap;min-height:44px}
 .vault-link:hover{transform:translateY(-2px);filter:brightness(1.06)}
+.howto-pulse{position:relative;animation:howtoPulse 1.8s ease-in-out infinite}
+.howto-arrow{position:absolute;right:calc(100% + 10px);top:50%;transform:translateY(-50%);background:#fff;color:#1B1712;font-weight:900;font-size:.74rem;letter-spacing:.04em;text-transform:uppercase;padding:5px 10px;border-radius:999px;box-shadow:0 4px 14px rgba(0,0,0,.35);animation:howtoNudge 1s ease-in-out infinite;pointer-events:none}
+@keyframes howtoPulse{0%,100%{box-shadow:0 8px 22px rgba(233,185,73,.35),0 0 0 0 rgba(233,185,73,.75)}50%{box-shadow:0 8px 26px rgba(253,230,138,.6),0 0 0 12px rgba(233,185,73,0)}}
+@keyframes howtoNudge{0%,100%{transform:translate(0,-50%)}50%{transform:translate(-7px,-50%)}}
+@media (prefers-reduced-motion:reduce){.howto-pulse,.howto-arrow{animation:none}}
+@media (max-width:780px){.howto-arrow{display:none}}
 .vault-link svg{width:16px;height:16px}
 .next-up{font-size:.78rem;font-weight:700;color:var(--coral);padding:10px 4px;text-decoration:none;white-space:nowrap}
 @media(max-width:860px){
@@ -461,7 +467,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--coral);b
         </div>
         <button type="button" class="vault-decks" onclick="openDeckDrawer()"><i data-lucide="folder-open"></i> My decks</button>
       </div>
-      <button type="button" class="vault-link" id="btnHowTo"><i data-lucide="circle-help"></i> How to Use</button>
+      <button type="button" class="vault-link howto-pulse" id="btnHowTo"><span class="howto-arrow" aria-hidden="true">Start here &#10140;</span><i data-lucide="circle-help"></i> How to Use</button>
       <a class="next-up" id="nextUpgrade" target="_blank" rel="noopener noreferrer" style="display:none;">Pro Edition &rarr;</a>
     </div>
   </header>
@@ -897,6 +903,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--coral);b
 <div class="modal-overlay" id="howtoModal" role="dialog" aria-modal="true" aria-label="How to Use">
   <div class="modal-box">
     <h3><i data-lucide="circle-help"></i> How to Use Bluff Cabaret AI - Worlds Vault</h3>
+    <p><a class="btn-copy auto" id="howtoGuide" href="https://drive.google.com/file/d/1OdEbAEwXuNEy-JdKyvP3PxSOaU_oYzxD/view?usp=sharing" target="_blank" rel="noopener noreferrer"><i data-lucide="book-open"></i> Open the full User Guide (PDF)</a></p>
     <ol>
       <li><strong>Step 1 Setup:</strong> pick a world, a topic, players and game length, then copy the deck prompt into ChatGPT.</li>
       <li><strong>Step 2 Paste &amp; Check:</strong> paste ChatGPT's 24 cards back here, fix anything the Fact &amp; Bluff Check and Game Balance flag.</li>
@@ -956,7 +963,7 @@ var CONFIG = {
     { label: 'Bonus #2: Quick Start Guide', url: '' },
     { label: 'Bonus #3: 50 Extra Deck Topic Ideas', url: '' }
   ],
-  howToUrl: ''
+  howToUrl: 'https://drive.google.com/file/d/1OdEbAEwXuNEy-JdKyvP3PxSOaU_oYzxD/view?usp=sharing'
 };
 /* OTO1 Worlds Vault: all 15 worlds unlocked — no locked teaser slots in this edition. */
 var TEASER_WORLDS = [];
@@ -1132,7 +1139,7 @@ dino:{ id:'dino', name:'Dino Dig Camp', tagline:'A dusty dig camp of fossils, bo
   epicFinish:'3-point cards get a dust-orange foil strata frame, a brown wax seal with a bone stamp, and tiny dust glints.',
   galleries:['Base Camp','The Quarry','The Big Find'],
   cast:[
-    { name:'Chief strata', role:'Boss of the Table', species:'raptor', personality:'A strutting dig chief who never loses a brush.', visual:'Angular rust raptor with triangular snout planes, flat poster scales, crisp black outlines; fern vest, fossil brush raised front, commanding grin; claw lines.', voice:'Dig! Brush! Behold!', prop:'fossil brush', expression:'commanding grin', accent:'dust orange', power:0 },
+    { name:'Chief Strata', role:'Boss of the Table', species:'raptor', personality:'A strutting dig chief who never loses a brush.', visual:'Angular rust raptor with triangular snout planes, flat poster scales, crisp black outlines; fern vest, fossil brush raised front, commanding grin; claw lines.', voice:'Dig! Brush! Behold!', prop:'fossil brush', expression:'commanding grin', accent:'dust orange', power:0 },
     { name:'Sneak Snout', role:'Spy', species:'mole', personality:'A tiny mole who hears tunnels first.', visual:'Angular brown mole with triangular nose planes, flat poster fur, crisp black outlines; green vest, ear trumpet held front, sly squint; dirt dots.', voice:'Shh... tunnels talk.', prop:'ear trumpet', expression:'sly squint', accent:'fern green', power:1 },
     { name:'Judge Fossil', role:'Judge', species:'turtle', personality:'A slow shell judge who dates every bone.', visual:'Angular moss turtle with triangular shell planes, flat poster plates, crisp black outlines; bone coat, caliper held level front, stern frown; crack lines.', voice:'Old. Very old. Next.', prop:'brass caliper', expression:'stern frown', accent:'bone white', power:3 },
     { name:'Card Claw', role:'Card Sharp', species:'pterosaur', personality:'A gliding dealer with cards in the wind.', visual:'Angular teal pterosaur with triangular wing planes, flat poster membrane, crisp black outlines; vest, fanned cards in claw front, smug grin; wind lines.', voice:'Dealt mid-glide!', prop:'fanned field cards', expression:'smug grin', accent:'dust orange', power:2, locked:true },
@@ -1765,7 +1772,10 @@ function initVault(){
   mk('menuBonus',CONFIG.bonusLinks);
   /* the Bonus Resources dropdown stays hidden until at least one bonus URL is ready */
   var ddBonus=$('ddBonus'); if(ddBonus) ddBonus.style.display=bonusReady()?'':'none';
-  var how=$('btnHowTo'); if(how) how.addEventListener('click',function(e){ e.preventDefault(); openHowto(); });
+  var how=$('btnHowTo'); var HK='worlds-vault-howto-seen-v1';
+  var calm=function(){ if(how){ how.classList.remove('howto-pulse'); var ar=how.querySelector('.howto-arrow'); if(ar) ar.remove(); } };
+  try{ if(localStorage.getItem(HK)) calm(); }catch(e){}
+  if(how) how.addEventListener('click',function(e){ e.preventDefault(); try{ localStorage.setItem(HK,'1'); }catch(er){} calm(); openHowto(); });
   /* nav "Pro Edition ->" appears only when upgradeLinks.pro is ready */
   renderNextUpgrade();
   document.querySelectorAll('.vault-dd > button').forEach(function(btn){
@@ -2146,7 +2156,7 @@ function _buildDeckPromptsInner(cfg){
     L.push('- Language: English');
     L.push(cfg.didYouKnow?'- Reveal text: write a short, fun "Did you know?" style reveal for every card (still ONE sentence, MAX 22 WORDS).':'- Reveal text: keep each Reveal to ONE plain sentence stating the true fact (MAX 22 WORDS).');
     L.push('- Rules: the rules are FIXED and live in the app. Do NOT write a Rules Summary.');
-    L.push(''); L.push('THE CAST (8 recurring witnesses — use EXACTLY these names; each Witness Line must sound like the voice example, personality only, no new facts)');
+    L.push(''); L.push('THE CAST ('+activeCast(W).length+' recurring witnesses — use EXACTLY these names; each Witness Line must sound like the voice example, personality only, no new facts)');
     L.push(castEmbedBlock(W));
     L.push(''); L.push('OUTPUT FORMAT (follow it exactly)');
     L.push('Return plain text only. No commentary before or after, no markdown tables, no JSON, no bold, no code fences. Use exactly these field names, one field per line:');
@@ -4065,7 +4075,7 @@ function buildRulebook(){
   var st=STATE.settings||{};
   var powersOn=st.powersOn===true;
   var out=[
-    'Players: '+r.players+'. '+(r.full?'Full game: '+r.gameCards+' game cards.':'Short game: Cards 1-'+r.gameCards+' ('+r.gameCards+' game cards).')+(expOn()?' Includes the 12-card Expansion (Cards '+(r.gameCards-11)+'-'+r.gameCards+').':'')+' '+r.players+' players: play '+r.cardsToPlay+' cards, each player reads '+r.reads+' time'+(r.reads===1?'':'s')+(r.setAside>0?'; set the other '+r.setAside+' aside.':'.')+' You also need 8 Cast cards, 1 Rules card, 1 Score card, 1 Chip Sheet and this rulebook.',
+    'Players: '+r.players+'. '+(r.full?'Full game: '+r.gameCards+' game cards.':'Short game: Cards 1-'+r.gameCards+' ('+r.gameCards+' game cards).')+(expOn()?' Includes the 12-card Expansion (Cards '+(r.gameCards-11)+'-'+r.gameCards+').':'')+' '+r.players+' players: play '+r.cardsToPlay+' cards, each player reads '+r.reads+' time'+(r.reads===1?'':'s')+(r.setAside>0?'; set the other '+r.setAside+' aside.':'.')+' You also need '+activeCast().length+' Cast cards, 1 Rules card, 1 Score card, 1 Chip Sheet and this rulebook.',
     'Setup: each player picks a Cast card and takes a chip set: TRUST, BLUFF, A, B, C, D. Shuffle the game cards. Youngest player reads first; the reader rotates clockwise.',
     'A turn: the reader draws a card and reads it aloud, including the Witness Line. Real or Bluff: everyone secretly plays TRUST or BLUFF. Spot the Fake: everyone secretly plays A, B, C or D for the fake. Invent the Bluff: the reader reads the term and definitions A, B, C; everyone plays A, B or C for the real one. Flip all chips together, then the reader reveals.',
     'Scoring: each correct guesser scores the card points (1-3). The reader scores 1 point for each player who was fooled.'+(powersOn?' Powers are used once per game, before chips are flipped.':'')
@@ -5409,11 +5419,3 @@ else initApp();
 
 </body>
 </html>
-
-
-
-
-
-
-
-
