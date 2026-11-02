@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
@@ -56,6 +56,12 @@ body::after{content:"\2660  \2665  \2666  \2663  \2660  \2665  \2666  \2663  \26
   padding:11px 22px;border-radius:999px;border:0;background:linear-gradient(135deg,var(--teal),var(--gold));
   box-shadow:0 8px 22px rgba(45,212,191,.35);font-family:var(--font-main);transition:var(--transition);white-space:nowrap}
 .vault-link:hover{transform:translateY(-2px);filter:brightness(1.06)}
+.howto-pulse{position:relative;animation:howtoPulse 1.8s ease-in-out infinite}
+.howto-arrow{position:absolute;right:calc(100% + 10px);top:50%;transform:translateY(-50%);background:#fff;color:#06281F;font-weight:900;font-size:.74rem;letter-spacing:.04em;text-transform:uppercase;padding:5px 10px;border-radius:999px;box-shadow:0 4px 14px rgba(0,0,0,.35);animation:howtoNudge 1s ease-in-out infinite;pointer-events:none}
+@keyframes howtoPulse{0%,100%{box-shadow:0 8px 22px rgba(45,212,191,.35),0 0 0 0 rgba(45,212,191,.7)}50%{box-shadow:0 8px 26px rgba(250,204,21,.55),0 0 0 12px rgba(45,212,191,0)}}
+@keyframes howtoNudge{0%,100%{transform:translate(0,-50%)}50%{transform:translate(-7px,-50%)}}
+@media (prefers-reduced-motion:reduce){.howto-pulse,.howto-arrow{animation:none}}
+@media (max-width:780px){.howto-arrow{display:none}}
 .vault-link svg{width:16px;height:16px}
 @media (max-width:780px){.vault-bar{flex-direction:column;align-items:stretch}.vault-left{justify-content:center}.vault-link{margin-left:0;width:100%;justify-content:center}}
 /* Hero */
@@ -839,7 +845,7 @@ button.btn-copy .cf:nth-child(odd){background:var(--teal)}
     </div>
     <button type="button" class="vault-decks" onclick="openDeckDrawer()"><i data-lucide="folder-open"></i> My decks</button>
     </div>
-    <a class="vault-link" id="btnHowTo" href="https://example.com/how-to-use" target="_blank" rel="noopener noreferrer"><i data-lucide="circle-help"></i> How to Use</a>
+    <a class="vault-link howto-pulse" id="btnHowTo" href="https://drive.google.com/file/d/1Ghqs1PX2fJTxAJJcSiZ3UoObYh26oV7T/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span class="howto-arrow" aria-hidden="true">Start here &#10140;</span><i data-lucide="circle-help"></i> How to Use</a>
   </div>
 
   <div class="accent-bar" aria-hidden="true"></div>
@@ -1279,6 +1285,7 @@ button.btn-copy .cf:nth-child(odd){background:var(--teal)}
 <div class="modal-overlay" id="howtoModal" role="dialog" aria-modal="true" aria-label="How to Use">
   <div class="modal-box">
     <h3><i data-lucide="circle-help"></i> How to Use Bluff Cabaret AI</h3>
+    <p><a class="btn-copy auto" id="howtoGuide" href="https://drive.google.com/file/d/1Ghqs1PX2fJTxAJJcSiZ3UoObYh26oV7T/view?usp=sharing" target="_blank" rel="noopener noreferrer"><i data-lucide="book-open"></i> Open the full User Guide (PDF)</a></p>
     <ol>
       <li><strong>Step 1 Setup:</strong> pick a world, a topic, players and game length, then copy the deck prompt into ChatGPT.</li>
       <li><strong>Step 2 Paste &amp; Check:</strong> paste ChatGPT's 24 cards back here, fix anything the Fact &amp; Bluff Check and Game Balance flag.</li>
@@ -1317,18 +1324,19 @@ var CONFIG = {
   cardFormatsUnlocked:['poker'],
   customWorld:false,
   branding:false,
-  upgradeLinks:{ vault:'#', play:'#', commercial:'#', pro:'' },
+  upgradeLinks:{ vault:'https://creatorspacelab.com/bluff-cabaret-ai-oto1', play:'https://creatorspacelab.com/bluff-cabaret-ai-oto3', commercial:'https://creatorspacelab.com/bluff-cabaret-ai-oto4', pro:'https://creatorspacelab.com/bluff-cabaret-ai-oto2' },
   bonusLinks: [
-    { label: 'Bonus #1: Bluff Writing Cheat Sheet', url: 'https://example.com/bonus1' },
-    { label: 'Bonus #2: Bonus placeholder', url: 'https://example.com/bonus2' },
-    { label: 'Bonus #3: 50 Extra Deck Topic Ideas', url: 'https://example.com/bonus3' }
+    { label: 'Bonus #1: Story Behind the Cards Booklet Forge', url: 'https://emanuelemaugeri93-creator.github.io/Bluff-Cabaret-AI/FE-bonus-1-story-behind-the-cards-booklet-forge.html' },
+    { label: 'Bonus #2: Game Night Kit Forge', url: 'https://emanuelemaugeri93-creator.github.io/Bluff-Cabaret-AI/FE-bonus-2-game-night-kit-forge.html' },
+    { label: 'Bonus #3: From Topic to First Sale Guide', url: 'https://emanuelemaugeri93-creator.github.io/Bluff-Cabaret-AI/FE-bonus-3-from-topic-to-first-sale-guide.html' }
   ],
   upgradesMenu: [
-    { label: 'Upgrade: Card Prompt Masterclass', url: 'https://example.com/upgrade2' },
-    { label: 'Upgrade: Art Style Expansion Pack', url: 'https://example.com/upgrade3' },
-    { label: 'Upgrade: Done-For-You Deck Bundle', url: 'https://example.com/upgrade5' }
+    { label: 'Upgrade 1: Worlds Vault', url: 'https://creatorspacelab.com/bluff-cabaret-ai-oto1' },
+    { label: 'Upgrade 2: Pro Edition', url: 'https://creatorspacelab.com/bluff-cabaret-ai-oto2' },
+    { label: 'Upgrade 3: Game Mode Engines', url: 'https://creatorspacelab.com/bluff-cabaret-ai-oto3' },
+    { label: 'Upgrade 4: Boxed Game Studio', url: 'https://creatorspacelab.com/bluff-cabaret-ai-oto4' }
   ],
-  howToUrl: 'https://example.com/how-to-use'
+  howToUrl: 'https://drive.google.com/file/d/1Ghqs1PX2fJTxAJJcSiZ3UoObYh26oV7T/view?usp=sharing'
 };
 /* locked teaser slots for worlds not in this edition (gated by CONFIG.worldsUnlocked) */
 var TEASER_WORLDS = [
@@ -1733,7 +1741,10 @@ var STATE = {
 function initVault(){
   var mk=function(id,links){ var m=$(id); if(!m) return; m.innerHTML=links.map(function(l){ return '<a role="menuitem" href="'+escHtml(l.url)+'" target="_blank" rel="noopener noreferrer">'+escHtml(l.label)+'</a>'; }).join(''); };
   mk('menuBonus',CONFIG.bonusLinks); mk('menuUpgrades',CONFIG.upgradesMenu);
-  var how=$('btnHowTo'); if(how) how.addEventListener('click',function(e){ e.preventDefault(); openHowto(); });
+  var how=$('btnHowTo'); var HK='bluff-cabaret-howto-seen-v1';
+  var calm=function(){ if(how){ how.classList.remove('howto-pulse'); var ar=how.querySelector('.howto-arrow'); if(ar) ar.remove(); } };
+  try{ if(localStorage.getItem(HK)) calm(); }catch(e){}
+  if(how) how.addEventListener('click',function(e){ e.preventDefault(); try{ localStorage.setItem(HK,'1'); }catch(er){} calm(); openHowto(); });
   document.querySelectorAll('.vault-dd > button').forEach(function(btn){
     btn.addEventListener('click',function(e){ e.stopPropagation(); var dd=btn.parentElement; var open=dd.classList.contains('open');
       document.querySelectorAll('.vault-dd.open').forEach(function(x){ x.classList.remove('open'); x.firstElementChild.setAttribute('aria-expanded','false'); });
@@ -2120,7 +2131,7 @@ function _buildDeckPromptsInner(cfg){
     L.push('- Language: English');
     L.push(cfg.didYouKnow?'- Reveal text: write a short, fun "Did you know?" style reveal for every card (still ONE sentence, MAX 22 WORDS).':'- Reveal text: keep each Reveal to ONE plain sentence stating the true fact (MAX 22 WORDS).');
     L.push('- Rules: the rules are FIXED and live in the app. Do NOT write a Rules Summary.');
-    L.push(''); L.push('THE CAST (8 recurring witnesses — use EXACTLY these names; each Witness Line must sound like the voice example, personality only, no new facts)');
+    L.push(''); L.push('THE CAST ('+activeCast(W).length+' recurring witnesses — use EXACTLY these names; each Witness Line must sound like the voice example, personality only, no new facts)');
     L.push(castEmbedBlock(W));
     L.push(''); L.push('OUTPUT FORMAT (follow it exactly)');
     L.push('Return plain text only. No commentary before or after, no markdown tables, no JSON, no bold, no code fences. Use exactly these field names, one field per line:');
@@ -4036,7 +4047,7 @@ function buildRulebook(){
   var st=STATE.settings||{};
   var powersOn=st.powersOn===true;
   var out=[
-    'Players: '+r.players+'. '+(r.full?'Full game: '+r.gameCards+' game cards.':'Short game: Cards 1-'+r.gameCards+' ('+r.gameCards+' game cards).')+(expOn()?' Includes the 12-card Expansion (Cards '+(r.gameCards-11)+'-'+r.gameCards+').':'')+' '+r.players+' players: play '+r.cardsToPlay+' cards, each player reads '+r.reads+' time'+(r.reads===1?'':'s')+(r.setAside>0?'; set the other '+r.setAside+' aside.':'.')+' You also need 8 Cast cards, 1 Rules card, 1 Score card, 1 Chip Sheet and this rulebook.',
+    'Players: '+r.players+'. '+(r.full?'Full game: '+r.gameCards+' game cards.':'Short game: Cards 1-'+r.gameCards+' ('+r.gameCards+' game cards).')+(expOn()?' Includes the 12-card Expansion (Cards '+(r.gameCards-11)+'-'+r.gameCards+').':'')+' '+r.players+' players: play '+r.cardsToPlay+' cards, each player reads '+r.reads+' time'+(r.reads===1?'':'s')+(r.setAside>0?'; set the other '+r.setAside+' aside.':'.')+' You also need '+activeCast().length+' Cast cards, 1 Rules card, 1 Score card, 1 Chip Sheet and this rulebook.',
     'Setup: each player picks a Cast card and takes a chip set: TRUST, BLUFF, A, B, C, D. Shuffle the game cards. Youngest player reads first; the reader rotates clockwise.',
     'A turn: the reader draws a card and reads it aloud, including the Witness Line. Real or Bluff: everyone secretly plays TRUST or BLUFF. Spot the Fake: everyone secretly plays A, B, C or D for the fake. Invent the Bluff: the reader reads the term and definitions A, B, C; everyone plays A, B or C for the real one. Flip all chips together, then the reader reveals.',
     'Scoring: each correct guesser scores the card points (1-3). The reader scores 1 point for each player who was fooled.'+(powersOn?' Powers are used once per game, before chips are flipped.':'')
@@ -5358,11 +5369,3 @@ else initApp();
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
