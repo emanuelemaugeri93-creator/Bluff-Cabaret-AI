@@ -56,6 +56,15 @@ body::after{content:"\2660  \2665  \2666  \2663  \2660  \2665  \2666  \2663  \26
   padding:11px 22px;border-radius:999px;border:0;background:linear-gradient(135deg,var(--gold),var(--gold-2));
   box-shadow:0 8px 22px rgba(62,224,196,.35);font-family:var(--font-main);transition:var(--transition);white-space:nowrap}
 .vault-link:hover{transform:translateY(-2px);filter:brightness(1.06)}
+.howto-pulse{position:relative;animation:howtoPulse 1.8s ease-in-out infinite}
+.howto-arrow{position:absolute;right:calc(100% + 10px);top:50%;transform:translateY(-50%);background:#fff;color:#04201d;font-weight:900;font-size:.74rem;letter-spacing:.04em;text-transform:uppercase;padding:5px 10px;border-radius:999px;box-shadow:0 4px 14px rgba(0,0,0,.35);animation:howtoNudge 1s ease-in-out infinite;pointer-events:none}
+@keyframes howtoPulse{0%,100%{box-shadow:0 8px 22px rgba(31,191,177,.35),0 0 0 0 rgba(31,191,177,.75)}50%{box-shadow:0 8px 26px rgba(242,163,58,.55),0 0 0 12px rgba(31,191,177,0)}}
+@keyframes howtoNudge{0%,100%{transform:translate(0,-50%)}50%{transform:translate(-7px,-50%)}}
+@media (prefers-reduced-motion:reduce){.howto-pulse,.howto-arrow{animation:none}}
+#howBtn .howto-arrow{right:0;top:calc(100% + 8px);transform:none;animation:howtoNudgeV 1s ease-in-out infinite;white-space:nowrap}
+#howBtn .howto-arrow:before{content:"\2191  "}
+@keyframes howtoNudgeV{0%,100%{transform:translateY(0)}50%{transform:translateY(5px)}}
+@media (max-width:780px){.howto-arrow{display:none}}
 .vault-link svg{width:16px;height:16px}
 @media (max-width:780px){.vault-bar{flex-direction:column;align-items:stretch}.vault-left{justify-content:center}.vault-link{margin-left:0;width:100%;justify-content:center}}
 
@@ -1084,6 +1093,13 @@ button.btn-copy .cf:nth-child(odd){background:var(--teal)}
 .sitem>summary{cursor:pointer;padding:10px 14px;font-weight:800;list-style:none;display:flex;gap:10px;align-items:center;color:#fff}
 .sitem>summary::-webkit-details-marker{display:none}
 .sitem .bodyi{padding:0 14px 14px}
+.sitem.done{border-color:rgba(60,200,150,.55);background:rgba(60,200,150,.07)}
+.sitem .sdone{margin-left:auto;border:1px solid var(--line-strong);background:rgba(255,255,255,.07);color:#fff;border-radius:999px;padding:4px 12px;font-weight:800;font-size:.78rem;cursor:pointer;font-family:inherit}
+.sitem.done .sdone{background:#1fa37a;border-color:#1fa37a;color:#04130e}
+.sprog{margin:12px 0 4px}.sprog .bar{height:10px;border-radius:99px;background:rgba(255,255,255,.1);overflow:hidden}.sprog .bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#1fa37a,#7be3bf);transition:width .25s}
+.sprog .lab{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin-top:6px;font-weight:800;font-size:.92rem}
+.restore{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin:12px auto;max-width:1180px;padding:12px 16px;border:1px solid var(--line-strong);border-radius:16px;background:rgba(255,255,255,.07)}
+.restore b{color:#fff}
 .sitem textarea{min-height:150px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.8rem}
 .ftable{width:100%;border-collapse:collapse;font-size:.84rem;margin:10px 0;display:block;overflow-x:auto}
 .ftable th,.ftable td{border:1px solid var(--line-strong);padding:6px 8px;text-align:left;vertical-align:top}
@@ -1105,8 +1121,9 @@ button.btn-copy .cf:nth-child(odd){background:var(--teal)}
 <body>
 <div class="app-shell gm">
   <div class="vault-bar" role="navigation" aria-label="Game Mode Engines">
-    <div class="vault-left"><span class="vault-brand"><span class="vb-text">Game Mode Engines <span class="brand-by">&middot; by Bluff Cabaret AI</span></span></span></div>
-    <button type="button" class="vault-link" id="howBtn" style="cursor:pointer;border:0;font-family:inherit">How to use</button>
+    <div class="vault-left"><span class="vault-brand"><span class="vb-text">Game Mode Engines <span class="brand-by">&middot; by Bluff Cabaret AI</span></span></span>
+    <div class="vault-dd"><button type="button" id="bonusBtn" aria-haspopup="true" aria-expanded="false">Bonus Resources &#9662;</button><div class="vault-menu" id="menuBonus" role="menu"></div></div></div>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><button type="button" class="vault-link" id="saveTop" style="cursor:pointer;border:0;font-family:inherit" title="Download a backup file of your project">Save project</button><button type="button" class="vault-link howto-pulse" id="howBtn" style="cursor:pointer;border:0;font-family:inherit"><span class="howto-arrow" aria-hidden="true">Start here</span>How to use</button></div>
   </div>
   <div class="accent-bar" aria-hidden="true"></div>
   <section class="hero-xl" id="heroXl" aria-label="Game Mode Engines intro">
@@ -1211,6 +1228,7 @@ button.btn-copy .cf:nth-child(odd){background:var(--teal)}
 
 <div class="modal" id="howModal" role="dialog" aria-modal="true" aria-labelledby="howTitle"><div class="mbox">
   <h2 id="howTitle">How this works</h2>
+  <p><a class="vault-link" id="howGuide" href="https://drive.google.com/file/d/19bmaXbuOSRoBbrnNDmhBQcG6hrMYDSYR/view?usp=sharing" target="_blank" rel="noopener noreferrer" style="margin-left:0;display:inline-flex">Open the full User Guide (PDF)</a></p>
   <ol>
     <li><b>Pick a game and a world.</b> The world sets the look of your cards.</li>
     <li><b>Your topics are chosen for you.</b> Shuffle or change them if you like.</li>
@@ -1234,7 +1252,12 @@ var CONFIG={
   sizes:['short','full','mega'],
   batchSize:{odd:20,trivia:36},
   nameBlocklist:['Trivial Pursuit','Sounds Fishy','Odd Fact Out','Cards Against Humanity','Bet The Line','Prove It','Fun Fact Co','Chronology','Crack List'],
-  bonusLinks:[{label:'Bonus #1: Extra Topic Ideas',url:'https://example.com/bonus1'},{label:'Bonus #2: Print Templates',url:'https://example.com/bonus2'}]
+  bonusLinks:[
+    {label:'Bonus #1: The Playtest Kit',url:'https://emanuelemaugeri93-creator.github.io/Bluff-Cabaret-AI/OTO3-bonus-1-the-playtest-kit.html'},
+    {label:'Bonus #2: Three-Game Lineup Planner',url:'https://emanuelemaugeri93-creator.github.io/Bluff-Cabaret-AI/OTO3-bonus-2-three-game-lineup-planner.html'},
+    {label:'Bonus #3: The Topic Fit Guide',url:'https://emanuelemaugeri93-creator.github.io/Bluff-Cabaret-AI/OTO3-bonus-3-the-topic-fit-guide.html'}
+  ],
+  howToUrl:'https://drive.google.com/file/d/19bmaXbuOSRoBbrnNDmhBQcG6hrMYDSYR/view?usp=sharing'
 };
 function linkReady(u){ u=String(u==null?'':u).trim(); return !!u&&u!=='#'&&u.indexOf('example.com')<0; }
 var CORE_IDS=['abyssal','noir','grimoire','atomic','atlas'];
@@ -1396,7 +1419,7 @@ dino:{ id:'dino', name:'Dino Dig Camp', tagline:'A dusty dig camp of fossils, bo
   epicFinish:'3-point cards get a dust-orange foil strata frame, a brown wax seal with a bone stamp, and tiny dust glints.',
   galleries:['Base Camp','The Quarry','The Big Find'],
   cast:[
-    { name:'Chief strata', role:'Boss of the Table', species:'raptor', personality:'A strutting dig chief who never loses a brush.', visual:'Angular rust raptor with triangular snout planes, flat poster scales, crisp black outlines; fern vest, fossil brush raised front, commanding grin; claw lines.', voice:'Dig! Brush! Behold!', prop:'fossil brush', expression:'commanding grin', accent:'dust orange', power:0 },
+    { name:'Chief Strata', role:'Boss of the Table', species:'raptor', personality:'A strutting dig chief who never loses a brush.', visual:'Angular rust raptor with triangular snout planes, flat poster scales, crisp black outlines; fern vest, fossil brush raised front, commanding grin; claw lines.', voice:'Dig! Brush! Behold!', prop:'fossil brush', expression:'commanding grin', accent:'dust orange', power:0 },
     { name:'Sneak Snout', role:'Spy', species:'mole', personality:'A tiny mole who hears tunnels first.', visual:'Angular brown mole with triangular nose planes, flat poster fur, crisp black outlines; green vest, ear trumpet held front, sly squint; dirt dots.', voice:'Shh... tunnels talk.', prop:'ear trumpet', expression:'sly squint', accent:'fern green', power:1 },
     { name:'Judge Fossil', role:'Judge', species:'turtle', personality:'A slow shell judge who dates every bone.', visual:'Angular moss turtle with triangular shell planes, flat poster plates, crisp black outlines; bone coat, caliper held level front, stern frown; crack lines.', voice:'Old. Very old. Next.', prop:'brass caliper', expression:'stern frown', accent:'bone white', power:3 },
     { name:'Card Claw', role:'Card Sharp', species:'pterosaur', personality:'A gliding dealer with cards in the wind.', visual:'Angular teal pterosaur with triangular wing planes, flat poster membrane, crisp black outlines; vest, fanned cards in claw front, smug grin; wind lines.', voice:'Dealt mid-glide!', prop:'fanned field cards', expression:'smug grin', accent:'dust orange', power:2, locked:true },
@@ -2011,7 +2034,7 @@ function outputSizeLine(kind){
 function trimSpec(){ var f=curFormat(); return 'Card trim: compose the artwork for a '+f.mm[0]+' x '+f.mm[1]+' mm card ('+f.ratio+' ratio, '+f.label+' size) inside a '+f.canvas+' canvas. Keep every important element (text panels, seals, character) inside the central '+f.ratio+' area and extend the background to the edges as bleed.'; }
 var NO_TITLE_SENTENCE='Do not print any title, heading or banner text unless listed under EXACT TEXT TO RENDER.';
 /* ================= state ================= */
-var STATE={ mode:'odd', worldId:'abyssal', picked:[], custom:[], length:'full', paper:'a4', cardFormat:'poker', players:4, scope:'world', autoMixed:false, manualKey:'', mixFilter:'all', kit:null, paste:{odd:'',trivia:''}, brand:'', answerOn:false, sample:false, checked:null, step:1, visited5:false, _customSeq:1 };
+var STATE={ mode:'odd', worldId:'abyssal', picked:[], custom:[], length:'full', paper:'a4', cardFormat:'poker', players:4, scope:'world', autoMixed:false, manualKey:'', mixFilter:'all', kit:null, paste:{odd:'',trivia:''}, brand:'', answerOn:false, sample:false, checked:null, step:1, visited5:false, _customSeq:1, done:{} };
 var MODES={};
 function modeDef(){ return MODES[STATE.mode]||MODES.odd; }
 function validSize(s){ return CONFIG.sizes.indexOf(s)>=0?s:'full'; }
@@ -2476,7 +2499,7 @@ function rulebookHTML(kit){
    '.note{font-size:9.5pt;color:#44546b;margin-top:12pt}@media print{.pg{box-shadow:none}}</style></head><body>'+
    '<div class="pg"><h1>'+esc(deckTitle())+'</h1><div class="meta">World: '+esc(W.name)+' &middot; '+N+' cards &middot; '+esc(m.players)+' &middot; '+esc(m.time)+' &middot; Poker 63 x 88 mm</div>'+
    '<h2>What is in the box</h2><ul>'+comps.map(function(x){ return '<li>'+esc(x)+'</li>'; }).join('')+'</ul><h2>How to play</h2>'+li(m.rules)+'<p class="note">Facts on the cards come from the fact sheet. Check the facts before you print or sell your deck. AI can make mistakes.</p></div>'+
-   '<div class="pg break"><h1>Host cheat sheet</h1><div class="meta">One page for whoever runs the table.</div>'+m.host.map(function(x){ var i=x.indexOf(':'); return '<h2>'+esc(x.slice(0,i))+'</h2><p>'+esc(x.slice(i+1).trim())+'</p>'; }).join('')+'</div>'+
+   '<div class="pg break"><h1>Host cheat sheet</h1><div class="meta">One page for whoever runs the table.</div>'+m.host.map(function(x){ var i=x.indexOf(':'); return '<h2>'+esc(x.slice(0,i))+'</h2><p>'+esc(capFirst(x.slice(i+1).trim()))+'</p>'; }).join('')+'</div>'+
    answerKeyHTML(kit)+'<div class="pg break"><h1>Score pad</h1><div class="meta">'+esc(deckTitle())+' &middot; first to '+m.pad.target+' points wins</div>'+pad+'</div>'+
    '</body></html>';
 }
@@ -2773,14 +2796,14 @@ function renderFinish(){
   html+=ready?'<div class="okbox" id="readyBox"><b>Your game is ready.</b> '+esc(kit.title)+': '+N+' '+m.cardWord+'s, '+kit.script.length+' image prompts, rulebook, host sheet, fact sheet and print kit.'+(STATE.sample?' (Built from the SAMPLE deck: replace it with your real ChatGPT deck before you sell.)':'')+'</div>':'<div class="note">Paste and check your deck in Step 4 so every card face prompt carries its exact text. You can already explore everything below.</div>';
   var ak=answerKeyData(kit);
   html+='<h3 class="pp-sec" id="akTitle">Answer key (for the host)</h3><div id="akSection">'+(ak.ready?'':'<div class="note warn" id="akWarn">Preview from the plan. Paste and check your deck in Step 4 so the explanations are filled in.</div>')+'<p class="hint" style="margin:0 0 8px">Keep this sheet next to the table. The cards do not show the answer unless you turned on Answer on the cards.</p><div class="btnrow"><button type="button" class="gbtn primary" id="btnPrintKey">Print answer key</button><button type="button" class="gbtn" id="btnDlKey">Download answer key (.html)</button></div><table class="ftable" id="akTable"><thead><tr>'+ak.head.map(function(h){ return '<th>'+esc(h)+'</th>'; }).join('')+'</tr></thead><tbody>'+ak.rows.map(function(rw){ return '<tr>'+rw.map(function(c){ return '<td>'+esc(c)+'</td>'; }).join('')+'</tr>'; }).join('')+'</tbody></table></div>';
-  html+='<h3 class="pp-sec">Image production script ('+kit.script.length+' prompts)</h3>'+gptGuide('image')+'<div class="note" id="scriptNote">'+(deck?(STATE.sample?'Card faces use the text of the SAMPLE deck.':'Card faces use the exact text from your checked deck.'):'Tip: paste and check your deck in Step 4 first, so every card face prompt carries its exact text.')+'</div><div class="btnrow"><button type="button" class="gbtn primary" id="btnCopyAllScript">Copy all prompts</button><button type="button" class="gbtn" id="btnDlScript">Download .txt</button></div><div class="script" id="scriptList">'+
-    kit.script.map(function(s,i){ var tip=(/^card-1$/.test(s.key))?'<div class="note" id="galleryTip"><b>Tip:</b> '+esc(GALLERY_TIP)+'</div>':''; return tip+'<details class="sitem"'+(i===0?' open':'')+'><summary><span class="chip">'+(i+1)+'</span> '+esc(s.title)+'</summary><div class="bodyi"><textarea id="sp-'+i+'" class="promptbox" style="min-height:150px" readonly aria-label="Prompt '+(i+1)+'">'+esc(s.prompt)+'</textarea><div class="btnrow"><button type="button" class="gbtn" data-sp="'+i+'">Copy prompt '+(i+1)+'</button></div></div></details>'; }).join('')+'</div>';
+  html+='<h3 class="pp-sec">Image production script ('+kit.script.length+' prompts)</h3>'+gptGuide('image')+'<div class="note" id="scriptNote">'+(deck?(STATE.sample?'Card faces use the text of the SAMPLE deck.':'Card faces use the exact text from your checked deck.'):'Tip: paste and check your deck in Step 4 first, so every card face prompt carries its exact text.')+'</div><div class="btnrow"><button type="button" class="gbtn primary" id="btnCopyAllScript">Copy all prompts</button><button type="button" class="gbtn" id="btnDlScript">Download .txt</button><button type="button" class="gbtn" id="btnNextTodo">Go to next prompt</button><button type="button" class="gbtn" id="btnResetProg">Reset progress</button></div><div class="sprog" id="sprog"><div class="bar"><i id="sprogFill"></i></div><div class="lab"><span id="sprogLab"></span><span class="hint" style="margin:0">Click To do / Done on each prompt to keep track. Your progress is saved with your project.</span></div></div><div class="script" id="scriptList">'+
+    kit.script.map(function(s,i){ var tip=(/^card-1$/.test(s.key))?'<div class="note" id="galleryTip"><b>Tip:</b> '+esc(GALLERY_TIP)+'</div>':''; var dn=isDone(kit,s); return tip+'<details class="sitem'+(dn?' done':'')+'" data-i="'+i+'"'+(i===0?' open':'')+'><summary><span class="chip">'+(i+1)+'</span> '+esc(s.title)+'<button type="button" class="sdone" data-done="'+i+'" aria-pressed="'+dn+'">'+(dn?'Done':'To do')+'</button></summary><div class="bodyi"><textarea id="sp-'+i+'" class="promptbox" style="min-height:150px" readonly aria-label="Prompt '+(i+1)+'">'+esc(s.prompt)+'</textarea><div class="btnrow"><button type="button" class="gbtn" data-sp="'+i+'">Copy prompt '+(i+1)+'</button></div></div></details>'; }).join('')+'</div>';
   html+='<h3 class="pp-sec">Rulebook, host sheet and score pad</h3><p>A printable rulebook for <b>'+esc(kit.title)+'</b>, a one-page host cheat sheet, an answer key page ('+(kit.mode==='odd'?'card number, false statement, why it is false':'card number, stars, correct letter and answer, VERIFY line')+') and a score pad, sized for '+esc(curPaper().label)+'.</p><div class="btnrow"><button type="button" class="gbtn primary" id="btnRulebook">Open rulebook, host sheet, answer key &amp; score pad</button><button type="button" class="gbtn" id="btnRulebookDl">Download .html</button></div><ol>'+m.rules.map(function(x){ return '<li>'+esc(x)+'</li>'; }).join('')+'</ol>';
   html+='<h3 class="pp-sec">Fact sheet</h3><div class="note warn">Check the facts before you print or sell your deck. AI can make mistakes. Custom topics are not source-checked.</div><div class="btnrow"><button type="button" class="gbtn primary" id="btnFactMd">Download fact sheet (.md)</button><button type="button" class="gbtn" id="btnFactCsv">Download fact sheet (.csv)</button></div><table class="ftable"><thead><tr><th>World</th><th>Topic</th><th>Fact</th><th>Source</th><th>Check status</th>'+(kit.mode==='odd'?'<th>Why the false statement is false</th>':'')+'</tr></thead><tbody>'+rows.map(function(r){ return '<tr><td>'+esc(r.world)+'</td><td>'+esc(r.topic)+'</td><td>'+esc(r.fact)+'</td><td>'+esc(r.source)+(r.url?'<br><small>'+esc(r.url)+'</small>':'')+'</td><td>'+esc(r.verified)+'</td>'+(kit.mode==='odd'?'<td>'+esc(r.why)+'</td>':'')+'</tr>'; }).join('')+'</tbody></table>';
   html+='<h3 class="pp-sec">Print kit (Poker 63 x 88 mm, '+esc(curPaper().label)+')</h3><div class="stat"><div><b>'+pk.per+'</b>cards per sheet ('+pk.grid.cols+' x '+pk.grid.rows+')</div><div><b>'+pk.fronts+'</b>sheets of card faces</div><div><b>'+pk.backs+'</b>sheets of card backs</div><div><b>'+pk.pages+'</b>pages in total</div></div><p class="hint">Pages = '+pk.fronts+' face sheets + '+pk.backs+' back sheets + 1 sheet for the rules card, score cards and tokens. Margins of '+pk.grid.margin+' mm are kept for crop marks.</p><ul><li>Print card faces and backs double-sided at 100% scale.</li><li>Cut along the crop marks and sort cards by number.</li><li>Cut out '+(kit.mode==='odd'?'the number tokens (1-4 per player) and the Double Down tokens':'the star markers and tier markers')+'.</li><li>Play one test round before you sell or share the game.</li></ul>';
   html+='<h3 class="pp-sec">Name ideas</h3><ul class="names" id="nameList">'+nameIdeas(kit).map(function(n){ return '<li>'+esc(n)+'</li>'; }).join('')+'</ul><p class="hint">Generic ideas built from your world and topics. Always check availability before you use a name.</p>';
   html+='<h3 class="pp-sec">Seller notes</h3><ol class="snotes">'+SELLER_NOTES.map(function(x){ return '<li>'+esc(x)+'</li>'; }).join('')+'</ol>';
-  html+='<h3 class="pp-sec">Save your work</h3><div class="btnrow"><button type="button" class="gbtn" id="btnSave">Save project (.json)</button><button type="button" class="gbtn" id="btnLoad">Load project</button><input type="file" id="fileLoad" accept="application/json,.json" class="sr" aria-label="Load project file"></div>';
+  html+='<h3 class="pp-sec">Save your work</h3><p class="hint">Your work is also saved automatically in this browser. Save a project file as a backup, or to move it to another computer.</p><div class="btnrow"><button type="button" class="gbtn" id="btnSave">Save project (.json)</button><button type="button" class="gbtn" id="btnLoad">Load project</button><input type="file" id="fileLoad" accept="application/json,.json" class="sr" aria-label="Load project file"></div>';
   box.innerHTML=html;
   var on=function(id,fn){ var el=$(id); if(el) el.addEventListener('click',fn); };
   box.querySelectorAll('button[data-sp]').forEach(function(b){ b.addEventListener('click',function(){ copyFrom('sp-'+b.getAttribute('data-sp'),b); }); });
@@ -2788,10 +2811,66 @@ function renderFinish(){
   on('btnPrintKey',openAnswerKey); on('btnDlKey',downloadAnswerKey); on('btnRulebook',openRulebook); on('btnRulebookDl',downloadRulebook);
   on('btnFactMd',function(){ downloadText(factSheetMD(kit),(slug(kit.title)||'game')+'-fact-sheet.md','text/markdown'); toast('Fact sheet downloaded (.md).'); });
   on('btnFactCsv',function(){ downloadText(factSheetCSV(kit),(slug(kit.title)||'game')+'-fact-sheet.csv','text/csv'); toast('Fact sheet downloaded (.csv).'); });
+  box.querySelectorAll('button[data-done]').forEach(function(b){ b.addEventListener('click',function(e){ e.preventDefault(); e.stopPropagation(); toggleDone(kit,parseInt(b.getAttribute('data-done'),10)); }); });
+  on('btnNextTodo',function(){ gotoNextTodo(kit); }); on('btnResetProg',function(){ if(!countDone(kit)){ toast('Nothing to reset yet.'); return; } var okR=true; try{ okR=confirm('Reset the progress of all '+kit.script.length+' prompts?'); }catch(e){} if(okR){ resetDone(kit); } });
+  updateScriptProgress(kit);
   on('btnSave',saveProject); on('btnLoad',function(){ $('fileLoad').click(); }); $('fileLoad').addEventListener('change',function(){ loadProjectFile($('fileLoad').files[0]); $('fileLoad').value=''; });
 }
+/* ---------- script progress ---------- */
+function capFirst(t){ t=String(t||''); return t.charAt(0).toUpperCase()+t.slice(1); }
+function cleanDone(d){ var out={}; if(d&&typeof d==='object'){ Object.keys(d).slice(0,400).forEach(function(k){ if(d[k]===true) out[String(k).slice(0,80)]=true; }); } return out; }
+function doneKey(kit,s){ return kit.mode+'|'+kit.worldId+'|'+s.key; }
+function isDone(kit,s){ return !!(STATE.done&&STATE.done[doneKey(kit,s)]); }
+function countDone(kit){ return kit.script.filter(function(s){ return isDone(kit,s); }).length; }
+function updateScriptProgress(kit){
+  var n=kit.script.length, d=countDone(kit); var f=$('sprogFill'), l=$('sprogLab'); if(!f||!l) return;
+  f.style.width=(n?Math.round(d/n*100):0)+'%'; l.textContent=d+' / '+n+' prompts done'+(d===n&&n?' - all images are made. Next: print.':'');
+  var nb=$('btnNextTodo'); if(nb) nb.disabled=(d===n);
+}
+function toggleDone(kit,i){
+  var s=kit.script[i]; if(!s) return; if(!STATE.done) STATE.done={};
+  var k=doneKey(kit,s); if(STATE.done[k]) delete STATE.done[k]; else STATE.done[k]=true;
+  var it=document.querySelector('#scriptList details[data-i="'+i+'"]'); var on=!!STATE.done[k];
+  if(it){ it.classList.toggle('done',on); var b=it.querySelector('.sdone'); if(b){ b.textContent=on?'Done':'To do'; b.setAttribute('aria-pressed',on?'true':'false'); } if(on) it.open=false; }
+  updateScriptProgress(kit);
+  if(on){ var nx=nextTodoIndex(kit,i); if(nx>=0){ var nd=document.querySelector('#scriptList details[data-i="'+nx+'"]'); if(nd) nd.open=true; } }
+}
+function nextTodoIndex(kit,from){ var n=kit.script.length; for(var j=1;j<=n;j++){ var i=((from==null?-1:from)+j)%n; if(!isDone(kit,kit.script[i])) return i; } return -1; }
+function gotoNextTodo(kit){
+  var i=nextTodoIndex(kit,null); if(i<0){ toast('All prompts are done.'); return; }
+  var it=document.querySelector('#scriptList details[data-i="'+i+'"]'); if(!it) return; it.open=true;
+  try{ it.scrollIntoView({behavior:'smooth',block:'center'}); }catch(e){ it.scrollIntoView(); }
+  toast('Next prompt: '+(i+1)+' of '+kit.script.length+'.');
+}
+function resetDone(kit){ if(!STATE.done) return; kit.script.forEach(function(s){ delete STATE.done[doneKey(kit,s)]; }); renderFinish(); toast('Progress reset.'); }
+/* ---------- autosave (this browser) ---------- */
+var AUTO_KEY='game-mode-engines-autosave-v1', _autoSig='', _initialSig='', _restorePending=false;
+function autoPayload(){ if(STATE.kit&&$('pasteBox')) STATE.paste[STATE.kit.mode]=$('pasteBox').value; var o=buildProject(); o.step=STATE.step; o.savedAt=new Date().toISOString(); return o; }
+function autoSig(o){ var c={}; Object.keys(o).forEach(function(k){ if(k!=='savedAt'&&k!=='step') c[k]=o[k]; }); return JSON.stringify(c); }
+function autosaveTick(){
+  if(_restorePending) return;
+  try{ var o=autoPayload(); var sg=autoSig(o); if(sg===_autoSig) return; _autoSig=sg; if(sg===_initialSig) return; localStorage.setItem(AUTO_KEY,JSON.stringify(o)); }catch(e){}
+}
+function agoText(iso){ try{ var m=Math.max(0,Math.round((Date.now()-new Date(iso).getTime())/60000)); if(m<1) return 'less than a minute ago'; if(m<60) return m+' min ago'; var h=Math.round(m/60); if(h<48) return h+' h ago'; return Math.round(h/24)+' days ago'; }catch(e){ return ''; } }
+function offerRestore(){
+  try{
+    var raw=localStorage.getItem(AUTO_KEY); if(!raw) return; var o=JSON.parse(raw);
+    if(!o||o.app!=='game-mode-engines'||autoSig(o)===_initialSig) return;
+    var W=WORLD_PACKS[o.worldId]; var M=MODES[o.mode];
+    var bar=document.createElement('div'); bar.className='restore'; bar.id='restoreBar'; bar.setAttribute('role','region'); bar.setAttribute('aria-label','Restore your last session');
+    bar.innerHTML='<span><b>Your last session was saved.</b> '+esc(M?M.name:'')+' · '+esc(W?W.name:'')+(o.savedAt?' · '+esc(agoText(o.savedAt)):'')+'</span><span class="btnrow" style="margin:0"><button type="button" class="gbtn primary" id="btnRestore">Restore it</button><button type="button" class="gbtn" id="btnFresh">Start fresh</button></span>';
+    var anchor=$('startStrip'); if(anchor&&anchor.parentNode) anchor.parentNode.insertBefore(bar,anchor.nextSibling); else document.body.insertBefore(bar,document.body.firstChild);
+    _restorePending=true;
+    $('btnRestore').addEventListener('click',function(){
+      try{ applyProject(o); var hasDeck=String(STATE.paste[STATE.mode]||'').trim(); if(hasDeck){ generate(true); STATE.done=cleanDone(o.done); runChecks(true); }
+        var st=Math.max(2,Math.min(5,parseInt(o.step,10)||2)); proGoto(st); toast('Session restored.'); }catch(e){ toast('Could not restore: '+e.message,'err'); }
+      bar.remove(); _restorePending=false; _autoSig='';
+    });
+    $('btnFresh').addEventListener('click',function(){ try{ localStorage.removeItem(AUTO_KEY); }catch(e){} bar.remove(); _restorePending=false; _autoSig=''; });
+  }catch(e){}
+}
 /* ---------- save / load ---------- */
-function buildProject(){ return {app:'game-mode-engines',version:2,mode:STATE.mode,worldId:STATE.worldId,picked:STATE.picked.slice(),custom:STATE.custom.map(function(c){ return {id:c.id,title:c.title,facts:c.facts.slice()}; }),length:STATE.length,scope:STATE.scope,brand:cleanBrand(STATE.brand),answerOn:!!STATE.answerOn,paper:STATE.paper,cardFormat:STATE.cardFormat,players:STATE.players,paste:{odd:STATE.paste.odd||'',trivia:STATE.paste.trivia||''},customSeq:STATE._customSeq}; }
+function buildProject(){ return {app:'game-mode-engines',version:2,mode:STATE.mode,worldId:STATE.worldId,picked:STATE.picked.slice(),custom:STATE.custom.map(function(c){ return {id:c.id,title:c.title,facts:c.facts.slice()}; }),length:STATE.length,scope:STATE.scope,brand:cleanBrand(STATE.brand),answerOn:!!STATE.answerOn,paper:STATE.paper,cardFormat:STATE.cardFormat,players:STATE.players,paste:{odd:STATE.paste.odd||'',trivia:STATE.paste.trivia||''},customSeq:STATE._customSeq,done:STATE.done||{},sample:!!STATE.sample}; }
 function applyProject(o){
   if(!o||o.app!=='game-mode-engines') throw new Error('This file is not a Game Mode Engines project.');
   STATE.mode=MODES[o.mode]?o.mode:'odd'; STATE.worldId=validWorld(o.worldId); STATE.length=validSize(o.length==='short'||o.length==='mega'?o.length:'full'); STATE.paper=validPaper(o.paper); STATE.cardFormat=validFormat(o.cardFormat); STATE.players=clamp(parseInt(o.players,10)||4,3,6); STATE.scope=o.scope==='mixed'?'mixed':'world'; STATE.autoMixed=false; STATE.brand=cleanBrand(o.brand); STATE.answerOn=!!o.answerOn;
@@ -2799,7 +2878,7 @@ function applyProject(o){
   STATE._customSeq=1+STATE.custom.reduce(function(a,c){ return Math.max(a,c.id); },0);
   autoScope(); var valid={}; allTopics().forEach(function(t){ valid[t.key]=1; }); STATE.picked=(Array.isArray(o.picked)?o.picked:[]).filter(function(k){ return valid[k]; }); STATE.manualKey=comboKey();
   if(STATE.picked.length===0){ STATE.manualKey=''; autoPick(); }
-  STATE.paste={odd:String((o.paste&&o.paste.odd)||''),trivia:String((o.paste&&o.paste.trivia)||'')}; STATE.sample=false; invalidate(); renderAll(); proGoto(2);
+  STATE.paste={odd:String((o.paste&&o.paste.odd)||''),trivia:String((o.paste&&o.paste.trivia)||'')}; STATE.sample=!!o.sample; STATE.done=cleanDone(o.done); invalidate(); renderAll(); proGoto(2);
 }
 function saveProject(){ downloadText(JSON.stringify(buildProject(),null,1),'game-mode-engines-project.json','application/json'); toast('Project saved.'); }
 function loadProjectFile(f){ if(!f) return; var r=new FileReader(); r.onload=function(){ try{ applyProject(JSON.parse(r.result)); toast('Project loaded.'); }catch(e){ toast('Could not load: '+e.message,'err'); } }; r.readAsText(f); }
@@ -2863,12 +2942,22 @@ function initApp(){
   $('mixFilter').addEventListener('change',function(){ STATE.mixFilter=$('mixFilter').value; renderTopics(); });
   $('btnGenerate').addEventListener('click',function(){ generate(); });
   $('btnSample').addEventListener('click',loadSample); $('btnHow').addEventListener('click',function(){ $('howModal').classList.add('show'); $('howClose').focus(); });
-  $('howBtn').addEventListener('click',function(){ $('howModal').classList.add('show'); $('howClose').focus(); });
+  var hb=$('howBtn'), HK='game-mode-engines-howto-seen-v1';
+  var calm=function(){ hb.classList.remove('howto-pulse'); var ar=hb.querySelector('.howto-arrow'); if(ar) ar.remove(); };
+  try{ if(localStorage.getItem(HK)) calm(); }catch(e){}
+  hb.addEventListener('click',function(){ try{ localStorage.setItem(HK,'1'); }catch(e){} calm(); $('howModal').classList.add('show'); $('howClose').focus(); });
+  var bl=(CONFIG.bonusLinks||[]).filter(function(l){ return linkReady(l.url); }), bm=$('menuBonus');
+  bm.innerHTML=bl.map(function(l){ return '<a role="menuitem" href="'+l.url+'" target="_blank" rel="noopener noreferrer">'+l.label+'</a>'; }).join(''); if(!bl.length) bm.parentElement.style.display='none';
+  $('bonusBtn').addEventListener('click',function(e){ e.stopPropagation(); var dd=this.parentElement, o=dd.classList.toggle('open'); this.setAttribute('aria-expanded',o?'true':'false'); });
+  document.addEventListener('click',function(){ var dd=document.querySelector('.vault-dd.open'); if(dd){ dd.classList.remove('open'); dd.firstElementChild.setAttribute('aria-expanded','false'); } });
   $('howClose').addEventListener('click',function(){ $('howModal').classList.remove('show'); });
   $('howModal').addEventListener('click',function(e){ if(e.target===$('howModal')) $('howModal').classList.remove('show'); });
-  document.addEventListener('keydown',function(e){ if(e.key==='Escape') $('howModal').classList.remove('show'); });
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape'){ $('howModal').classList.remove('show'); var dd=document.querySelector('.vault-dd.open'); if(dd) dd.classList.remove('open'); } });
   $('startGot').addEventListener('click',function(){ _startDismissed=true; $('startStrip').style.display='none'; });
   syncTopics(); renderAll(); renderCheckArea(); renderFinish();
+  $('saveTop').addEventListener('click',function(){ if(STATE.kit&&$('pasteBox')) STATE.paste[STATE.kit.mode]=$('pasteBox').value; saveProject(); });
+  try{ _initialSig=autoSig(autoPayload()); }catch(e){}
+  offerRestore(); setInterval(autosaveTick,2000);
 }
 initApp();
 
