@@ -56,6 +56,12 @@ body::after{content:"\2660  \2665  \2666  \2663  \2660  \2665  \2666  \2663  \26
   padding:11px 22px;border-radius:999px;border:0;background:linear-gradient(135deg,var(--gold),var(--gold-2));
   box-shadow:0 8px 22px rgba(45,212,191,.35);font-family:var(--font-main);transition:var(--transition);white-space:nowrap}
 .vault-link:hover{transform:translateY(-2px);filter:brightness(1.06)}
+.howto-pulse{position:relative;animation:howtoPulse 1.8s ease-in-out infinite}
+.howto-arrow{position:absolute;right:calc(100% + 10px);top:50%;transform:translateY(-50%);background:#fff;color:#2a1208;font-weight:900;font-size:.74rem;letter-spacing:.04em;text-transform:uppercase;padding:5px 10px;border-radius:999px;box-shadow:0 4px 14px rgba(0,0,0,.35);animation:howtoNudge 1s ease-in-out infinite;pointer-events:none}
+@keyframes howtoPulse{0%,100%{box-shadow:0 8px 22px rgba(233,185,73,.35),0 0 0 0 rgba(233,185,73,.75)}50%{box-shadow:0 8px 26px rgba(253,230,138,.6),0 0 0 12px rgba(233,185,73,0)}}
+@keyframes howtoNudge{0%,100%{transform:translate(0,-50%)}50%{transform:translate(-7px,-50%)}}
+@media (prefers-reduced-motion:reduce){.howto-pulse,.howto-arrow{animation:none}}
+@media (max-width:780px){.howto-arrow{display:none}}
 .vault-link svg{width:16px;height:16px}
 @media (max-width:780px){.vault-bar{flex-direction:column;align-items:stretch}.vault-left{justify-content:center}.vault-link{margin-left:0;width:100%;justify-content:center}}
 /* Hero */
@@ -864,6 +870,12 @@ button.btn-copy .cf:nth-child(odd){background:var(--teal)}
 .pp-table{display:block;max-width:100%;overflow-x:auto;width:100%;border-collapse:collapse;font-size:.86rem;margin:8px 0}
 .pp-table th,.pp-table td{padding:8px 10px;text-align:left;border-bottom:1px solid var(--line)}
 .pp-table th{color:var(--gold);font-weight:800}
+.ver-cell{display:flex;flex-direction:column;gap:6px;align-items:flex-start;min-width:130px}
+.ver-cell .ver-cur{color:var(--gold);font-weight:800}
+.ver-sel{background:rgba(255,255,255,.06);color:inherit;border:1px solid var(--line);border-radius:8px;padding:4px 6px;font:inherit;font-size:.8rem;max-width:150px}
+.ver-prog{margin:8px 0 0;font-size:.84rem;color:var(--muted,#cbbfa3)}
+.coll-saved{margin-top:10px}
+.coll-saved select{width:100%}
 .pp-ok{border-left:4px solid var(--teal);background:rgba(45,212,191,.08);padding:12px 14px;border-radius:12px;margin:10px 0;color:#c9fbf3}
 .pp-warn{border-left:4px solid var(--coral);background:rgba(242,184,75,.1);padding:12px 14px;border-radius:12px;margin:10px 0;color:#ffd9d5}
 /* ===== Pro v2: guided workflow ===== */
@@ -1013,7 +1025,7 @@ button.btn-copy .cf:nth-child(odd){background:var(--teal)}
     </div>
     <button type="button" class="vault-decks" onclick="openDeckDrawer()"><i data-lucide="folder-open"></i> My decks</button>
     </div>
-    <a class="vault-link" id="btnHowTo" href="https://example.com/how-to-use" target="_blank" rel="noopener noreferrer"><i data-lucide="circle-help"></i> How to Use</a>
+    <a class="vault-link howto-pulse" id="btnHowTo" href="https://drive.google.com/file/d/1rimH8OPvRm6QXSbDQ8kqlbgpdtJjenMp/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span class="howto-arrow" aria-hidden="true">Start here &#10140;</span><i data-lucide="circle-help"></i> How to Use</a>
   </div>
 
   <div class="accent-bar" aria-hidden="true"></div>
@@ -1435,6 +1447,7 @@ button.btn-copy .cf:nth-child(odd){background:var(--teal)}
 <div class="modal-overlay" id="howtoModal" role="dialog" aria-modal="true" aria-label="How to Use">
   <div class="modal-box">
     <h3><i data-lucide="circle-help"></i> How to Use Bluff Cabaret AI</h3>
+    <p><a class="btn-copy auto" id="howtoGuide" href="https://drive.google.com/file/d/1rimH8OPvRm6QXSbDQ8kqlbgpdtJjenMp/view?usp=sharing" target="_blank" rel="noopener noreferrer"><i data-lucide="book-open"></i> Open the full User Guide (PDF)</a></p>
     <ol>
       <li><strong>Step 1 Setup:</strong> pick a world, a topic, players and game length, then copy the deck prompt into ChatGPT.</li>
       <li><strong>Step 2 Paste &amp; Check:</strong> paste ChatGPT's 24 cards back here, fix anything the Fact &amp; Bluff Check and Game Balance flag.</li>
@@ -1475,11 +1488,11 @@ var CONFIG = {
   branding:false,
   upgradeLinks:{ vault:'', play:'', commercial:'', pro:'' },
   bonusLinks: [
-    { label: 'Bonus #1: Bluff Writing Cheat Sheet', url: 'https://example.com/bonus1' },
-    { label: 'Bonus #2: Bonus placeholder', url: 'https://example.com/bonus2' },
-    { label: 'Bonus #3: 50 Extra Deck Topic Ideas', url: 'https://example.com/bonus3' }
+    { label: 'Bonus #1: Master Bluffer Certificate Pack', url: 'https://emanuelemaugeri93-creator.github.io/Bluff-Cabaret-AI/OTO2-bonus-1-master-bluffer-certificate-pack.html' },
+    { label: 'Bonus #2: 10 Ready-Made Collection Blueprints', url: 'https://emanuelemaugeri93-creator.github.io/Bluff-Cabaret-AI/OTO2-bonus-2-ten-ready-made-collection-blueprints.html' },
+    { label: 'Bonus #3: The Bundle Playbook', url: 'https://emanuelemaugeri93-creator.github.io/Bluff-Cabaret-AI/OTO2-bonus-3-the-bundle-playbook.html' }
   ],
-  howToUrl: 'https://example.com/how-to-use'
+  howToUrl: 'https://drive.google.com/file/d/1rimH8OPvRm6QXSbDQ8kqlbgpdtJjenMp/view?usp=sharing'
 };
 /* locked teaser slots for worlds not in this edition (gated by CONFIG.worldsUnlocked) */
 var TEASER_WORLDS = [];
@@ -1654,7 +1667,7 @@ dino:{ id:'dino', name:'Dino Dig Camp', tagline:'A dusty dig camp of fossils, bo
   epicFinish:'3-point cards get a dust-orange foil strata frame, a brown wax seal with a bone stamp, and tiny dust glints.',
   galleries:['Base Camp','The Quarry','The Big Find'],
   cast:[
-    { name:'Chief strata', role:'Boss of the Table', species:'raptor', personality:'A strutting dig chief who never loses a brush.', visual:'Angular rust raptor with triangular snout planes, flat poster scales, crisp black outlines; fern vest, fossil brush raised front, commanding grin; claw lines.', voice:'Dig! Brush! Behold!', prop:'fossil brush', expression:'commanding grin', accent:'dust orange', power:0 },
+    { name:'Chief Strata', role:'Boss of the Table', species:'raptor', personality:'A strutting dig chief who never loses a brush.', visual:'Angular rust raptor with triangular snout planes, flat poster scales, crisp black outlines; fern vest, fossil brush raised front, commanding grin; claw lines.', voice:'Dig! Brush! Behold!', prop:'fossil brush', expression:'commanding grin', accent:'dust orange', power:0 },
     { name:'Sneak Snout', role:'Spy', species:'mole', personality:'A tiny mole who hears tunnels first.', visual:'Angular brown mole with triangular nose planes, flat poster fur, crisp black outlines; green vest, ear trumpet held front, sly squint; dirt dots.', voice:'Shh... tunnels talk.', prop:'ear trumpet', expression:'sly squint', accent:'fern green', power:1 },
     { name:'Judge Fossil', role:'Judge', species:'turtle', personality:'A slow shell judge who dates every bone.', visual:'Angular moss turtle with triangular shell planes, flat poster plates, crisp black outlines; bone coat, caliper held level front, stern frown; crack lines.', voice:'Old. Very old. Next.', prop:'brass caliper', expression:'stern frown', accent:'bone white', power:3 },
     { name:'Card Claw', role:'Card Sharp', species:'pterosaur', personality:'A gliding dealer with cards in the wind.', visual:'Angular teal pterosaur with triangular wing planes, flat poster membrane, crisp black outlines; vest, fanned cards in claw front, smug grin; wind lines.', voice:'Dealt mid-glide!', prop:'fanned field cards', expression:'smug grin', accent:'dust orange', power:2, locked:true },
@@ -2273,7 +2286,10 @@ function initVault(){
   var mk=function(id,links){ var m=$(id); if(!m) return; m.innerHTML=links.map(function(l){ return '<a role="menuitem" href="'+escHtml(l.url)+'" target="_blank" rel="noopener noreferrer">'+escHtml(l.label)+'</a>'; }).join(''); };
   var bl=(CONFIG.bonusLinks||[]).filter(function(l){ return linkReady(l.url); }); mk('menuBonus',bl);
   var bm=$('menuBonus'); if(bm&&bm.parentElement) bm.parentElement.style.display=bl.length?'':'none';
-  var how=$('btnHowTo'); if(how) how.addEventListener('click',function(e){ e.preventDefault(); openHowto(); });
+  var how=$('btnHowTo'); var HK='pro-edition-howto-seen-v1';
+  var calm=function(){ if(how){ how.classList.remove('howto-pulse'); var ar=how.querySelector('.howto-arrow'); if(ar) ar.remove(); } };
+  try{ if(localStorage.getItem(HK)) calm(); }catch(e){}
+  if(how) how.addEventListener('click',function(e){ e.preventDefault(); try{ localStorage.setItem(HK,'1'); }catch(er){} calm(); openHowto(); });
   document.querySelectorAll('.vault-dd > button').forEach(function(btn){
     btn.addEventListener('click',function(e){ e.stopPropagation(); var dd=btn.parentElement; var open=dd.classList.contains('open');
       document.querySelectorAll('.vault-dd.open').forEach(function(x){ x.classList.remove('open'); x.firstElementChild.setAttribute('aria-expanded','false'); });
@@ -2830,7 +2846,7 @@ function _buildDeckPromptsInner(cfg){
     L.push('- Language: English');
     L.push(cfg.didYouKnow?'- Reveal text: write a short, fun "Did you know?" style reveal for every card (still ONE sentence, MAX 22 WORDS).':'- Reveal text: keep each Reveal to ONE plain sentence stating the true fact (MAX 22 WORDS).');
     L.push('- Rules: the rules are FIXED and live in the app. Do NOT write a Rules Summary.');
-    L.push(''); L.push('THE CAST (8 recurring witnesses — use EXACTLY these names; each Witness Line must sound like the voice example, personality only, no new facts)');
+    L.push(''); L.push('THE CAST ('+activeCast(W).length+' recurring witnesses — use EXACTLY these names; each Witness Line must sound like the voice example, personality only, no new facts)');
     L.push(castEmbedBlock(W));
     L.push(''); L.push('OUTPUT FORMAT (follow it exactly)');
     L.push('Return plain text only. No commentary before or after, no markdown tables, no JSON, no bold, no code fences. Use exactly these field names, one field per line:');
@@ -5082,7 +5098,7 @@ function compileScript(){
   $('scriptCount').textContent='Production script ready: '+_script.length+' prompts in order ('+getWorld().name+', '+(STATE.textMode==='full'?'full text':'art only')+') — 1 style sheet, 1 cast sheet + 5 cast cards, back, box, rules, score, chips'+((STATE.settings||{}).variantsOn!==false?', variants':'')+', '+nCards+' card faces, banner, hero.';
   $('scriptBar').scrollIntoView({behavior:'smooth',block:'start'});
   STATE._staleScript=false; renderStaleNotices();
-  refreshIcons(); autosave();
+  refreshIcons(); autosave(); verAuto('script');
   toast('Compiled '+_script.length+' prompts in order.','ok');
 }
 function compileScriptSilent(){
@@ -5327,10 +5343,9 @@ function renderSetSummary(){
     '<p class="field-hint">Set size: base '+B+' + '+n+' expansion'+(n===1?'':'s')+' × 12 = '+tot+' cards. Print pages include the cast, rules and score cards.</p>';
   var el=$('setSummary'); if(el) el.innerHTML=html;
   var pm=$('productMatrix'); if(pm){
-    var eds=Object.keys(EDITIONS), fm=(CONFIG.cardFormats||[]).filter(function(f){ return (CONFIG.cardFormatsUnlocked||[]).indexOf(f.id)>=0; });
-    pm.innerHTML='<table class="pp-table"><thead><tr><th>Edition</th>'+fm.map(function(f){ return '<th>'+escHtml(f.label)+' '+f.mm[0]+'×'+f.mm[1]+'</th>'; }).join('')+'</tr></thead><tbody>'+
-      eds.map(function(e){ return '<tr><td>'+escHtml(EDITIONS[e].label)+'</td>'+fm.map(function(f){ var cur=(e===STATE.edition&&f.id===curFormat().id); return '<td>'+(cur?'<strong style="color:var(--gold)">current</strong>':'Generate')+'</td>'; }).join('')+'</tr>'; }).join('')+'</tbody></table>'+
-      '<p class="field-hint">'+(eds.length*fm.length)+' versions of the base game, each with '+n+' numbered expansion'+(n===1?'':'s')+': '+(eds.length*fm.length*(1+n))+' sellable products from one topic. Switch edition or format, then compile the script again.</p>';
+    var eds0=Object.keys(EDITIONS), fm0=(CONFIG.cardFormats||[]).filter(function(f){ return (CONFIG.cardFormatsUnlocked||[]).indexOf(f.id)>=0; });
+    pm.innerHTML=verMatrixHTML()+'<p class="field-hint">'+(eds0.length*fm0.length)+' versions of the base game, each with '+n+' numbered expansion'+(n===1?'':'s')+': '+(eds0.length*fm0.length*(1+n))+' sellable products from one topic. Press <strong>Create version</strong> to copy your deck into another edition or format, then open it and compile its script. Statuses are for your own tracking.</p>';
+    try{ refreshIcons(); }catch(e){}
   }
 }
 function renderEditionPanel(){
@@ -5574,6 +5589,7 @@ function renderCollectionPanel(){
       '<div class="input-group"><label for="coll-topic-'+i+'">Topic</label><div class="topic-row"><input type="text" id="coll-topic-'+i+'" class="main-input" maxlength="100" placeholder="Topic of this game..." value="'+escHtml(g.topic)+'" oninput="collGame('+i+',\'topic\',this.value)"><button type="button" class="surprise-btn" onclick="collSurprise('+i+')"><i data-lucide="dices"></i> Surprise Me</button></div></div>'+
       '<button type="button" class="btn-ghost" onclick="collGenerate('+i+')"><i data-lucide="wand-2"></i> Generate blueprint prompt</button>'+
       '<div id="coll-promptwrap-'+i+'" style="display:none;margin-top:10px"><textarea id="coll-prompt-'+i+'" class="prompt-text tall" readonly aria-label="Blueprint prompt for game '+(i+1)+'"></textarea><button type="button" class="btn-copy auto" onclick="copyFrom(\'coll-prompt-'+i+'\',this)"><i data-lucide="copy"></i> Copy blueprint '+(i+1)+'</button></div>'+
+      '<div class="input-group coll-saved"><label for="coll-saved-'+i+'">Or fill Game '+(i+1)+' from one of your saved decks</label><select id="coll-saved-'+i+'" onchange="collFillFromDeck('+i+',this.value)">'+collSavedOptions()+'</select><p class="field-hint">Copies its world, edition, format, topic and pasted deck into this game.</p></div>'+
       '<div class="input-group" style="margin-top:10px"><label for="coll-paste-'+i+'">Paste the finished deck of Game '+(i+1)+' (optional, enables the Continuity Checker)</label><textarea id="coll-paste-'+i+'" rows="3" oninput="collGame('+i+',\'paste\',this.value)">'+escHtml(g.paste)+'</textarea></div></div>'; }).join('')+
    '<div class="toolbar-row"><button type="button" class="btn-ghost" onclick="collAddGame()"><i data-lucide="plus"></i> Add game</button><button type="button" class="btn-ghost" onclick="collRemoveGame()"><i data-lucide="minus"></i> Remove last game</button><button type="button" class="btn-ghost" onclick="collGenerateAll()"><i data-lucide="layers"></i> Generate all blueprints</button><button type="button" class="btn-ghost" onclick="downloadCollectionBible()"><i data-lucide="file-text"></i> Collection Bible (.md)</button></div></div>'+
    '<div class="form-section"><div class="form-section-title"><i data-lucide="git-compare"></i> Continuity Checker <span class="badge teal">free · instant</span></div><div class="checkline"><input type="checkbox" id="coll-include"'+(incOn?' checked':'')+'> <label for="coll-include">Also compare with the game and expansions open in this app</label></div><button type="button" class="btn-ghost" onclick="runContinuity()"><i data-lucide="shield-check"></i> Run continuity check</button><div id="coll-results" style="margin-top:10px"></div></div>';
@@ -5797,6 +5813,7 @@ function applyDeckData(d){
   STATE.players=(d.players>=3&&d.players<=5)?d.players:4;
   STATE.gameLength=d.gameLength==='short'?'short':'full';
   STATE.setup=d.setup||STATE.setup;
+  try{ applySetupToUI(); }catch(e){}
   if(d.setupMode) setSetupMode(d.setupMode);
   STATE.settings=normalizeSettings(d.settings);
   STATE.exps=normalizeExps(d); STATE.expSets=STATE.exps.map(function(){ return {cards:[],info:null}; }); STATE.edition=validEdition(d.edition); STATE.collection=d.collection?normalizeCollection(d.collection):null; STATE.plan=d.plan||STATE.plan;
@@ -5836,6 +5853,16 @@ function applyDeckData(d){
   STATE._stalePrompts=false; STATE._staleScript=false; renderStaleNotices();
   renderWorldPicker(); renderCastPreview(); renderCastEditor(); refreshTopicChips(); renderPlayers();
   updatePromptEstimate(); updateBible(); parseExp(); updateAccSummaries(); unlockStep(STATE.cards.length?2:1);
+}
+function applySetupToUI(){
+  var st=STATE.setup||{};
+  [['m-audience','audience'],['m-tone','tone'],['m-curve','curve']].forEach(function(p){
+    var el=$(p[0]); var v=st[p[1]]; if(!el||!v) return;
+    var has=[].some.call(el.options,function(o){ return o.value===v; });
+    var c=$(p[0]+'-custom');
+    if(has){ el.value=v; if(c) c.value=''; } else { el.value='custom'; if(c) c.value=v; }
+    var show=el.value==='custom'; if(c) c.style.display=show?'block':'none';
+  });
 }
 function parseDeckTextSilent(){
   var text=$('pasteBox').value;
@@ -5923,7 +5950,7 @@ function newDeck(){
   ensureLib();
   stashStatuses();
   var cur=currentDeckEntry();
-  if(cur){ var snap=snapshotCurrent(cur.name); snap.id=cur.id; LIB.decks.forEach(function(d,i){ if(d.id===cur.id) LIB.decks[i]=snap; }); }
+  if(cur){ var snap=snapshotCurrent(cur.name); snap.id=cur.id; if(cur.gid) snap.gid=cur.gid; LIB.decks.forEach(function(d,i){ if(d.id===cur.id) LIB.decks[i]=snap; }); }
   var fresh={ id:'deck-'+Date.now(), name:'Untitled deck', worldId:STATE.worldId, topic:'', date:new Date().toISOString(), cards:0,
     data:{ worldId:STATE.worldId, topic:'', topicHook:'', topicSeeds:[], topicSrcs:[], topicSrcUrls:[], players:STATE.players, gameLength:STATE.gameLength, cardFormat:STATE.cardFormat||'poker', paper:STATE.paper||'a4', setup:STATE.setup, setupMode:STATE.setupMode,
       settings:JSON.parse(JSON.stringify(STATE.settings||normalizeSettings())), exps:[], textMode:STATE.textMode, pasteText:'', cardsArr:[],
@@ -5943,6 +5970,7 @@ function duplicateDeck(id){
   stashStatuses();
   var copy=JSON.parse(JSON.stringify(src));
   copy.id='deck-'+Date.now();
+  delete copy.gid; /* a plain duplicate starts its own version group */
   copy.name=(src.name||'Untitled deck').slice(0,52)+' (copy)';
   copy.date=new Date().toISOString();
   LIB.decks.push(copy);
@@ -5984,6 +6012,105 @@ function exportDeck(id){
   if(!d) return;
   downloadText(JSON.stringify({ app:'bluff-deck-ai-library-deck', header:'Bluff Cabaret AI \u2014 Pro Edition \u00b7 My decks export', version:3, entry:d }),(slug(d.name)||'bluff-cabaret')+'.bluffdeck.json','application/json');
   toast('Deck exported.','ok');
+}
+/* ================= Pro: version tracker + one-click versions ================= */
+var VER_STATUS=[['todo','Not started'],['script','Script compiled'],['images','Images done'],['printed','Printed']];
+function verKey(ed,fm){ return ed+'|'+fm; }
+function verGroup(create){
+  ensureLib(); var cur=currentDeckEntry();
+  if(!cur){ if(!create) return null; cur=snapshotCurrent(); LIB.decks.push(cur); LIB.currentId=cur.id; }
+  if(!cur.gid) cur.gid='grp-'+cur.id;
+  if(!LIB.groups) LIB.groups={};
+  if(!LIB.groups[cur.gid]) LIB.groups[cur.gid]={cells:{}};
+  return {entry:cur,group:LIB.groups[cur.gid]};
+}
+function verCell(g,key){ if(!g.cells[key]) g.cells[key]={status:'todo',deckId:''}; return g.cells[key]; }
+function verDeckExists(id){ return !!id&&LIB.decks.some(function(d){ return d.id===id; }); }
+function verCurKey(){ return verKey(validEdition(STATE.edition),curFormat().id); }
+function verSyncCurrent(){
+  var v=verGroup(false); if(!v) return null;
+  var c=verCell(v.group,verCurKey()); c.deckId=v.entry.id; return {v:v,cell:c};
+}
+function verStatusSelect(key,val){
+  return '<select class="ver-sel" aria-label="Version status" onchange="verSetStatus(\''+key+'\',this.value)">'+VER_STATUS.map(function(o){ return '<option value="'+o[0]+'"'+(o[0]===val?' selected':'')+'>'+o[1]+'</option>'; }).join('')+'</select>';
+}
+function verSetStatus(key,val){
+  var v=verGroup(false); if(!v) return; verCell(v.group,key).status=val;
+  saveLibrary(LIB); renderSetSummary();
+}
+function verAuto(status){
+  try{
+    var sc=verSyncCurrent(); if(!sc) return;
+    var order=['todo','script','images','printed'];
+    if(order.indexOf(sc.cell.status)<order.indexOf(status)){ sc.cell.status=status; saveLibrary(LIB); renderSetSummary(); }
+  }catch(e){}
+}
+function verMatrixHTML(){
+  var eds=Object.keys(EDITIONS), fm=(CONFIG.cardFormats||[]).filter(function(f){ return (CONFIG.cardFormatsUnlocked||[]).indexOf(f.id)>=0; });
+  var sc=verSyncCurrent(); var g=sc?sc.v.group:null; var curKey=verCurKey();
+  var counts={started:0,todo:0,script:0,images:0,printed:0};
+  var rows=eds.map(function(e){
+    return '<tr><td>'+escHtml(EDITIONS[e].label)+'</td>'+fm.map(function(f){
+      var key=verKey(e,f.id); var cell=g?g.cells[key]:null; var has=cell&&verDeckExists(cell.deckId);
+      if(key===curKey){ var st=(cell&&cell.status)||'todo'; counts.started++; counts[st]++;
+        return '<td><div class="ver-cell"><span class="ver-cur">current</span>'+verStatusSelect(key,st)+'</div></td>'; }
+      if(has){ counts.started++; counts[cell.status]++;
+        return '<td><div class="ver-cell"><button type="button" class="btn-ghost btn-small" onclick="verOpen(\''+cell.deckId+'\')">Open version</button>'+verStatusSelect(key,cell.status)+'</div></td>'; }
+      return '<td><div class="ver-cell"><button type="button" class="btn-ghost btn-small" onclick="makeVersion(\''+e+'\',\''+f.id+'\')"><i data-lucide="copy-plus"></i> Create version</button></div></td>';
+    }).join('')+'</tr>';
+  }).join('');
+  return '<table class="pp-table"><thead><tr><th>Edition</th>'+fm.map(function(f){ return '<th>'+escHtml(f.label)+' '+f.mm[0]+'×'+f.mm[1]+'</th>'; }).join('')+'</tr></thead><tbody>'+rows+'</tbody></table>'+
+    '<p class="ver-prog"><strong>'+counts.started+' of '+(eds.length*fm.length)+'</strong> versions started · Script compiled: '+counts.script+' · Images done: '+counts.images+' · Printed: '+counts.printed+'</p>';
+}
+function makeVersion(ed,fm){
+  ed=validEdition(ed); fm=validFormat(fm);
+  if(!STATE.topic&&!topicSet()){ toast('Choose a topic in Step 1 first.','err'); return; }
+  var v=verGroup(true); if(!v) return; var cur=v.entry;
+  stashStatuses();
+  var snap=snapshotCurrent(cur.name); snap.id=cur.id; snap.gid=cur.gid;
+  for(var i=0;i<LIB.decks.length;i++) if(LIB.decks[i].id===cur.id) LIB.decks[i]=snap;
+  var curKey=verCurKey(); var key=verKey(ed,fm);
+  if(key===curKey){ toast('That is the version you are building now.','err'); return; }
+  var e=EDITIONS[ed]; var f=(CONFIG.cardFormats||[]).filter(function(x){ return x.id===fm; })[0]||{label:fm};
+  var copy=JSON.parse(JSON.stringify(snap));
+  copy.id='deck-'+Date.now()+''+Math.floor(Math.random()*1000);
+  var base=String(snap.name||'Untitled deck').replace(/ \u00b7 .*$/,'').slice(0,34);
+  copy.name=(base+' \u00b7 '+e.label+' \u00b7 '+f.label).slice(0,60);
+  copy.date=new Date().toISOString(); copy.gid=snap.gid;
+  var d=copy.data=copy.data||{};
+  d.edition=ed; d.cardFormat=fm;
+  d.setup=JSON.parse(JSON.stringify(d.setup||STATE.setup||{})); d.setup.audience=e.audience; d.setup.tone=e.tone; try{ d.setup.curve=getVal('m-curve')||d.setup.curve||'Mixed'; }catch(e2){}
+  var pl=d.plan||{}; d.plan={fmt:true,ed:true,skip3:!!pl.skip3,skip4:true};
+  d.collection=null; d.statuses={};
+  LIB.decks.push(copy);
+  var g=v.group; verCell(g,curKey).deckId=snap.id; var c=verCell(g,key); c.deckId=copy.id; c.status='todo';
+  saveLibrary(LIB); renderDeckDrawer(); renderSetSummary();
+  toast('Version created: '+e.label+' \u00b7 '+f.label+'. Press "Open version" to work on it.','ok');
+}
+function verOpen(id){
+  openDeck(id,true);
+  try{ proGoto(5); }catch(e){}
+  toast('Version opened. Compile the production script in Step 5.','ok');
+}
+function collSavedOptions(){
+  ensureLib();
+  return '<option value="">Choose a saved deck…</option>'+LIB.decks.map(function(d){
+    var W=WORLD_PACKS[d.worldId];
+    return '<option value="'+escHtml(d.id)+'">'+escHtml((d.name||'Untitled deck')+' · '+(W?W.name:d.worldId)+' · '+(d.cards||0)+' cards')+'</option>';
+  }).join('');
+}
+function collFillFromDeck(i,id){
+  if(!id) return; ensureLib();
+  var d=null; LIB.decks.forEach(function(x){ if(x.id===id) d=x; }); if(!d) return;
+  var data=(id===LIB.currentId)?buildProject():(d.data||{});
+  var C=ensureCollection(); var g=C.games[i]; if(!g) return;
+  if(data.worldId&&CONFIG.worldsUnlocked.indexOf(data.worldId)>=0) g.world=data.worldId;
+  g.edition=validEdition(data.edition); g.format=validFormat(data.cardFormat);
+  if(data.topic){ g.topic=String(data.topic).slice(0,100); g.seeds=[]; }
+  g.paste=data.pasteText||'';
+  autosave(); renderCollectionPanel();
+  if(g.paste.trim()) toast('Game '+(i+1)+' filled from "'+(d.name||'deck')+'". It is ready for the Continuity Checker.','ok');
+  else toast('Game '+(i+1)+' filled with the topic. That deck has no pasted cards yet, so there is nothing to compare.','err');
 }
 function importDeckFile(file){
   if(!file) return;
@@ -6043,7 +6170,7 @@ function autosave(){
         LIB.decks.push(cur); LIB.currentId=cur.id;
       }
       var snap=snapshotCurrent(cur.name);
-      snap.id=cur.id;
+      snap.id=cur.id; if(cur.gid) snap.gid=cur.gid;
       LIB.decks.forEach(function(d,i){ if(d.id===cur.id) LIB.decks[i]=snap; });
       if(!saveLibrary(LIB)) showDeckMsg(LIB_MSG);
       renderDeckDrawer();
@@ -6586,11 +6713,3 @@ else initApp();
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
